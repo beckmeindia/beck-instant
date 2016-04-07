@@ -7,7 +7,25 @@
 	var clicklogin=0;
 	var arrPckgs = []; var rsltshow = 0;  var arraccepts = []; var revrsdone = 0; var mycenter; var lognclckd = 0; var flgg=0;
 
-angular.module('MyApp',['ngMaterial',"firebase"]).controller('AppCtrl', ["$scope", "$firebaseArray", 
+angular.module('MyApp',['ngMaterial',"firebase"])
+ .controller('PositionDemoCtrl', function DemoCtrl($mdDialog) {
+    var originatorEv;
+    this.openMenu = function($mdOpenMenu, ev) {
+      originatorEv = ev;
+      $mdOpenMenu(ev);
+    };
+    this.announceClick = function(index) {
+      $mdDialog.show(
+        $mdDialog.alert()
+          .title('You clicked!')
+          .textContent('You clicked the menu item at index ' + index)
+          .ok('Nice')
+          .targetEvent(originatorEv)
+      );
+      originatorEv = null;
+    };
+  })
+.controller('AppCtrl', ["$scope", "$firebaseArray", 
 function($scope, $firebaseArray) {
 	$scope.imagePath = 'download.png';
   var imagePath = 'download.png';
@@ -585,7 +603,7 @@ $(document).ready(function(){
 	$("#demo03").trigger('click');	
 	shwdetls();
 	$("#os-phrases > h2.openz").lettering('words').children("span").lettering().children("span").lettering();
-	$('#cloudz').css('background-image','url(bckg.jpg)')
+	$('#cloudz').css('background-image','url(../../img/hero.jpg)')
   .waitForImages(function() {
    document.getElementById("cloudz").style.display="block";
    document.getElementById("mnuitm2").style.display="block";			
@@ -766,11 +784,11 @@ $(document).ready(function(){
 					} else {
 						firebaseRef.child("users").child(usrnewmail).update({usrname:usrname, usremail:usremail, usrid:usrnewmail, usrphone:intno});	
 						usrphone = intno; usrid = usrnewmail; var regsclbck = "New user registered on friends : "+usrname+" "+usrphone+" "+usremail;
-						mailcall(regsclbck); $('body').plainOverlay('hide'); swal("Verification Succesful", "Congratulations. You are succesfully registered with BECK!", "success"); loggedin = 1;	document.getElementById("mnuitm").style.display="block"; document.getElementById("tgnmlyn").style.paddingLeft = "20px";
-				document.getElementById("namehdr").innerHTML += 'Hi ' + usrname.split(" ")[0].substring(0, 10);		 
-				document.getElementById("namehdr").style.display = "inline-block";
+						mailcall(regsclbck); $('body').plainOverlay('hide'); swal("Verification Succesful", "Congratulations. You are succesfully registered with BECK!", "success"); loggedin = 1;//	document.getElementById("mnuitm").style.display="none"; document.getElementById("tgnmlyn").style.paddingLeft = "20px";
+				document.getElementById("namehdr").innerHTML = 'Hi ' + usrname.split(" ")[0].substring(0, 10);		 
+				document.getElementById("namehdr2").style.display = "inline-block";
 				document.getElementById("signleft").style.display = "none";
-				fbflag = 0; loggedin = 1; document.getElementById("mnuitm").style.display="block"; document.getElementById("tgnmlyn").style.paddingLeft = "20px";
+				fbflag = 0; loggedin = 1; //document.getElementById("mnuitm").style.display="none"; document.getElementById("tgnmlyn").style.paddingLeft = "20px";
 				$('#myanchor').click();						
 					};
 				})			
@@ -806,7 +824,7 @@ $(document).ready(function(){
 				document.getElementById("namehdr").innerHTML += 'Hi ' + usrname.split(" ")[0].substring(0, 10);		 
 				document.getElementById("namehdr").style.display = "inline-block";
 				document.getElementById("signleft").style.display = "none";
-				fbflag = 0; loggedin = 1; document.getElementById("mnuitm").style.display="block"; document.getElementById("tgnmlyn").style.paddingLeft = "20px";
+				fbflag = 0; loggedin = 1; //document.getElementById("mnuitm").style.display="none"; document.getElementById("tgnmlyn").style.paddingLeft = "20px";
 				$('#myanchor').click();			
 			}else{
 				sweetAlert("Oops...", "Our servers could not recognise you. Please try Again", "error");
@@ -849,7 +867,7 @@ $(document).ready(function(){
 				});				
 				usrphone = intno;
 				swal("Update Succesful", "Congratulations. You have succesully updated your mobile number", "success"); 
-				loggedin = 1; document.getElementById("mnuitm").style.display="block"; document.getElementById("tgnmlyn").style.paddingLeft = "20px";	
+				loggedin = 1; //document.getElementById("mnuitm").style.display="none"; document.getElementById("tgnmlyn").style.paddingLeft = "20px";	
 				});
 				});	
 				$(".sweet-alert p").html('<br>Please select your country and enter your mobile number<br>&nbsp;<br><select id="countrycd" style="padding:5px;font-size:14px; font-family:\'Maven Pro\', sans-serif;"><option data-countryCode="FR" value="33">France (+33)</option><option data-countryCode="DE" value="49">Germany (+49)</option><option data-countryCode="GR" value="30">Greece (+30)</option><option data-countryCode="HU" value="36">Hungary (+36)</option><option data-countryCode="IN" value="91" selected>India (+91)</option><option data-countryCode="ID" value="62">Indonesia (+62)</option><option data-countryCode="IT" value="39">Italy (+39)</option><option data-countryCode="JP" value="81">Japan (+81)</option><option data-countryCode="MY" value="60">Malaysia (+60)</option><option data-countryCode="MX" value="52">Mexico (+52)</option><option data-countryCode="MN" value="95">Myanmar (+95)</option><option data-countryCode="NL" value="31">Netherlands (+31)</option><option data-countryCode="NZ" value="64">New Zealand (+64)</option><option data-countryCode="PE" value="51">Peru (+51)</option><option data-countryCode="PH" value="63">Philippines (+63)</option><option data-countryCode="PL" value="48">Poland (+48)</option><option data-countryCode="RO" value="40">Romania (+40)</option><option data-countryCode="SG" value="65">Singapore (+65)</option><option data-countryCode="ZA" value="27">South Africa (+27)</option><option data-countryCode="ES" value="34">Spain (+34)</option><option data-countryCode="LK" value="94">Sri Lanka (+94)</option><option data-countryCode="SE" value="46">Sweden (+46)</option><option data-countryCode="CH" value="41">Switzerland (+41)</option><option data-countryCode="TH" value="66">Thailand (+66)</option><option data-countryCode="TR" value="90">Turkey (+90)</option><option data-countryCode="GB" value="44">UK (+44)</option></select>');
@@ -1438,7 +1456,8 @@ $(document).ready(function(){
 			document.getElementById("pckgctr").innerHTML="Loading...";
 			var address = ''; rsltshow = 0; google.maps.event.trigger(map, 'resize');
 			$("#tflbckg").css("background-image", "");
-			$('.close-initModal').trigger('click');
+			$('#namehdr2').trigger('click');
+			$('.close-initModal').trigger('click');			
 			document.getElementById("lastbit").style.display="block";
 			if (place.address_components) {
             address = [
@@ -1466,7 +1485,7 @@ $(document).ready(function(){
 				usremail=  snapshot.child("usremail").val();
 				usrphone = snapshot.child("usrphone").val();
 				usrid = snapshot.child("usrid").val();
-				fbflag = 0; loggedin = 1; document.getElementById("mnuitm").style.display="block"; document.getElementById("tgnmlyn").style.paddingLeft = "20px";
+				fbflag = 0; loggedin = 1; //document.getElementById("mnuitm").style.display="none"; document.getElementById("tgnmlyn").style.paddingLeft = "20px";
 				$('#myanchor').click(); $('body').plainOverlay('hide');	
 				
 			}else if(clicklogin==1){
@@ -1499,7 +1518,7 @@ $(document).ready(function(){
 				var regsclbck = "New user registered on friends : "+usrname+" "+usrphone+" "+usremail;
 				mailcall(regsclbck); $('#myanchor').click();		
 				swal("Verification Succesful", "Congratulations. You are succesfully registered with BECK!", "success"); 
-				loggedin = 1; document.getElementById("mnuitm").style.display="block"; document.getElementById("tgnmlyn").style.paddingLeft = "20px";
+				loggedin = 1; //document.getElementById("mnuitm").style.display="none"; document.getElementById("tgnmlyn").style.paddingLeft = "20px";
 				});
 				});	
 				$(".sweet-alert p").html('<br>Please select your country and enter your mobile number<br>&nbsp;<br><select id="countrycd" style="padding:5px;font-size:14px;"><option data-countryCode="FR" value="33">France (+33)</option><option data-countryCode="DE" value="49">Germany (+49)</option><option data-countryCode="GR" value="30">Greece (+30)</option><option data-countryCode="HU" value="36">Hungary (+36)</option><option data-countryCode="IN" value="91" selected>India (+91)</option><option data-countryCode="ID" value="62">Indonesia (+62)</option><option data-countryCode="IT" value="39">Italy (+39)</option><option data-countryCode="JP" value="81">Japan (+81)</option><option data-countryCode="MY" value="60">Malaysia (+60)</option><option data-countryCode="MX" value="52">Mexico (+52)</option><option data-countryCode="MN" value="95">Myanmar (+95)</option><option data-countryCode="NL" value="31">Netherlands (+31)</option><option data-countryCode="NZ" value="64">New Zealand (+64)</option><option data-countryCode="PE" value="51">Peru (+51)</option><option data-countryCode="PH" value="63">Philippines (+63)</option><option data-countryCode="PL" value="48">Poland (+48)</option><option data-countryCode="RO" value="40">Romania (+40)</option><option data-countryCode="SG" value="65">Singapore (+65)</option><option data-countryCode="ZA" value="27">South Africa (+27)</option><option data-countryCode="ES" value="34">Spain (+34)</option><option data-countryCode="LK" value="94">Sri Lanka (+94)</option><option data-countryCode="SE" value="46">Sweden (+46)</option><option data-countryCode="CH" value="41">Switzerland (+41)</option><option data-countryCode="TH" value="66">Thailand (+66)</option><option data-countryCode="TR" value="90">Turkey (+90)</option><option data-countryCode="GB" value="44">UK (+44)</option></select>');
