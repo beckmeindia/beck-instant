@@ -22,7 +22,7 @@
 			var md = new MobileDetect(window.navigator.userAgent);
 			if (md.mobile() === undefined || md.mobile() === null){}
 			else{
-			window.location="https://www.beckme.com/friends/";
+			window.location="https://www.beckfriends.com/friends/";
 			}
 		</script>
 	<style>
@@ -359,13 +359,13 @@
   z-index: 3;
   position:absolute;
 }
- /*Paper Plane: Image*/
+
 .plane {
   width: 100%;
   height: 40px;
 }
 
-/*Paper Plane: Animation*/
+
 .plane-container {
   -webkit-animation: paper-plane-scoping 2s alternate infinite;
   -moz-animation: paper-plane-scoping 2s alternate infinite;
@@ -786,8 +786,11 @@ input:focus {
 		document.getElementById("signin-email").value = localStorage.getItem('svemail');
 		document.getElementById("signin-password").value = localStorage.getItem('svpsw');
 		loginmail();
+	}else if(sessionStorage.getItem('svemail')){
+		document.getElementById("signin-email").value = sessionStorage.getItem('svemail');
+		document.getElementById("signin-password").value = sessionStorage.getItem('svpsw');
+		loginmail();
 	}
-	// call the login function with credentials from localstorage
 	}
 	});	
 	};

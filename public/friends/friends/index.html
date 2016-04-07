@@ -165,6 +165,10 @@ src="https://www.facebook.com/tr?id=1066721630052558&ev=PageView&noscript=1"
 		document.getElementById("signin-email").value = localStorage.getItem('svemail');
 		document.getElementById("signin-password").value = localStorage.getItem('svpsw');
 		loginmail();
+	}else if(sessionStorage.getItem('svemail')){
+		document.getElementById("signin-email").value = sessionStorage.getItem('svemail');
+		document.getElementById("signin-password").value = sessionStorage.getItem('svpsw');
+		loginmail();
 	}
 	}
 	});	

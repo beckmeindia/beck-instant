@@ -1595,11 +1595,11 @@ var $form_modal = $('.cd-user-modal'),
                 <form class="cd-form">
                     <p class="fieldset">
                         <label class="image-replace cd-email" for="signin-email">Your E-mail</label>
-                        <input class="full-width has-padding has-border" id="signin-email" type="email" placeholder="Email">                       
+                        <input class="full-width has-padding has-border" id="signin-email" type="email" placeholder="Email" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">                       
                     </p>
                     <p class="fieldset">
                         <label class="image-replace cd-password" for="signin-password">Your Password</label>
-                        <input class="full-width has-padding has-border" id="signin-password" type="text"  placeholder="Password">
+                        <input class="full-width has-padding has-border" id="signin-password" type="text"  placeholder="Password" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
                         <a href="#0" class="hide-password" style="text-decoration: none;;color:#7c7c7c">Hide</a>                        
                     </p>
                     <p class="fieldset">
@@ -1624,15 +1624,15 @@ var $form_modal = $('.cd-user-modal'),
                     </p>    
                     <p class="fieldset">
                         <label class="image-replace cd-username" for="signup-username">Your Name</label>
-                        <input class="full-width has-padding has-border" id="signup-username" type="text" placeholder="Name">
+                        <input class="full-width has-padding has-border" id="signup-username" type="text" placeholder="Name" >
                     </p>
                     <p class="fieldset">
                         <label class="image-replace cd-email" for="signup-email">Your E-mail</label>
-                        <input class="full-width has-padding has-border" id="signup-email" type="email" placeholder="Email">
+                        <input class="full-width has-padding has-border" id="signup-email" type="email" placeholder="Email" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
                     </p>
                     <p class="fieldset">
                         <label class="image-replace cd-password" for="signup-password">Your Password</label>
-                        <input class="full-width has-padding has-border" id="signup-password" type="text"  placeholder="Password">
+                        <input class="full-width has-padding has-border" id="signup-password" type="text"  placeholder="Password" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
                         <a href="#0" class="hide-password" style="text-decoration:none;color:#7c7c7c">Hide</a>
                     </p>
                     <p class="fieldset">
@@ -1963,7 +1963,7 @@ var $form_modal = $('.cd-user-modal'),
     <script>
 
     var firebaseRef = new Firebase("https://beckrequest.firebaseio.com");
-	var usremail;
+	var loggedin=0,usrname="",usremail="",loggedin=0,clicklogin=0,usrphone="",usrid="", usrfbimg="", usrfbid="", fbflag=0, usrnewmail="";
 
 
 
@@ -2039,7 +2039,16 @@ var $form_modal = $('.cd-user-modal'),
   } , {scope: 'email'});  
   }
 
-
+function isLocalStorageNameSupported() {
+    var testKey = 'test', storage = window.sessionStorage;
+    try {
+        storage.setItem(testKey, '1');
+        storage.removeItem(testKey);
+        return true;
+    } catch (error) {
+        return false;
+    }
+}
      function start()
     {
 	$('body').plainOverlay('show',{
@@ -2048,10 +2057,10 @@ var $form_modal = $('.cd-user-modal'),
       progress: function() { return $('<div style="font-size:40px;color:#fff;font-weight:bold">Redirecting...</div>'); }
     });
         if (md.mobile() === undefined || md.mobile() == null){
-                window.location="https://www.beckfriends.com/friends/desktop/";
+                window.location="https://www.beckme.com/friends/friends/desktop/";
             }
             else{
-                 window.location="https://www.beckfriends.com/friends/";
+                 window.location="https://www.beckme.com/friends/friends/";
             }
     }
 function checkfirebase(email){    
@@ -2139,8 +2148,15 @@ function mailcall(custName,custEmail,custPhone){
         if (emailVal != otpmail) {     swal.showInputError("Please Enter the correct 4 digits");     return false   }
         swal("Mail Verification Succesful", "Congratulations. You verified your E-mail Succesfully", "success");
         firebaseRef.createUser({ email : usremail,  password : passwd}, function(error, userData) {
-          localStorage.setItem('svemail' , usremail);
-          localStorage.setItem('svpsw' , passwd);
+		if(typeof(Storage) === "undefined"){
+		}else{
+		if ( isLocalStorageNameSupported() ) {
+			localStorage.setItem('svemail' , usremail); localStorage.setItem('svpsw' , passwd);
+		}else{
+		if(window.sessionStorage) sessionStorage.setItem('svemail' , usremail); sessionStorage.setItem('svpsw' , passwd);
+		} 
+		}   
+          
           if (error) {
             sweetAlert("Oops...", "There was a problem creating your Account. Please try Again", "error");
             $('#myanchor').click();
@@ -2181,8 +2197,14 @@ function mailcall(custName,custEmail,custPhone){
         usremail=  snapshot.child("usremail").val();
         usrphone = snapshot.child("usrphone").val();
         usrid = snapshot.child("usrid").val();
-        localStorage.setItem('svemail' , usremail);
-        localStorage.setItem('svpsw' , passwd);
+		if(typeof(Storage) === "undefined"){
+		}else{
+		if ( isLocalStorageNameSupported() ) {
+			localStorage.setItem('svemail' , usremail); localStorage.setItem('svpsw' , passwd);
+		}else{
+		if(window.sessionStorage) sessionStorage.setItem('svemail' , usremail); sessionStorage.setItem('svpsw' , passwd);
+		} 
+		}       
         loggedin = 1; start(); $('#myanchor').click();   
       }else{
         sweetAlert("Oops...", "Our servers could not recognise you. Please try Again", "error");
