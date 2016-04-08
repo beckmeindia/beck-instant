@@ -765,7 +765,7 @@ $(document).ready(function(){
 		rfrshresults(mycenter);
 		google.maps.event.trigger(map, 'resize');
 		document.getElementById("scrollDefaultExample").value="";deliverydate="";img64="";document.getElementById("searchloc3").value=""; document.getElementById("pickupnum").value=""; document.getElementById("pickupname").value=""; document.getElementById("pickupaddr").value="";document.getElementById("searchloc2").value=""; document.getElementById("deliverynum").value=""; document.getElementById("deliveryname").value=""; document.getElementById("deliveryaddr").value="";
-		document.getElementById("packagephoto").style.display = "block";
+		document.getElementById("packagephoto").style.display = "block"; document.getElementById("descriptor").value = "";
 		shwdetls();
 		$("#card").css("background-image", "");
 		$('body').plainOverlay('hide');
@@ -899,7 +899,7 @@ $(document).ready(function(){
 	}
 	
 	function editnum(){
-		if(loggedin==1){swal({   title: "Change number",   text: "Your present registered number is +"+usrphone+". Are you sure you want to change it?", html: true,   type: "warning",   showCancelButton: true,   confirmButtonColor: "#2bb1de",   confirmButtonText: "Change it",   closeOnConfirm: false }, function(){ smsending() })}else{befrlogin()};
+		if(loggedin==1){swal({   title: "Update number",   text: "Please update to your latest contact number", html: true,   type: "warning",   showCancelButton: true,   confirmButtonColor: "#2bb1de",   confirmButtonText: "Update it",   closeOnConfirm: false }, function(){ smsending() })}else{befrlogin()};
 	}
 	
 	function smsending(){
