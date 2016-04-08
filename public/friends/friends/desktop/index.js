@@ -27,6 +27,7 @@ angular.module('MyApp',['ngMaterial',"firebase"])
   })
 .controller('AppCtrl', ["$scope", "$firebaseArray", 
 function($scope, $firebaseArray) {
+	$scope.descriptor="";
 	$scope.imagePath = 'download.png';
   var imagePath = 'download.png';
    $scope.myDate = null;
@@ -114,6 +115,9 @@ function($scope, $firebaseArray) {
 				});	
 				$(".sweet-alert p").html('<br>Please select your country and enter your mobile number<br>&nbsp;<br><select id="countrycd" style="padding:5px;font-size:14px;"><option data-countryCode="FR" value="33">France (+33)</option><option data-countryCode="DE" value="49">Germany (+49)</option><option data-countryCode="GR" value="30">Greece (+30)</option><option data-countryCode="HU" value="36">Hungary (+36)</option><option data-countryCode="IN" value="91" selected>India (+91)</option><option data-countryCode="ID" value="62">Indonesia (+62)</option><option data-countryCode="IT" value="39">Italy (+39)</option><option data-countryCode="JP" value="81">Japan (+81)</option><option data-countryCode="MY" value="60">Malaysia (+60)</option><option data-countryCode="MX" value="52">Mexico (+52)</option><option data-countryCode="MN" value="95">Myanmar (+95)</option><option data-countryCode="NL" value="31">Netherlands (+31)</option><option data-countryCode="NZ" value="64">New Zealand (+64)</option><option data-countryCode="PE" value="51">Peru (+51)</option><option data-countryCode="PH" value="63">Philippines (+63)</option><option data-countryCode="PL" value="48">Poland (+48)</option><option data-countryCode="RO" value="40">Romania (+40)</option><option data-countryCode="SG" value="65">Singapore (+65)</option><option data-countryCode="ZA" value="27">South Africa (+27)</option><option data-countryCode="ES" value="34">Spain (+34)</option><option data-countryCode="LK" value="94">Sri Lanka (+94)</option><option data-countryCode="SE" value="46">Sweden (+46)</option><option data-countryCode="CH" value="41">Switzerland (+41)</option><option data-countryCode="TH" value="66">Thailand (+66)</option><option data-countryCode="TR" value="90">Turkey (+90)</option><option data-countryCode="GB" value="44">UK (+44)</option></select>');			
 			
+		}
+		else if(usrid==arrPckgs[rsltshow].usrid){
+			sweetAlert("Oops...", "You can't accept the same Request posted by you!", "error");
 		}
 		else{
 		var interval = setInterval(function(){
@@ -219,7 +223,7 @@ function($scope, $firebaseArray) {
 		},2000);	
 }])
 .config(function($mdDateLocaleProvider) {
-	var initdt = "Delivery Date";
+	var initdt = "Delivery By";
     $mdDateLocaleProvider.formatDate = function(date) {      
 	   if(moment(date).format('ll')=="Invalid date"){
 		   deliverydate="";
@@ -490,6 +494,7 @@ geoQuery.on("key_exited", function(vehicleId, vehicleLocation) {
 })
 
 $(document).ready(function(){	
+	$("#searchloc").focus(function() { $(this).select(); } );
 	var $form_modal = $('.cd-user-modal'),
 		$form_login = $form_modal.find('#cd-login'),
 		$form_signup = $form_modal.find('#cd-signup'),
@@ -678,11 +683,11 @@ $(document).ready(function(){
 			progress: function() { return $('<div style="font-size:40px;color:#fff;font-weight:bold">Posting...</div>'); }
 		});
 		var orderid = makeid();
-		/*	
+			
 		if(document.getElementById("descriptor").value != ""){
 			description = document.getElementById("descriptor").value;
 		}
-		*/
+		
 		firebaseRef.child("packages").child(orderid).update({order:{img64:img64,description:description,id:orderid,lat:pickuplat,lon:pickuplng,usrid:usrid,usrphone:usrphone,usrname:usrname,usremail:usremail,pickuplat:pickuplat,pickuplng:pickuplng, delvlat:delvlat, delvlng:delvlng, pickuparea:pickuparea, pickupaddr:pickupaddr, pickupname:pickupname, pickupnum:pickupnum, deliveryaddr:deliveryaddr, deliveryarea:deliveryarea, deliverynum:deliverynum, deliveryname:deliveryname,deliverydate:deliverydate,deliverytime:deliverytime, pckgvalue:pckgvalue, pckgweight:pckgweight,pckgsize:pckgsize,fare:fare}},function(error){
 		if (error) {
 			swal({   title: "POST FAILED",   text: "Oops! Failed to post. Please try again",   type: "error",   confirmButtonText: "OK" });
@@ -1098,7 +1103,7 @@ $(document).ready(function(){
 		}else{
 			document.getElementById("tytl").innerHTML = "Just one last step";		
 			deliverytime = document.getElementById("scrollDefaultExample").value;			
-			showprev2();
+			showdonepst();
 		}
 	}
 	var reader,img;
@@ -1191,13 +1196,13 @@ $(document).ready(function(){
 	hotSpotMapMarkers.push(new google.maps.Marker({
     position: new google.maps.LatLng(picklat, picklng),
     optimized: true,
-	icon: "package.png",
+	icon: "package_green.png",
     map: map
 	}));
 	hotSpotMapMarkers.push(new google.maps.Marker({
     position: new google.maps.LatLng(delvlat, delvlng),
     optimized: true,
-	icon: "package.png",
+	icon: "package_red.png",
     map: map
 	}));
 	map.fitBounds(latlngbounds);
@@ -1208,6 +1213,7 @@ $(document).ready(function(){
 		document.getElementById("lala2").style.display = "block";
 		document.getElementById("card").style.display = "block";
 		document.getElementById("lala").style.display = "none";
+		document.getElementById("descrip").style.display = "none";
 		document.getElementById("delvlala2").style.display = "block"
 		document.getElementById("delvlala").style.display = "none";
 		document.getElementById("postbtn").style.display = "none";
@@ -1217,12 +1223,13 @@ $(document).ready(function(){
 		document.getElementById("farediv").style.display="none";
 	}
 	
-	function showprev2(){
+	function showdonepst(){
 		document.getElementById("card").style.display = "none";
 		document.getElementById("packagephoto").style.display = "none";
 		document.getElementById("lala2").style.display = "none";
 		document.getElementById("lala").style.display = "block";
-		document.getElementById("delvlala2").style.display = "none"
+		document.getElementById("delvlala2").style.display = "none";
+		document.getElementById("descrip").style.display = "block";
 		document.getElementById("delvlala").style.display = "block";
 		document.getElementById("postbtn").style.display = "block";
 		document.getElementById("prevbtn2").innerHTML = "BACK";
