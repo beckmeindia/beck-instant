@@ -640,6 +640,8 @@ $(document).ready(function(){
 		setTimeout(function(){swal({   title: "No Live Requests",   text: "Presently there are no live requests around this location. You can add a request here if you want or search live requests for another location",   timer: 8000 })},3000);		
 		}		
 	}
+	$('#map').plainOverlay('hide');
+				
 	var interval = setInterval(function(){
 	if(arrPckgs.length == nofkeys && nofkeys!=0){	
 		clearInterval(interval);
@@ -1464,7 +1466,9 @@ $(document).ready(function(){
 			var address = ''; rsltshow = 0; google.maps.event.trigger(map, 'resize');
 			$("#tflbckg").css("background-image", "");
 			$('#namehdr2').trigger('click');
-			$('.close-initModal').trigger('click');			
+			$('.close-initModal').trigger('click');		
+			$('#map').plainOverlay('show',{opacity:0.8, fillColor: '#000', progress: function() { return $('<div style="font-size:40px;color:#fff;font-weight:bold">Loading...</div>') }});
+							
 			document.getElementById("lastbit").style.display="block";
 			if (place.address_components) {
             address = [
