@@ -1406,7 +1406,8 @@ geoQuery.on("key_exited", function(vehicleId, vehicleLocation) {
 	
 	function befrlogin(){
 		$("button[data-role='end']").click();
-		swal({ title: "Love to have you on board",   text: "Enter into your BECK Friends Account with Facebook",   type: "success",   showCancelButton: true,   confirmButtonColor: "#2bb1de",   confirmButtonText: "Go Ahead" }, function(){login()});		
+		login();
+		//swal({ title: "Love to have you on board",   text: "Enter into your BECK Friends Account with Facebook",   type: "success",   showCancelButton: true,   confirmButtonColor: "#2bb1de",   confirmButtonText: "Go Ahead" }, function(){login()});		
 	}
 	
   function smsacceptdm(number){

@@ -820,9 +820,10 @@ input:focus {
 	}(document, 'script', 'facebook-jssdk'));
 	
 	function logout(){
-	FB.logout(function(response) {
-	if(response) location.reload(true);
+	FB.logout(function() {
+	window.location.reload()
 	});
+	return false;
 	}
 	
 	function login(){
@@ -832,8 +833,7 @@ input:focus {
 	if (response.authResponse) {
 	if (response.status === 'connected') {	
 	FB.api('/me?fields=id,email,name,picture.height(100)', function(response) {
-	
-	  document.getElementById("profile_img").src = String(response.picture.data.url);
+	document.getElementById("profile_img").src = String(response.picture.data.url);
 	  document.getElementById("namehdr").innerHTML = 'Hi ' + String(response.name).split(" ")[0].substring(0, 10);	 
 	  document.getElementById("namehdr2").style.display = "inline-block";
 	   usrfbimg = String(response.picture.data.url); usrname = String(response.name); usremail = String(response.email); usrfbid = String(response.id);
@@ -981,7 +981,7 @@ input:focus {
 	  <input id="pickupaddr" type="text" ng-required="true">
     </md-input-container>
 	<md-input-container class="md-block" style="margin:0px">
-      <label style="font-size:14px">Pickup Contact Number</label>
+      <label style="font-size:14px">Pickup Contact Number (10-digit)</label>
 	  <input id="pickupnum" type="text" ng-required="true">
     </md-input-container>
 	</md-content>
@@ -1016,7 +1016,7 @@ input:focus {
       <input id="deliveryaddr" type="text" ng-required="true">
     </md-input-container>
 	<md-input-container class="md-block" style="margin:0px">
-	  <label style="font-size:14px">Delivery Contact Number</label>
+	  <label style="font-size:14px">Delivery Contact Number (10-digit)</label>
       <input id="deliverynum" type="text" ng-required="true">
     </md-input-container>
 	</md-content>
@@ -1047,7 +1047,7 @@ input:focus {
     </md-card-header>
 	<md-input-container id="descrip" class="md-block" style="margin-left:20px;margin-right:20px">
           <label>Additional Information (optional)</label>
-          <textarea id="descriptor" ng-model="descriptor" placeholder="Package description or other information about the Request" rows="2" md-select-on-focus></textarea>
+          <textarea id="descriptor" ng-model="descriptor" placeholder="Package description or other info about this Request" rows="2" md-select-on-focus></textarea>
     </md-input-container>
 	<md-button id="posting" ng-click="post2()" class="md-raised md-primary" style="width:90%;;margin-left:5%">POST THIS REQUEST</md-button>
  	<md-button id="nxt" onclick="next()" class="md-raised md-primary" style="background:#5f6f81;width:90%;margin-top:0;margin-left:5%;margin-bottom:15px">NEXT</md-button>
@@ -1071,7 +1071,7 @@ input:focus {
         <span flex></span>
         <md-button style="margin-right:50px;color:#fff">
           <div class="close-animatedModal"> 
-            CLOSE
+            <md-icon md-svg-src="close.svg" aria-label="close"></md-icon> CLOSE
         </div> 
         </md-button>
        
@@ -1115,7 +1115,7 @@ input:focus {
         <span flex></span>
         <md-button style="margin-right:50px;color:#fff">
           <div class="close-acceptedModal"> 
-            CLOSE
+           <md-icon md-svg-src="close.svg" aria-label="close"></md-icon> CLOSE
         </div> 
         </md-button>       
       </div>
@@ -1147,7 +1147,7 @@ input:focus {
         <span flex></span>
         <md-button style="margin-right:50px;color:#fff">
           <div class="close-profileModal"> 
-            CLOSE
+          <md-icon md-svg-src="close.svg" aria-label="close"></md-icon>  CLOSE
         </div> 
         </md-button>       
       </div>

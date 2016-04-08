@@ -620,6 +620,62 @@ $(document).ready(function(){
 
 });
 
+	function showtour(){		
+		var tourinterval = setInterval(function(){
+		if(hiname == 1){
+		var tour = new Tour({
+        storage: false,		
+		steps: [
+         {
+    orphan: true,
+    title: "What is BECK Friends?",
+	backdrop:true,
+    content: "A global peer-to-peer marketplace for sending anything anywhere economically with an opportunity to earn as you travel"
+  }
+  /*,   {
+    element: "#locasion", 
+    title: "Change Locations",
+	placement: "bottom",
+	backdrop:true,
+    content: "Search various places to see the Requests there"
+  },
+  {
+    element: "#map", 
+    title: "Live Requests",
+	placement: "bottom",
+	backdrop:true,
+    content: "The details of Live Requests appear here. Use the left and right arrow to navigate across them"
+  },
+  {
+    element: "#add",
+    title: "New Request",
+	placement: "bottom",
+	backdrop:true,
+    content: "You can post a Request when you want to send"
+  },
+  {
+    element: "#mnulft",
+    title: "Menu",	
+	placement: "bottom",
+	backdrop:true,
+    content: "You can edit your profile & look at the details of previous requests"
+  },
+  {
+    element: "#signleft",
+    title: "Login",	
+	placement: "bottom",
+	backdrop:true,
+    content: "Finally, Login with Facebook for posting with us"
+  }
+  */
+        ]
+    }).init().start(true);   
+	clearInterval(tourinterval);
+		}
+		else{}
+		},1000);
+	}
+   
 	geoQuery.on("ready", function() {
 	nofkeys = Object.keys(vehiclesInQuery).length;
 	if(nofkeys==0 && geoQuery.radius()>1){
@@ -636,15 +692,15 @@ $(document).ready(function(){
 		}else if(geoQuery.radius()==3500){
 			geoQuery.updateCriteria({radius: 5000});
 		}else{
-			$('#map').plainOverlay('hide');
+		$('#map').plainOverlay('hide');			
 		setTimeout(function(){swal({   title: "No Live Requests",   text: "Presently there are no live requests around this location. You can add a request here if you want or search live requests for another location",   timer: 8000 })},3000);		
 		}		
 	}
-	$('#map').plainOverlay('hide');
 				
 	var interval = setInterval(function(){
 	if(arrPckgs.length == nofkeys && nofkeys!=0){	
-		clearInterval(interval);
+		clearInterval(interval); $('#map').plainOverlay('hide');
+	
 		for (var key in arraccepts) {forcekeyexit(arraccepts[key])};
 		arrPckgs.sort(function(a, b) {
 			if(String(b.fare).split(" ")[1]=="QUOTE"){
@@ -907,6 +963,7 @@ $(document).ready(function(){
 		}else{	
 			document.getElementById("lala").style.display = "none";	
 			document.getElementById("delvlala").style.display = "none";	
+			document.getElementById("descrip").style.display = "none";	
 			document.getElementById("prevbtn2").innerHTML = "EDIT DETAILS";			
 			document.getElementById("fare").innerHTML = "Calculating...";
 			document.getElementById("farediv").style.display="block";
@@ -1397,7 +1454,8 @@ $(document).ready(function(){
 	
 	
 	function befrlogin(){
-		swal({ title: "Love to have you on board",   text: "Enter into your BECK Friends Account with Facebook",   type: "success",   showCancelButton: true,   confirmButtonColor: "#2bb1de",   confirmButtonText: "Go Ahead" }, function(){login()});		
+		login();
+		//swal({ title: "Love to have you on board",   text: "Enter into your BECK Friends Account with Facebook",   type: "success",   showCancelButton: true,   confirmButtonColor: "#2bb1de",   confirmButtonText: "Go Ahead" }, function(){login()});		
 	}
 	
 	function otpintcall(number){
@@ -1468,7 +1526,7 @@ $(document).ready(function(){
 			$('#namehdr2').trigger('click');
 			$('.close-initModal').trigger('click');		
 			$('#map').plainOverlay('show',{opacity:0.8, fillColor: '#000', progress: function() { return $('<div style="font-size:40px;color:#fff;font-weight:bold">Loading...</div>') }});
-							
+			//showtour();	
 			document.getElementById("lastbit").style.display="block";
 			if (place.address_components) {
             address = [
