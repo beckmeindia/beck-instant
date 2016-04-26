@@ -32,7 +32,7 @@
 				var number = inputValue.replace(/[^\d]/g, '').length ;
 				if (inputValue === false) return false; 
 				if (otp != inputValue2) {     swal.showInputError("Please Enter the correct 4 digits");     return false   }
-				firebaseRef.child("users").child(usrid).update({usrphone:intno}); usrphone = intno;
+				firebaseRef.child("users").child(usrid).child("account").update({usrphone:intno}); usrphone = intno;
 				swal("Mobile Verified", "Congratulations. You have registered your phone number with BECK!", "success"); loggedin = 1;	$('#myanchor').click();	
 				})
 				});	
@@ -175,7 +175,7 @@
 				var number = inputValue.replace(/[^\d]/g, '').length ;
 				if (inputValue === false) return false; 
 				if (otp != inputValue2) {     swal.showInputError("Please Enter the correct 4 digits");     return false   }
-				firebaseRef.child("users").child(usrid).update({usrphone:intno}); usrphone = intno;
+				firebaseRef.child("users").child(usrid).child("account").update({usrphone:intno}); usrphone = intno;
 				swal("Mobile Verified", "Congratulations. You have registered your phone number with BECK!", "success"); loggedin = 1;	$('#myanchor').click();	
 				})
 				});	
@@ -648,11 +648,10 @@ geoQuery.on("key_exited", function(vehicleId, vehicleLocation) {
 	document.getElementById("rqstgist").style.display="block";
 	
 	if(i==0){
-		document.getElementById("map").style.height = 'calc(100% - '+(document.getElementById('rqstgist').clientHeight+140)+'px)'
+		//alert(document.getElementById('rqstgist').clientHeight+140);
+		document.getElementById("map").style.height = 'calc(100% - 330px)'
 		google.maps.event.trigger(map, 'resize');
 	}
-	map.setZoom(15);
-	map.panTo(new google.maps.LatLng(arrPckgs[i].pickuplat, arrPckgs[i].pickuplng));
 	
 	}
 	
@@ -773,6 +772,11 @@ geoQuery.on("key_exited", function(vehicleId, vehicleLocation) {
 		map.setZoom(11); ntfnd = 0;		
 		getReverseGeocodingData(position.coords.latitude, position.coords.longitude);
 		showtour();		
+		$('#map').plainOverlay('show',{
+			opacity:0.5,
+			fillColor: '#000',
+			progress: function() { return $('<div style="font-size:26px;color:#fff;font-weight:bold;text-align:center">Loading...</div>'); }
+		});
 		geoQuery.updateCriteria({center: [position.coords.latitude, position.coords.longitude],  radius: 30});
 	}
 	 
@@ -786,7 +790,7 @@ geoQuery.on("key_exited", function(vehicleId, vehicleLocation) {
     orphan: true,
     title: "What is BECK Friends?",
 	backdrop:true,
-    content: "A global peer-to-peer marketplace for sending anything anywhere economically with an opportunity to earn as you travel"
+    content: "You can do two things with it. Send anything anwhere or Earn as you travel"
   },   {
     element: "#locasion", 
     title: "Change Locations",
@@ -806,7 +810,7 @@ geoQuery.on("key_exited", function(vehicleId, vehicleLocation) {
     title: "New Request",
 	placement: "bottom",
 	backdrop:true,
-    content: "You can post a Request when you want to send"
+    content: "You can post a Request when you want to send anything anywhere"
   },
   {
     element: "#mnulft",
@@ -861,6 +865,11 @@ geoQuery.on("key_exited", function(vehicleId, vehicleLocation) {
 	setTimeout(function(){
 		  google.maps.event.trigger(map, 'resize');
 		 map.setCenter(center);map.setZoom(11);
+		 $('#map').plainOverlay('show',{
+			opacity:0.5,
+			fillColor: '#000',
+			progress: function() { return $('<div style="font-size:26px;color:#fff;font-weight:bold;text-align:center">Loading...</div>'); }
+		});
 		  geoQuery.updateCriteria({center: [center.lat(), center.lng()],  radius: 30});
 		 showtour();
 	  },1500)
@@ -869,54 +878,7 @@ geoQuery.on("key_exited", function(vehicleId, vehicleLocation) {
 	},1000);	
 	}
 	var markrz1,markrz2;
-	/*
-	geoQuery.on("ready", function() {
-	nofkeys = Object.keys(vehiclesInQuery).length;
-	if(nofkeys==0 && geoQuery.radius()>1){
-		if(geoQuery.radius()==30){
-			geoQuery.updateCriteria({radius: 300});
-		}else if(geoQuery.radius()==300){
-			geoQuery.updateCriteria({radius: 700});
-		}else if(geoQuery.radius()==700){
-			geoQuery.updateCriteria({radius: 1000});
-		}else if(geoQuery.radius()==1000){
-			geoQuery.updateCriteria({radius: 1500});
-		}else if(geoQuery.radius()==1500){
-			geoQuery.updateCriteria({radius: 3500});
-		}else if(geoQuery.radius()==3500){
-			geoQuery.updateCriteria({radius: 5000});
-		}else{
-		setTimeout(function(){swal({   title: "No Live Requests",   text: "Presently there are no live requests around this location. You can add a request here if you want or search live requests for another location",   timer: 8000 })},5000);		
-		}
-		
-	}
-	var interval = setInterval(function(){
-	if(arrPckgs.length == nofkeys && nofkeys!=0 && acceptsloaded==1){			
-		clearInterval(interval);
-		for (var key in arraccepts) {forcekeyexit(arraccepts[key])};
-		arrPckgs.sort(function(a, b) {
-			if(String(b.fare).split(" ")[1]=="QUOTE"){
-				return 0 - parseInt(Number(String(a.fare).split(" ")[1]));
-			}else if(String(a.fare).split(" ")[1]=="QUOTE"){
-				return parseInt(Number(String(b.fare).split(" ")[1])) - 0;
-			}
-			else{
-				return parseInt(Number(String(b.fare).split(" ")[1])) - parseInt(Number(String(a.fare).split(" ")[1]));
-			}		
-		});
-		nofkeys = arrPckgs.length;
-		if(nofkeys==0){
-			swal({   title: "No New Packages Here",   text: "You have accepted all packages near this location. Please come back later or continue searching for other locations.",   type: "error",   confirmButtonText: "OK" });
-    	}else{
-			document.getElementById("prevbtn").style.display="none"; showreslt(0);
-			drawroute(arrPckgs[0].pickuplat, arrPckgs[0].pickuplng, arrPckgs[0].delvlat, arrPckgs[0].delvlng);	
-		}
-		
-	}	
 	
-	},3000);
-	});	
-	*/
 		geoQuery.on("ready", function() {
 	nofkeys = Object.keys(vehiclesInQuery).length;
 	if(nofkeys==0 && geoQuery.radius()>1){
@@ -945,10 +907,11 @@ geoQuery.on("key_exited", function(vehicleId, vehicleLocation) {
 	var interval = setInterval(function(){
 	if(arrPckgs.length == nofkeys && nofkeys!=0 && acceptsloaded==1){			
 		clearInterval(interval);
+		$('#map').plainOverlay('hide');
 		if(flgg==0)
 		{
 		$('#map').plainOverlay('show',{
-			opacity:0.8,
+			opacity:0.5,
 			fillColor: '#000',
 			progress: function() { return $('<div style="font-size:26px;color:#fff;font-weight:bold;text-align:center">Customizing Requests<br> for your account...</div>'); }
 		});
@@ -1005,6 +968,7 @@ geoQuery.on("key_exited", function(vehicleId, vehicleLocation) {
 	});	
 	
 	function rfrshresults(center){
+		
 			for (var i = 0; i < hotSpotMapMarkers.length; i++)
 			hotSpotMapMarkers[i].setMap(null);
 		  document.getElementById("rqstgist").style.display="none";
@@ -1013,6 +977,11 @@ geoQuery.on("key_exited", function(vehicleId, vehicleLocation) {
 		  rsltshow = 0;
 		  path.setMap(null);
 		  map.setCenter(center);map.setZoom(12); ntfnd=0;
+		  $('#map').plainOverlay('show',{
+			opacity:0.5,
+			fillColor: '#000',
+			progress: function() { return $('<div style="font-size:26px;color:#fff;font-weight:bold;text-align:center">Loading...</div>'); }
+		});
 		  geoQuery.updateCriteria({center: [center.lat(), center.lng()],radius:30});
     }
 	
@@ -1109,7 +1078,7 @@ geoQuery.on("key_exited", function(vehicleId, vehicleLocation) {
 	
 	function receipt(){
 		phoneNumDelv = document.getElementById("deliverynum").value.replace(/[^\d]/g, '');
-		if(document.getElementById('deliveryarea').value=="" || document.getElementById('deliveryname').value=="" || document.getElementById('deliverynum').value=="" || document.getElementById('deliveryaddr').value==""){
+		if(document.getElementById('deliveryarea').value=="" || document.getElementById('deliveryname').value=="" || document.getElementById('deliverynum').value==""){
 			swal({   title: "DELIVERY DETAILS",   text: "Please fill all Pickup Details",   type: "error",   confirmButtonText: "OK" });
 		}		
 		else if(phoneNumDelv.length < 10) {
@@ -1281,21 +1250,21 @@ geoQuery.on("key_exited", function(vehicleId, vehicleLocation) {
 	
 	function resizeImage(img) {
     img64 = imageToDataUri(img);		
-	if(img64=="data:,"||img64=="data:image/jpeg;"){
+/*	if(img64=="data:,"||img64=="data:image/jpeg;"){
 		img64="";
 		sweetAlert("Oops...", "There is some problem with this image. Please select the image again or another one that is similar", "error");
-	}else{
+	}else{	
+*/	
 		document.getElementById("packagephoto").style.display = "none";
         document.getElementById("card").style.backgroundImage = "url('"+img64+"')";
 		document.getElementById("card").style.backgroundSize = "contain"; document.getElementById("card").style.backgroundPosition = "center"; document.getElementById("card").style.backgroundRepeat = "no-repeat";
-	
-	}
+	//}
 	}
 		
 	var phoneNumPick, phoneNumDelv;
 	function showdelivery(){
 		phoneNumPick = document.getElementById("pickupnum").value.replace(/[^\d]/g, '');
-		if(document.getElementById('pickuparea').value=="" || document.getElementById('pickupname').value=="" || document.getElementById('pickupnum').value=="" || document.getElementById('pickupaddr').value==""){
+		if(document.getElementById('pickuparea').value=="" || document.getElementById('pickupname').value=="" || document.getElementById('pickupnum').value==""){
 			swal({   title: "PICKUP DETAILS",   text: "Please fill all Pickup Details",   type: "error",   confirmButtonText: "OK" });
 		}		
 		else if(phoneNumPick.length < 10) {
@@ -1368,7 +1337,7 @@ geoQuery.on("key_exited", function(vehicleId, vehicleLocation) {
 				var number = inputValue.replace(/[^\d]/g, '').length ;
 				if (inputValue === false) return false; 
 				if (otp != inputValue2) {     swal.showInputError("Please Enter the correct 4 digits");     return false   }
-				firebaseRef.child("users").child(usrid).update({
+				firebaseRef.child("users").child(usrid).child("account").update({
 					usrphone:intno
 				});				
 				usrphone = intno;
@@ -1386,7 +1355,7 @@ geoQuery.on("key_exited", function(vehicleId, vehicleLocation) {
 	function checkfirebase(email){	
 		if(clicklogin==1){
 			$('body').plainOverlay('show',{
-			opacity:0.8,
+			opacity:0.5,
 			fillColor: '#000',
 			progress: function() { return $('<div style="font-size:40px;color:#fff;font-weight:bold;text-align:center">Syncing...</div>'); }
 			});
@@ -1697,7 +1666,11 @@ geoQuery.on("key_exited", function(vehicleId, vehicleLocation) {
 	document.getElementById("files").onchange = function () {
     reader = new FileReader();
     reader.onload = function (e) {
-	img = "url('"+e.target.result+"')"; var imgbckz = new Image; imgbckz.src = String(event.target.result);resizeImage(imgbckz);  
+	img = "url('"+e.target.result+"')"; var imgbckz = new Image();
+	imgbckz.src = String(e.target.result);
+	imgbckz.onload = function(){
+	resizeImage(imgbckz)	
+	};
 	};
     reader.readAsDataURL(this.files[0]);
 	}	
@@ -1772,7 +1745,7 @@ geoQuery.on("key_exited", function(vehicleId, vehicleLocation) {
 			return
 		};		
 		$('body').plainOverlay('show',{
-			opacity:0.8,
+			opacity:0.5,
 			fillColor: '#000',
 			progress: function() { return $('<div style="font-size:40px;color:#fff;font-weight:bold">Working...</div>'); }
 		});
@@ -1821,7 +1794,7 @@ geoQuery.on("key_exited", function(vehicleId, vehicleLocation) {
 						$('body').plainOverlay('hide');
 						return;
 					} else {
-						firebaseRef.child("users").child(usrnewmail).update({usrname:usrname, usremail:usremail, usrid:usrnewmail, usrphone:intno});	
+						firebaseRef.child("users").child(usrnewmail).child("account").update({usrname:usrname, usremail:usremail, usrid:usrnewmail, usrphone:intno});	
 						usrphone = intno; usrid = usrnewmail; var regsclbck = "New user registered on friends : "+usrname+" "+usrphone+" "+usremail;
 						mailcall(regsclbck); $('body').plainOverlay('hide'); swal("Verification Succesful", "Congratulations. You are succesfully registered with BECK!", "success"); loggedin = 1;	$('#myanchor').click();	
 				document.getElementById("namehdr").innerHTML += 'Hi ' + usrname.split(" ")[0].substring(0, 10);		 

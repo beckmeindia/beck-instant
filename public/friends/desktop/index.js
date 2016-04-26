@@ -1,13 +1,12 @@
 	var ntfnd = 0; var center;var firebaseRef = new Firebase("https://beckrequest.firebaseio.com");
 	var geoFire = new GeoFire(firebaseRef.child("_geopckgs")); var geoQuery = geoFire.query({center: [0,0],radius: 0});
-	var vehiclesInQuery = {}; var img64=""; var autoflag=0; var deliveryFare, pickuplat,pickuplng, delvlat, delvlng, description=" ", pickuparea, pickupaddr, pickupname, pickupnum, deliveryaddr, deliveryarea, deliverynum, deliveryname,deliverydate,deliverytime, pckgvalue = "Less than Rs. 5000", pckgweight = "1 Kg - 10 Kgs",pckgsize = "SMALL (FITS IN BAG)";
+	var vehiclesInQuery = {}; var img64=""; var autoflag=0; var deliveryFare, pickuplat,pickuplng, delvlat, delvlng, description=" ", pickuparea, pickupaddr=" ", pickupname, pickupnum, deliveryaddr=" ", deliveryarea, deliverynum, deliveryname,deliverydate,deliverytime, pckgvalue = "Less than Rs. 5000", pckgweight = "1 Kg - 10 Kgs",pckgsize = "SMALL (FITS IN BAG)";
 	var pfare, psize, pweight, ppickup, ppickupaddr, pdelv,pdelvaddr,pdatetym,pckgimg,imagz, pusrid, pusrphn, porderid;
 	var loggedin=0,usrname="",usremail="",usrphone="",usrid="", usrfbimg="", usrfbid="", fbflag=0, usrnewmail="";
 	var otp; var otpmail; var locerr = 0; var hiname = 0; var acceptsloaded = 0; var fare =""; var conval = 1; var convcurr="INR";
-	var clicklogin=0;
-	var arrPckgs = []; var rsltshow = 0;  var arraccepts = []; var revrsdone = 0; var mycenter; var lognclckd = 0; var flgg=0;
+	var clicklogin=0; var arrPckgs = []; var rsltshow = 0;  var arraccepts = []; var revrsdone = 0; var mycenter; var lognclckd = 0; var flgg=0;
 
-angular.module('MyApp',['ngMaterial',"firebase"])
+angular.module('MyApp',['ngMaterial',"firebase"]) 
  .controller('PositionDemoCtrl', function DemoCtrl($mdDialog) {
     var originatorEv;
     this.openMenu = function($mdOpenMenu, ev) {
@@ -25,9 +24,9 @@ angular.module('MyApp',['ngMaterial',"firebase"])
       originatorEv = null;
     };
   })
-.controller('AppCtrl', ["$scope", "$firebaseArray", 
-function($scope, $firebaseArray) {
-	$scope.descriptor="";
+.controller('AppCtrl', ["$scope", "$firebaseArray", '$mdSidenav',
+function($scope, $firebaseArray, $mdSidenav) {
+	$scope.descriptor="";	
 	$scope.imagePath = 'download.png';
   var imagePath = 'download.png';
    $scope.myDate = null;
@@ -66,7 +65,7 @@ function($scope, $firebaseArray) {
 				var number = inputValue.replace(/[^\d]/g, '').length ;
 				if (inputValue === false) return false; 
 				if (otp != inputValue2) {     swal.showInputError("Please Enter the correct 4 digits");     return false   }
-				firebaseRef.child("users").child(usrid).update({usrphone:intno}); usrphone = intno;
+				firebaseRef.child("users").child(usrid).child("account").update({usrphone:intno}); usrphone = intno;
 				swal("Mobile Verified", "Congratulations. You have registered your phone number with BECK!", "success"); loggedin = 1;	$('#myanchor').click();	
 				})
 				});	
@@ -109,7 +108,7 @@ function($scope, $firebaseArray) {
 				var number = inputValue.replace(/[^\d]/g, '').length ;
 				if (inputValue === false) return false; 
 				if (otp != inputValue2) {     swal.showInputError("Please Enter the correct 4 digits");     return false   }
-				firebaseRef.child("users").child(usrid).update({usrphone:intno}); usrphone = intno;
+				firebaseRef.child("users").child(usrid).child("account").update({usrphone:intno}); usrphone = intno;
 				swal("Mobile Verified", "Congratulations. You have registered your phone number with BECK!", "success"); loggedin = 1;	$('#myanchor').click();	
 				})
 				});	
@@ -132,10 +131,11 @@ function($scope, $firebaseArray) {
 		firebaseRef.child("users").child(usrid).child("accepts").child(arrPckgs[rsltshow].id).update(arrPckgs[rsltshow]);
 		firebaseRef.child("users").child(usrid).child("accepts").update({notification:"yes"});
 		firebaseRef.child("users").child(arrPckgs[rsltshow].usrid).child("posts").update({notification:"yes"});
+		firebaseRef.child("users").child(arrPckgs[rsltshow].usrid).child("posts").child(arrPckgs[rsltshow].id).update({status:"Waiting for Approval"});
 		firebaseRef.child("users").child(arrPckgs[rsltshow].usrid).child("posts").child(arrPckgs[rsltshow].id).child("acceptors").child(usrid).update({id:usrid,usrname:usrname,usrphone:usrphone, usrfbid:usrfbid, usrfbimg:usrfbimg}).then(function() {
 		smsacceptdm(arrPckgs[rsltshow].usrphn);smsacceptsupp(usrphone); var actionz = "BECK friend "+ usrname +" accepted a new order: " + arrPckgs[rsltshow].id; mailcall(actionz,usremail,usrphone);	
 		$('body').plainOverlay('hide');
-		swal("Succesfully Accepted", "The details of the request you accepted has been sent you through SMS", "success");
+		swal("Succesfully Accepted", "The details of the request you accepted has been sent to you through SMS", "success");
   		arraccepts.push(arrPckgs[rsltshow].id);
 		rfrshresults(mycenter);		
 		})			
@@ -196,20 +196,22 @@ function($scope, $firebaseArray) {
 			});
 			$scope.posts = $firebaseArray(firebaseRef.child("users").child(usrid).child("posts"));
 			$scope.posts.$loaded().then(function(arr){
+				$scope.postarr = arr;
+				/*
 				var interval = setInterval(function(){
 					if(revrsdone==1){
-					clearInterval(interval);
+					clearInterval(interval);					
 					for (var key in arr) {
 					if(arr[key].$id === undefined || arr[key].fare == 'GET QUOTE'){}else{
 					arr[key].fare = convcurr+" "+ Math.round(Number(arr[key].fare)/conval);
 					}
-					}				
+					}										
 					}					
 					$scope.$apply(function() {
 					$scope.postarr = arr;
 					});
 				},1500);
-				/*				
+								
 				if(arr.$getRecord("notification").$value == "no"){
 					document.getElementById("notif2").style.display="none";					
 				}
@@ -307,7 +309,7 @@ function($scope, $firebaseArray) {
 		document.getElementById("pckgctr").innerHTML="Loading...";
 			for (var i = 0; i < hotSpotMapMarkers.length; i++)
 			hotSpotMapMarkers[i].setMap(null);
-		  document.getElementById("rqstgist").style.display="none";
+		 // document.getElementById("rqstgist").style.display="none";
 		  google.maps.event.trigger(map, 'resize');
 		  rsltshow = 0;
 		  if(path) path.setMap(null);
@@ -328,7 +330,7 @@ function($scope, $firebaseArray) {
         if (status == google.maps.GeocoderStatus.OK) {
             var address = (results[0].formatted_address);
 			if(ntfnd==1) ntfnd=0;
-			
+			if(revrsdone == 1){}else{
 			var country = findResult(results[0].address_components, "country");
 			if(country == 'IN'){
 				conval = 1; convcurr = "INR";
@@ -342,6 +344,7 @@ function($scope, $firebaseArray) {
 				conval = 60; convcurr = "USD";
 			}
 			revrsdone = 1;
+			}
         }
     });
 	}
@@ -410,7 +413,7 @@ var nofkeys=0;
 			$('#map').plainOverlay('hide');
 		setTimeout(function(){swal({   title: "No Live Requests",   text: "Presently there are no live requests around this location. You can add a request here if you want or search live requests for another location",   timer: 8000 });
 		document.getElementById("pckgctr").innerHTML = "No Requests Found"},3000);
-		document.getElementById("rqstgist").style.display="none";
+		//document.getElementById("rqstgist").style.display="none";
 		}
 		
 	}
@@ -619,13 +622,7 @@ $(document).ready(function(){
 	$("#demo03").trigger('click');	
 	shwdetls();
 	$("#os-phrases > h2.openz").lettering('words').children("span").lettering().children("span").lettering();
-	/*
-	$('#cloudz').css('background-image','url(../../img/hero.jpg)')
-  .waitForImages(function() {
-   document.getElementById("cloudz").style.display="block";
-   document.getElementById("mnuitm2").style.display="block";			
-  }, $.noop, true);
-  */
+	
             var win = $(window),
                 foo = $('#typer');
 
@@ -769,7 +766,7 @@ $(document).ready(function(){
 		});
 		var orderid2 = orderid+"D";
 		firebaseRef.child("packages").child(orderid).update({img:{img64:img64}}).then(function() {
-		firebaseRef.child("users").child(usrid).child("posts").child(orderid).update({status:"Waiting for Accept",img64:img64,description:description,id:orderid,lat:pickuplat,lon:pickuplng,usrid:usrid,usrphone:usrphone,usrname:usrname,usremail:usremail,pickuplat:pickuplat,pickuplng:pickuplng, delvlat:delvlat, delvlng:delvlng, pickuparea:pickuparea, pickupaddr:pickupaddr, pickupname:pickupname, pickupnum:pickupnum, deliveryaddr:deliveryaddr, deliveryarea:deliveryarea, deliverynum:deliverynum, deliveryname:deliveryname,deliverydate:deliverydate,deliverytime:deliverytime, pckgvalue:pckgvalue, pckgweight:pckgweight,pckgsize:pckgsize,fare:fare});
+		firebaseRef.child("users").child(usrid).child("posts").child(orderid).update({status:"Waiting for Accept",img64:img64,description:description,id:orderid,lat:pickuplat,lon:pickuplng,usrid:usrid,usrphone:usrphone,usrname:usrname,usremail:usremail,pickuplat:pickuplat,pickuplng:pickuplng, delvlat:delvlat, delvlng:delvlng, pickuparea:pickuparea, deliverydate:deliverydate, pickupaddr:pickupaddr, pickupname:pickupname, pickupnum:pickupnum, deliveryaddr:deliveryaddr, deliveryarea:deliveryarea, deliverynum:deliverynum, deliveryname:deliveryname,deliverytime:deliverytime, pckgvalue:pckgvalue, pckgweight:pckgweight,pckgsize:pckgsize,fare:fare2});
 		firebaseRef.child("users").child(usrid).child("posts").update({notification:"yes"});
 		geoFire.set(orderid, [pickuplat, pickuplng]).then(function() {}, function(error) {
 		swal({   title: "POST FAILED",   text: "Oops! Failed to post. Please try again",   type: "error",   confirmButtonText: "OK" });
@@ -777,12 +774,13 @@ $(document).ready(function(){
 		setTimeout(function(){
 		rfrshresults(mycenter);
 		google.maps.event.trigger(map, 'resize');
-		document.getElementById("scrollDefaultExample").value="";deliverydate="";img64="";document.getElementById("searchloc3").value=""; document.getElementById("pickupnum").value=""; document.getElementById("pickupname").value=""; document.getElementById("pickupaddr").value="";document.getElementById("searchloc2").value=""; document.getElementById("deliverynum").value=""; document.getElementById("deliveryname").value=""; document.getElementById("deliveryaddr").value="";
 		document.getElementById("packagephoto").style.display = "block"; document.getElementById("descriptor").value = "";
 		shwdetls();
 		$("#card").css("background-image", "");
+		$("#card").css("background-color", "#eee");
 		$('body').plainOverlay('hide');
 		swal("Succesfully Posted", "Your Request is posted at the pickup location. We shall update you soon!", "success");
+		document.getElementById("scrollDefaultExample").value=""; deliverydate="";img64=""; document.getElementById("searchloc3").value=""; document.getElementById("pickupnum").value=""; document.getElementById("pickupname").value=""; document.getElementById("pickupaddr").value="";document.getElementById("searchloc2").value=""; document.getElementById("deliverynum").value=""; document.getElementById("deliveryname").value=""; document.getElementById("deliveryaddr").value=""; fare="";fare2="";
 		},1000)
 		
 		}, function(error) {
@@ -858,7 +856,7 @@ $(document).ready(function(){
 						$('body').plainOverlay('hide');
 						return;
 					} else {
-						firebaseRef.child("users").child(usrnewmail).update({usrname:usrname, usremail:usremail, usrid:usrnewmail, usrphone:intno});	
+						firebaseRef.child("users").child(usrnewmail).child("account").update({usrname:usrname, usremail:usremail, usrid:usrnewmail, usrphone:intno});	
 						usrphone = intno; usrid = usrnewmail; var regsclbck = "New user registered on friends : "+usrname+" "+usrphone+" "+usremail;
 						mailcall(regsclbck); $('body').plainOverlay('hide'); swal("Verification Succesful", "Congratulations. You are succesfully registered with BECK!", "success"); loggedin = 1;//	document.getElementById("mnuitm").style.display="none"; document.getElementById("tgnmlyn").style.paddingLeft = "20px";
 				document.getElementById("namehdr").innerHTML = 'Hi ' + usrname.split(" ")[0].substring(0, 10);		 
@@ -912,14 +910,14 @@ $(document).ready(function(){
 	}
 	
 	function editnum(){
-		if(loggedin==1){
+		
 			if(usrphone){
 				swal({   title: "Change number",   text: "Your present registered number is +"+usrphone+". Are you sure you want to change it?", html: true,   type: "warning",   showCancelButton: true,   confirmButtonColor: "#2bb1de",   confirmButtonText: "Change it",   closeOnConfirm: false }, function(){ smsending() })
 			}
 				else {
 					swal({   title: "Update number",   text: "Please update to your latest contact number", html: true,   type: "warning",   showCancelButton: true,   confirmButtonColor: "#2bb1de",   confirmButtonText: "Update it",   closeOnConfirm: false}, function(){ smsending() })
 				}
-			}else{befrlogin()};
+			
 	}
 	
 	function smsending(){
@@ -945,7 +943,7 @@ $(document).ready(function(){
 				var number = inputValue.replace(/[^\d]/g, '').length ;
 				if (inputValue === false) return false; 
 				if (otp != inputValue2) {     swal.showInputError("Please Enter the correct 4 digits");     return false   }
-				firebaseRef.child("users").child(usrid).update({
+				firebaseRef.child("users").child(usrid).child("account").update({
 					usrphone:intno
 				});				
 				usrphone = intno;
@@ -967,14 +965,14 @@ $(document).ready(function(){
        befrlogin();
 	}
 	
-	var today;
+	var today,fare2="";
 	function done(){
 		pickupnum = document.getElementById("pickupnum").value;
 		deliverynum = document.getElementById("deliverynum").value;
 		 var phoneno = /^\d{10,13}$/;
-		if(document.getElementById("searchloc3").value=="" || document.getElementById("pickupnum").value=="" || document.getElementById("pickupname").value=="" || document.getElementById("pickupaddr").value==""){
+		if(document.getElementById("searchloc3").value=="" || document.getElementById("pickupnum").value=="" || document.getElementById("pickupname").value==""){
 			sweetAlert("Pickup Details", "Please fill all the details at Pickup Location!", "error");
-		}else if(document.getElementById("searchloc2").value=="" || document.getElementById("deliverynum").value=="" || document.getElementById("deliveryname").value=="" || document.getElementById("deliveryaddr").value==""){
+		}else if(document.getElementById("searchloc2").value=="" || document.getElementById("deliverynum").value=="" || document.getElementById("deliveryname").value==""){
 			sweetAlert("Delivery Details", "Please fill all the details at Delivery Location!", "error");
 		}else if(!pickupnum.match(phoneno)){
 			sweetAlert("Pickup Contact", "Please fill a valid 10-digit number for Pickup Location contact number", "error");
@@ -1150,6 +1148,7 @@ $(document).ready(function(){
 				else{
 				newfrconv = "GET QUOTE";
 				}
+				fare2 = newfrconv;
 				document.getElementById("fare").innerHTML = newfrconv;
 				document.getElementById("posting").style.display="block";
 				clearInterval(distinterval);
@@ -1163,15 +1162,23 @@ $(document).ready(function(){
 	
 	function resizeImage(img) {
     img64 = imageToDataUri(img);		
-	if(img64=="data:,"||img64=="data:image/jpeg;"){
+	/*if(img64=="data:,"||img64=="data:image/jpeg;"){
 		img64="";
 		sweetAlert("Oops...", "There is some problem with this image. Please select the image again or another one that is similar", "error");
 	}else{
+		*/		
+		setTimeout(function(){
+			if(img64=="" || img64=="data:," || img64=="data:image/jpeg;"){
+		img64="";
+		sweetAlert("Oops...", "There is some problem uploading this image. Please Try this image again or another one that is similar", "error");
+		}else{
 		document.getElementById("packagephoto").style.display = "none";
-        document.getElementById("card").style.backgroundImage = "url('"+img64+"')";
-		document.getElementById("card").style.backgroundSize = "contain"; document.getElementById("card").style.backgroundPosition = "center"; document.getElementById("card").style.backgroundRepeat = "no-repeat";
+        document.getElementById("card").style.background = "url('"+img64+"') center/contain no-repeat";
+		//document.getElementById("card").style.backgroundSize = "contain"; document.getElementById("card").style.backgroundPosition = "center"; document.getElementById("card").style.backgroundRepeat = "no-repeat";
+		}
+		},2000)
 		
-	}
+	//}
 	}
 	
 	function imageToDataUri(img) {
@@ -1197,8 +1204,12 @@ $(document).ready(function(){
 	function card(){	
 	document.getElementById("files").onchange = function () {
     reader = new FileReader();
-    reader.onload = function (e) {      
-	img = "url('"+e.target.result+"')"; var imgbckz = new Image; imgbckz.src = String(event.target.result);resizeImage(imgbckz);  
+    reader.onload = function (e) {
+	img = "url('"+e.target.result+"')"; var imgbckz = new Image();
+	imgbckz.src = String(e.target.result);
+	imgbckz.onload = function(){
+	resizeImage(imgbckz)	
+	};
 	};
     reader.readAsDataURL(this.files[0]);
 	}	
@@ -1234,6 +1245,18 @@ $(document).ready(function(){
 		window.location.reload();
 	}
 	map.panTo(new google.maps.LatLng(arrPckgs[i].pickuplat, arrPckgs[i].pickuplng));	
+	}
+	
+	function shwrtagn(){
+		if(arrPckgs[rsltshow]) drawroute(arrPckgs[rsltshow].pickuplat, arrPckgs[rsltshow].pickuplng, arrPckgs[rsltshow].delvlat, arrPckgs[rsltshow].delvlng);
+	}
+	
+	function pickfocus(){
+		if(arrPckgs[rsltshow]) map.setCenter(new google.maps.LatLng(arrPckgs[rsltshow].pickuplat, arrPckgs[rsltshow].pickuplng)); map.setZoom(14);
+	}
+	
+	function delvfocus(){
+		if(arrPckgs[rsltshow]) map.setCenter(new google.maps.LatLng(arrPckgs[rsltshow].delvlat, arrPckgs[rsltshow].delvlng)); map.setZoom(14);
 	}
 	
 	function shownext(){
@@ -1544,10 +1567,10 @@ $(document).ready(function(){
 			for (var i = 0; i < hotSpotMapMarkers.length; i++)
 			hotSpotMapMarkers[i].setMap(null);
 			if(path) path.setMap(null); 
-			document.getElementById("rqstgist").style.display="none";
+			//document.getElementById("rqstgist").style.display="none";
 			document.getElementById("pckgctr").innerHTML="Loading...";
 			var address = ''; rsltshow = 0; google.maps.event.trigger(map, 'resize');
-			$("#tflbckg").css("background-image", "");
+			$("#tflbckg").css("background-image", "url('preloader.gif')");
 			$('#namehdr2').trigger('click');			
 			document.getElementById("mnuitm2").style.display="block";	
 			$('.close-initModal').trigger('click');		
@@ -1588,10 +1611,10 @@ $(document).ready(function(){
 			for (var i = 0; i < hotSpotMapMarkers.length; i++)
 			hotSpotMapMarkers[i].setMap(null);
 			if(path) path.setMap(null); 
-			document.getElementById("rqstgist").style.display="none";
+			//document.getElementById("rqstgist").style.display="none";
 			document.getElementById("pckgctr").innerHTML="Loading...";
 			var address = ''; rsltshow = 0; google.maps.event.trigger(map, 'resize');
-			$("#tflbckg").css("background-image", "");
+			$("#tflbckg").css("background-image", "url('preloader.gif')");
 			$('#map').plainOverlay('show',{opacity:0.8, fillColor: '#000', progress: function() { return $('<div style="font-size:40px;color:#fff;font-weight:bold">Loading...</div>') }});
 			if (place.address_components) {
             address = [
