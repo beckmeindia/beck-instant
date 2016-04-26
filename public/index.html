@@ -17,6 +17,23 @@
     <link href="css/styles.css" rel="stylesheet">
     <link href="css/queries.css" rel="stylesheet">
     <link href="css/animate.css" rel="stylesheet">
+	<style>
+	::-webkit-input-placeholder {
+   text-align: center;
+}
+
+:-moz-placeholder { /* Firefox 18- */
+   text-align: center;  
+}
+
+::-moz-placeholder {  /* Firefox 19+ */
+   text-align: center;  
+}
+
+:-ms-input-placeholder {  
+   text-align: center; 
+}
+	</style>
     <script type="text/javascript">
 (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','//www.google-analytics.com/analytics.js','ga');ga('create', 'UA-71834469-1', 'auto');ga('send', 'pageview');
     </script>
@@ -71,8 +88,8 @@
               <input type="text" name="" value="" id="name" placeholder="Name" required>
               <input type="text" name="" value="" id="email" placeholder="Email" required>
               <input type="text" name="" value="" id="number" placeholder="Phone" required>
-              <input type="submit" value="REQUEST PICKUP" style="background:#3dc9b3">
-              <input type="button" onclick="fareEst()" value="FARE ESTIMATOR" style="background:#252525">  
+              <input type="submit" value="REQUEST PICKUP" style="background:#3dc9b3;outline:0">
+              <input type="button" onclick="fareEst()" value="FARE ESTIMATOR" style="outline:0;background:#252525">  
             </form>
           </div>
         </section>
@@ -162,10 +179,10 @@
             </div>
             <div class="row">
               <div class="team-wrapper">
-                <div id="teamSlider">
+                <div>
                   <ul class="slides">
                     <li>
-                      <div class="col-md-3 wp5 delay-05s">
+                      <div class="col-md-3">
                         <img src="img/team-03.jpg" width="100" height="100" style="border-radius:60px" alt="Team Member">
                         <h2>Rahul Basu</h2>
                         <p>Thinks in Codes</p>
@@ -177,7 +194,7 @@
                         </div>
                       </div>
                       
-                      <div class="col-md-3 wp5 delay-05s">
+                      <div class="col-md-3">
                         <img src="img/team-01.jpg" width="100" height="100" style="border-radius:60px" alt="Team Member">
                         <h2>Deep Malhotra</h2>
                         <p>The 50 shades of Grey hair in the team</p>
@@ -188,7 +205,7 @@
                           </ul>
                         </div>
                       </div>
-                      <div class="col-md-3 wp5 delay-1s">
+                      <div class="col-md-3">
                         <img src="img/team-04.jpg" width="100" height="100" style="border-radius:60px" alt="Team Member">
                         <h2>Shikha Pandey</h2>
                         <p>The woman who loves delivering</p>
@@ -200,7 +217,7 @@
                         </div>
                       </div>
 
-                      <div class="col-md-3 wp5 delay-1s">
+                      <div class="col-md-3">
                         <img src="img/team-02.jpg" width="100" height="100" style="border-radius:60px" alt="Team Member">
                         <h2>Mayukh Basu</h2>
                         <p>Football Fanatic and Code Junkie</p>
@@ -219,7 +236,7 @@
             </div>
           </div>
         </section>
-		<section class="team text-center section-padding" id="team">
+		<section class="team text-center section-padding" id="team" style="padding-top:0">
           <div class="container">
             <div class="row">
               <div class="col-md-12">
@@ -228,11 +245,11 @@
             </div>
             <div class="row">
               <div class="team-wrapper">
-                <div id="teamSlider">
+                <div >
                   <ul class="slides">
                     <li>
 					
-                      <div class="col-md-3 wp5 delay-05s">
+                      <div class="col-md-3">
                         <img src="http://beckserver.ap-southeast-1.elasticbeanstalk.com/images/toi.jpg" width="100" height="100" style="border-radius:10px" alt="">
                         <h2>Times of India</h2>
                         <p>"BECK Technology Ventures launches peer-to-peer marketplace"</p>
@@ -243,7 +260,7 @@
                         </div>
                       </div>
                       
-                      <div class="col-md-3 wp5 delay-05s">
+                      <div class="col-md-3">
                         <img src="http://beckserver.ap-southeast-1.elasticbeanstalk.com/images/Firstpost.jpg" width="100" height="100" style="border-radius:10px" alt="">
                         <h2>FIRST POST</h2>
                         <p>"Beck Technology launches Beck Friends to disrupt global logistics space"</p>
@@ -253,7 +270,7 @@
                           </ul>
                         </div>
                       </div>
-					  <div class="col-md-3 wp5 delay-1s">
+					  <div class="col-md-3">
                         <img src="http://beckserver.ap-southeast-1.elasticbeanstalk.com/images/dna.png" width="100" height="100" style="border-radius:10px" alt="">
                         <h2>DNA India</h2>
                         <p>"BECK: An anytime delivery app within the city at the click of a button!"</p>
@@ -263,7 +280,7 @@
                           </ul>
                         </div>
                       </div>
-                      <div class="col-md-3 wp5 delay-1s">
+                      <div class="col-md-3">
                         <img src="http://beckserver.ap-southeast-1.elasticbeanstalk.com/images/iamwire.jpeg" width="100" height="100" style="border-radius:10px" alt="">
                         <h2>iamwire</h2>
                         <p>"BECK Friends: A Peer to Peer Delivery Service Allowing You to Earn While Traveling!"</p>
