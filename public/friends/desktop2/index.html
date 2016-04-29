@@ -4,28 +4,69 @@
 		<meta charset="UTF-8" />
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
 		<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
-		<meta name="google-signin-client_id" content="654542854137-ckf2kmqv9lpr41tt9lj8vmi658icjsb4.apps.googleusercontent.com">
 		<title>BECK Friends | Send anything anywhere. Earn as you travel.</title>
 		<meta name="description" content="Peer-to-peer marketplace for sending anything anywhere" />
 		<meta name="keywords" content="Peer-to-peer marketplace for sending anything anywhere" />
 		<meta name="author" content="BeckFriends" />		
 		<link rel="stylesheet" type="text/css" href="all.css"/>	
 		<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBzPsPjOxzeJeld7JTP4jIbqnZ61FjKkzg&libraries=places"></script>
+		<script src="https://apis.google.com/js/api:client.js"></script>  
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">    
-		<script src="https://apis.google.com/js/platform.js" async defer></script>
 		<script src="all.js"></script>
-		 <script>
-		 function onSignIn(googleUser) {
-        var profile = googleUser.getBasicProfile();
-      };
+		<script type="text/javascript" src="//platform.linkedin.com/in.js">
+		api_key: 75otfwd0leuxv7
+		</script>
+		<script>
+		 var liLogin = function() { // Setup an event listener to make an API call once auth is complete
+		IN.UI.Authorize().params({"scope":["r_basicprofile", "r_emailaddress"]}).place();
+        IN.Event.on(IN, 'auth', getProfileData);
+		}
+		
+var googleUser = {};
+  var startApp = function() {
+    gapi.load('auth2', function(){
+      // Retrieve the singleton for the GoogleAuth library and set up the client.
+      auth2 = gapi.auth2.init({
+        client_id: '654542854137-ckf2kmqv9lpr41tt9lj8vmi658icjsb4.apps.googleusercontent.com',
+        cookiepolicy: 'single_host_origin',
+        // Request scopes in addition to 'profile' and 'email'
+        //scope: 'additional_scope'
+      });
+      attachSignin(document.getElementById('customBtn'));
+    });
+  };
+
+  function attachSignin(element) {
+    auth2.attachClickHandler(element, {},
+        function(googleUser) {
+          console.log(JSON.stringify(googleUser.getBasicProfile()));
+        }, function(error) {
+          console.log(JSON.stringify(error, undefined, 2));
+        });
+  }
+    var getProfileData = function() { // Use the API call wrapper to request the member's basic profile data
+        console.log("profile data received");
+		IN.API.Profile("me").fields("id,firstName,lastName,email-address,picture-urls::(original),public-profile-url,location:(name)").result(function (me) {
+            var profile = me.values[0];
+            var id = profile.id;
+            var firstName = profile.firstName;
+            var lastName = profile.lastName;
+            var emailAddress = profile.emailAddress;
+            var pictureUrl = profile.pictureUrls.values[0];
+            var profileUrl = profile.publicProfileUrl;
+            var country = profile.location.name;
+			console.log(id+" "+firstName+" "+lastName+" "+emailAddress+" "+profileUrl);
+			// this is where you add account linkedin child
+        });
+		}
 	
 			var md = new MobileDetect(window.navigator.userAgent);
 			if (md.mobile() === undefined || md.mobile() === null){}
 			else{
 			window.location="https://www.beckfriends.com/friends/";
-			}
+			}			
 		</script>
-	<style>
+<style>
 .btn-social{position:relative;padding-left:44px;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.btn-social>:first-child{position:absolute;left:0;top:0;bottom:0;width:32px;line-height:34px;font-size:1.6em;text-align:center;border-right:1px solid rgba(0,0,0,0.2)}
 .btn-social.btn-lg{padding-left:61px}.btn-social.btn-lg>:first-child{line-height:45px;width:45px;font-size:1.8em}
 .btn-social.btn-sm{padding-left:38px}.btn-social.btn-sm>:first-child{line-height:28px;width:28px;font-size:1.4em}
@@ -44,126 +85,24 @@
 .btn-adn:active,.btn-adn.active,.open>.dropdown-toggle.btn-adn{background-image:none}
 .btn-adn.disabled,.btn-adn[disabled],fieldset[disabled] .btn-adn,.btn-adn.disabled:hover,.btn-adn[disabled]:hover,fieldset[disabled] .btn-adn:hover,.btn-adn.disabled:focus,.btn-adn[disabled]:focus,fieldset[disabled] .btn-adn:focus,.btn-adn.disabled.focus,.btn-adn[disabled].focus,fieldset[disabled] .btn-adn.focus,.btn-adn.disabled:active,.btn-adn[disabled]:active,fieldset[disabled] .btn-adn:active,.btn-adn.disabled.active,.btn-adn[disabled].active,fieldset[disabled] .btn-adn.active{background-color:#d87a68;border-color:rgba(0,0,0,0.2)}
 .btn-adn .badge{color:#d87a68;background-color:#fff}
-.btn-bitbucket{color:#fff;background-color:#205081;border-color:rgba(0,0,0,0.2)}.btn-bitbucket:focus,.btn-bitbucket.focus{color:#fff;background-color:#163758;border-color:rgba(0,0,0,0.2)}
-.btn-bitbucket:hover{color:#fff;background-color:#163758;border-color:rgba(0,0,0,0.2)}
-.btn-bitbucket:active,.btn-bitbucket.active,.open>.dropdown-toggle.btn-bitbucket{color:#fff;background-color:#163758;border-color:rgba(0,0,0,0.2)}.btn-bitbucket:active:hover,.btn-bitbucket.active:hover,.open>.dropdown-toggle.btn-bitbucket:hover,.btn-bitbucket:active:focus,.btn-bitbucket.active:focus,.open>.dropdown-toggle.btn-bitbucket:focus,.btn-bitbucket:active.focus,.btn-bitbucket.active.focus,.open>.dropdown-toggle.btn-bitbucket.focus{color:#fff;background-color:#0f253c;border-color:rgba(0,0,0,0.2)}
-.btn-bitbucket:active,.btn-bitbucket.active,.open>.dropdown-toggle.btn-bitbucket{background-image:none}
-.btn-bitbucket.disabled,.btn-bitbucket[disabled],fieldset[disabled] .btn-bitbucket,.btn-bitbucket.disabled:hover,.btn-bitbucket[disabled]:hover,fieldset[disabled] .btn-bitbucket:hover,.btn-bitbucket.disabled:focus,.btn-bitbucket[disabled]:focus,fieldset[disabled] .btn-bitbucket:focus,.btn-bitbucket.disabled.focus,.btn-bitbucket[disabled].focus,fieldset[disabled] .btn-bitbucket.focus,.btn-bitbucket.disabled:active,.btn-bitbucket[disabled]:active,fieldset[disabled] .btn-bitbucket:active,.btn-bitbucket.disabled.active,.btn-bitbucket[disabled].active,fieldset[disabled] .btn-bitbucket.active{background-color:#205081;border-color:rgba(0,0,0,0.2)}
-.btn-bitbucket .badge{color:#205081;background-color:#fff}
-.btn-dropbox{color:#fff;background-color:#1087dd;border-color:rgba(0,0,0,0.2)}.btn-dropbox:focus,.btn-dropbox.focus{color:#fff;background-color:#0d6aad;border-color:rgba(0,0,0,0.2)}
-.btn-dropbox:hover{color:#fff;background-color:#0d6aad;border-color:rgba(0,0,0,0.2)}
-.btn-dropbox:active,.btn-dropbox.active,.open>.dropdown-toggle.btn-dropbox{color:#fff;background-color:#0d6aad;border-color:rgba(0,0,0,0.2)}.btn-dropbox:active:hover,.btn-dropbox.active:hover,.open>.dropdown-toggle.btn-dropbox:hover,.btn-dropbox:active:focus,.btn-dropbox.active:focus,.open>.dropdown-toggle.btn-dropbox:focus,.btn-dropbox:active.focus,.btn-dropbox.active.focus,.open>.dropdown-toggle.btn-dropbox.focus{color:#fff;background-color:#0a568c;border-color:rgba(0,0,0,0.2)}
-.btn-dropbox:active,.btn-dropbox.active,.open>.dropdown-toggle.btn-dropbox{background-image:none}
-.btn-dropbox.disabled,.btn-dropbox[disabled],fieldset[disabled] .btn-dropbox,.btn-dropbox.disabled:hover,.btn-dropbox[disabled]:hover,fieldset[disabled] .btn-dropbox:hover,.btn-dropbox.disabled:focus,.btn-dropbox[disabled]:focus,fieldset[disabled] .btn-dropbox:focus,.btn-dropbox.disabled.focus,.btn-dropbox[disabled].focus,fieldset[disabled] .btn-dropbox.focus,.btn-dropbox.disabled:active,.btn-dropbox[disabled]:active,fieldset[disabled] .btn-dropbox:active,.btn-dropbox.disabled.active,.btn-dropbox[disabled].active,fieldset[disabled] .btn-dropbox.active{background-color:#1087dd;border-color:rgba(0,0,0,0.2)}
-.btn-dropbox .badge{color:#1087dd;background-color:#fff}
 .btn-facebook{color:#fff;background-color:#3b5998;border-color:rgba(0,0,0,0.2)}.btn-facebook:focus,.btn-facebook.focus{color:#fff;background-color:#2d4373;border-color:rgba(0,0,0,0.2)}
 .btn-facebook:hover{color:#fff;background-color:#2d4373;border-color:rgba(0,0,0,0.2)}
 .btn-facebook:active,.btn-facebook.active,.open>.dropdown-toggle.btn-facebook{color:#fff;background-color:#2d4373;border-color:rgba(0,0,0,0.2)}.btn-facebook:active:hover,.btn-facebook.active:hover,.open>.dropdown-toggle.btn-facebook:hover,.btn-facebook:active:focus,.btn-facebook.active:focus,.open>.dropdown-toggle.btn-facebook:focus,.btn-facebook:active.focus,.btn-facebook.active.focus,.open>.dropdown-toggle.btn-facebook.focus{color:#fff;background-color:#23345a;border-color:rgba(0,0,0,0.2)}
 .btn-facebook:active,.btn-facebook.active,.open>.dropdown-toggle.btn-facebook{background-image:none}
 .btn-facebook.disabled,.btn-facebook[disabled],fieldset[disabled] .btn-facebook,.btn-facebook.disabled:hover,.btn-facebook[disabled]:hover,fieldset[disabled] .btn-facebook:hover,.btn-facebook.disabled:focus,.btn-facebook[disabled]:focus,fieldset[disabled] .btn-facebook:focus,.btn-facebook.disabled.focus,.btn-facebook[disabled].focus,fieldset[disabled] .btn-facebook.focus,.btn-facebook.disabled:active,.btn-facebook[disabled]:active,fieldset[disabled] .btn-facebook:active,.btn-facebook.disabled.active,.btn-facebook[disabled].active,fieldset[disabled] .btn-facebook.active{background-color:#3b5998;border-color:rgba(0,0,0,0.2)}
 .btn-facebook .badge{color:#3b5998;background-color:#fff}
-.btn-flickr{color:#fff;background-color:#ff0084;border-color:rgba(0,0,0,0.2)}.btn-flickr:focus,.btn-flickr.focus{color:#fff;background-color:#cc006a;border-color:rgba(0,0,0,0.2)}
-.btn-flickr:hover{color:#fff;background-color:#cc006a;border-color:rgba(0,0,0,0.2)}
-.btn-flickr:active,.btn-flickr.active,.open>.dropdown-toggle.btn-flickr{color:#fff;background-color:#cc006a;border-color:rgba(0,0,0,0.2)}.btn-flickr:active:hover,.btn-flickr.active:hover,.open>.dropdown-toggle.btn-flickr:hover,.btn-flickr:active:focus,.btn-flickr.active:focus,.open>.dropdown-toggle.btn-flickr:focus,.btn-flickr:active.focus,.btn-flickr.active.focus,.open>.dropdown-toggle.btn-flickr.focus{color:#fff;background-color:#a80057;border-color:rgba(0,0,0,0.2)}
-.btn-flickr:active,.btn-flickr.active,.open>.dropdown-toggle.btn-flickr{background-image:none}
-.btn-flickr.disabled,.btn-flickr[disabled],fieldset[disabled] .btn-flickr,.btn-flickr.disabled:hover,.btn-flickr[disabled]:hover,fieldset[disabled] .btn-flickr:hover,.btn-flickr.disabled:focus,.btn-flickr[disabled]:focus,fieldset[disabled] .btn-flickr:focus,.btn-flickr.disabled.focus,.btn-flickr[disabled].focus,fieldset[disabled] .btn-flickr.focus,.btn-flickr.disabled:active,.btn-flickr[disabled]:active,fieldset[disabled] .btn-flickr:active,.btn-flickr.disabled.active,.btn-flickr[disabled].active,fieldset[disabled] .btn-flickr.active{background-color:#ff0084;border-color:rgba(0,0,0,0.2)}
-.btn-flickr .badge{color:#ff0084;background-color:#fff}
-.btn-foursquare{color:#fff;background-color:#f94877;border-color:rgba(0,0,0,0.2)}.btn-foursquare:focus,.btn-foursquare.focus{color:#fff;background-color:#f71752;border-color:rgba(0,0,0,0.2)}
-.btn-foursquare:hover{color:#fff;background-color:#f71752;border-color:rgba(0,0,0,0.2)}
-.btn-foursquare:active,.btn-foursquare.active,.open>.dropdown-toggle.btn-foursquare{color:#fff;background-color:#f71752;border-color:rgba(0,0,0,0.2)}.btn-foursquare:active:hover,.btn-foursquare.active:hover,.open>.dropdown-toggle.btn-foursquare:hover,.btn-foursquare:active:focus,.btn-foursquare.active:focus,.open>.dropdown-toggle.btn-foursquare:focus,.btn-foursquare:active.focus,.btn-foursquare.active.focus,.open>.dropdown-toggle.btn-foursquare.focus{color:#fff;background-color:#e30742;border-color:rgba(0,0,0,0.2)}
-.btn-foursquare:active,.btn-foursquare.active,.open>.dropdown-toggle.btn-foursquare{background-image:none}
-.btn-foursquare.disabled,.btn-foursquare[disabled],fieldset[disabled] .btn-foursquare,.btn-foursquare.disabled:hover,.btn-foursquare[disabled]:hover,fieldset[disabled] .btn-foursquare:hover,.btn-foursquare.disabled:focus,.btn-foursquare[disabled]:focus,fieldset[disabled] .btn-foursquare:focus,.btn-foursquare.disabled.focus,.btn-foursquare[disabled].focus,fieldset[disabled] .btn-foursquare.focus,.btn-foursquare.disabled:active,.btn-foursquare[disabled]:active,fieldset[disabled] .btn-foursquare:active,.btn-foursquare.disabled.active,.btn-foursquare[disabled].active,fieldset[disabled] .btn-foursquare.active{background-color:#f94877;border-color:rgba(0,0,0,0.2)}
-.btn-foursquare .badge{color:#f94877;background-color:#fff}
-.btn-github{color:#fff;background-color:#444;border-color:rgba(0,0,0,0.2)}.btn-github:focus,.btn-github.focus{color:#fff;background-color:#2b2b2b;border-color:rgba(0,0,0,0.2)}
-.btn-github:hover{color:#fff;background-color:#2b2b2b;border-color:rgba(0,0,0,0.2)}
-.btn-github:active,.btn-github.active,.open>.dropdown-toggle.btn-github{color:#fff;background-color:#2b2b2b;border-color:rgba(0,0,0,0.2)}.btn-github:active:hover,.btn-github.active:hover,.open>.dropdown-toggle.btn-github:hover,.btn-github:active:focus,.btn-github.active:focus,.open>.dropdown-toggle.btn-github:focus,.btn-github:active.focus,.btn-github.active.focus,.open>.dropdown-toggle.btn-github.focus{color:#fff;background-color:#191919;border-color:rgba(0,0,0,0.2)}
-.btn-github:active,.btn-github.active,.open>.dropdown-toggle.btn-github{background-image:none}
-.btn-github.disabled,.btn-github[disabled],fieldset[disabled] .btn-github,.btn-github.disabled:hover,.btn-github[disabled]:hover,fieldset[disabled] .btn-github:hover,.btn-github.disabled:focus,.btn-github[disabled]:focus,fieldset[disabled] .btn-github:focus,.btn-github.disabled.focus,.btn-github[disabled].focus,fieldset[disabled] .btn-github.focus,.btn-github.disabled:active,.btn-github[disabled]:active,fieldset[disabled] .btn-github:active,.btn-github.disabled.active,.btn-github[disabled].active,fieldset[disabled] .btn-github.active{background-color:#444;border-color:rgba(0,0,0,0.2)}
-.btn-github .badge{color:#444;background-color:#fff}
 .btn-google{color:#fff;background-color:#dd4b39;border-color:rgba(0,0,0,0.2)}.btn-google:focus,.btn-google.focus{color:#fff;background-color:#c23321;border-color:rgba(0,0,0,0.2)}
 .btn-google:hover{color:#fff;background-color:#c23321;border-color:rgba(0,0,0,0.2)}
 .btn-google:active,.btn-google.active,.open>.dropdown-toggle.btn-google{color:#fff;background-color:#c23321;border-color:rgba(0,0,0,0.2)}.btn-google:active:hover,.btn-google.active:hover,.open>.dropdown-toggle.btn-google:hover,.btn-google:active:focus,.btn-google.active:focus,.open>.dropdown-toggle.btn-google:focus,.btn-google:active.focus,.btn-google.active.focus,.open>.dropdown-toggle.btn-google.focus{color:#fff;background-color:#a32b1c;border-color:rgba(0,0,0,0.2)}
 .btn-google:active,.btn-google.active,.open>.dropdown-toggle.btn-google{background-image:none}
 .btn-google.disabled,.btn-google[disabled],fieldset[disabled] .btn-google,.btn-google.disabled:hover,.btn-google[disabled]:hover,fieldset[disabled] .btn-google:hover,.btn-google.disabled:focus,.btn-google[disabled]:focus,fieldset[disabled] .btn-google:focus,.btn-google.disabled.focus,.btn-google[disabled].focus,fieldset[disabled] .btn-google.focus,.btn-google.disabled:active,.btn-google[disabled]:active,fieldset[disabled] .btn-google:active,.btn-google.disabled.active,.btn-google[disabled].active,fieldset[disabled] .btn-google.active{background-color:#dd4b39;border-color:rgba(0,0,0,0.2)}
 .btn-google .badge{color:#dd4b39;background-color:#fff}
-.btn-instagram{color:#fff;background-color:#3f729b;border-color:rgba(0,0,0,0.2)}.btn-instagram:focus,.btn-instagram.focus{color:#fff;background-color:#305777;border-color:rgba(0,0,0,0.2)}
-.btn-instagram:hover{color:#fff;background-color:#305777;border-color:rgba(0,0,0,0.2)}
-.btn-instagram:active,.btn-instagram.active,.open>.dropdown-toggle.btn-instagram{color:#fff;background-color:#305777;border-color:rgba(0,0,0,0.2)}.btn-instagram:active:hover,.btn-instagram.active:hover,.open>.dropdown-toggle.btn-instagram:hover,.btn-instagram:active:focus,.btn-instagram.active:focus,.open>.dropdown-toggle.btn-instagram:focus,.btn-instagram:active.focus,.btn-instagram.active.focus,.open>.dropdown-toggle.btn-instagram.focus{color:#fff;background-color:#26455d;border-color:rgba(0,0,0,0.2)}
-.btn-instagram:active,.btn-instagram.active,.open>.dropdown-toggle.btn-instagram{background-image:none}
-.btn-instagram.disabled,.btn-instagram[disabled],fieldset[disabled] .btn-instagram,.btn-instagram.disabled:hover,.btn-instagram[disabled]:hover,fieldset[disabled] .btn-instagram:hover,.btn-instagram.disabled:focus,.btn-instagram[disabled]:focus,fieldset[disabled] .btn-instagram:focus,.btn-instagram.disabled.focus,.btn-instagram[disabled].focus,fieldset[disabled] .btn-instagram.focus,.btn-instagram.disabled:active,.btn-instagram[disabled]:active,fieldset[disabled] .btn-instagram:active,.btn-instagram.disabled.active,.btn-instagram[disabled].active,fieldset[disabled] .btn-instagram.active{background-color:#3f729b;border-color:rgba(0,0,0,0.2)}
-.btn-instagram .badge{color:#3f729b;background-color:#fff}
 .btn-linkedin{color:#fff;background-color:#007bb6;border-color:rgba(0,0,0,0.2)}.btn-linkedin:focus,.btn-linkedin.focus{color:#fff;background-color:#005983;border-color:rgba(0,0,0,0.2)}
 .btn-linkedin:hover{color:#fff;background-color:#005983;border-color:rgba(0,0,0,0.2)}
 .btn-linkedin:active,.btn-linkedin.active,.open>.dropdown-toggle.btn-linkedin{color:#fff;background-color:#005983;border-color:rgba(0,0,0,0.2)}.btn-linkedin:active:hover,.btn-linkedin.active:hover,.open>.dropdown-toggle.btn-linkedin:hover,.btn-linkedin:active:focus,.btn-linkedin.active:focus,.open>.dropdown-toggle.btn-linkedin:focus,.btn-linkedin:active.focus,.btn-linkedin.active.focus,.open>.dropdown-toggle.btn-linkedin.focus{color:#fff;background-color:#00405f;border-color:rgba(0,0,0,0.2)}
 .btn-linkedin:active,.btn-linkedin.active,.open>.dropdown-toggle.btn-linkedin{background-image:none}
 .btn-linkedin.disabled,.btn-linkedin[disabled],fieldset[disabled] .btn-linkedin,.btn-linkedin.disabled:hover,.btn-linkedin[disabled]:hover,fieldset[disabled] .btn-linkedin:hover,.btn-linkedin.disabled:focus,.btn-linkedin[disabled]:focus,fieldset[disabled] .btn-linkedin:focus,.btn-linkedin.disabled.focus,.btn-linkedin[disabled].focus,fieldset[disabled] .btn-linkedin.focus,.btn-linkedin.disabled:active,.btn-linkedin[disabled]:active,fieldset[disabled] .btn-linkedin:active,.btn-linkedin.disabled.active,.btn-linkedin[disabled].active,fieldset[disabled] .btn-linkedin.active{background-color:#007bb6;border-color:rgba(0,0,0,0.2)}
 .btn-linkedin .badge{color:#007bb6;background-color:#fff}
-.btn-microsoft{color:#fff;background-color:#2672ec;border-color:rgba(0,0,0,0.2)}.btn-microsoft:focus,.btn-microsoft.focus{color:#fff;background-color:#125acd;border-color:rgba(0,0,0,0.2)}
-.btn-microsoft:hover{color:#fff;background-color:#125acd;border-color:rgba(0,0,0,0.2)}
-.btn-microsoft:active,.btn-microsoft.active,.open>.dropdown-toggle.btn-microsoft{color:#fff;background-color:#125acd;border-color:rgba(0,0,0,0.2)}.btn-microsoft:active:hover,.btn-microsoft.active:hover,.open>.dropdown-toggle.btn-microsoft:hover,.btn-microsoft:active:focus,.btn-microsoft.active:focus,.open>.dropdown-toggle.btn-microsoft:focus,.btn-microsoft:active.focus,.btn-microsoft.active.focus,.open>.dropdown-toggle.btn-microsoft.focus{color:#fff;background-color:#0f4bac;border-color:rgba(0,0,0,0.2)}
-.btn-microsoft:active,.btn-microsoft.active,.open>.dropdown-toggle.btn-microsoft{background-image:none}
-.btn-microsoft.disabled,.btn-microsoft[disabled],fieldset[disabled] .btn-microsoft,.btn-microsoft.disabled:hover,.btn-microsoft[disabled]:hover,fieldset[disabled] .btn-microsoft:hover,.btn-microsoft.disabled:focus,.btn-microsoft[disabled]:focus,fieldset[disabled] .btn-microsoft:focus,.btn-microsoft.disabled.focus,.btn-microsoft[disabled].focus,fieldset[disabled] .btn-microsoft.focus,.btn-microsoft.disabled:active,.btn-microsoft[disabled]:active,fieldset[disabled] .btn-microsoft:active,.btn-microsoft.disabled.active,.btn-microsoft[disabled].active,fieldset[disabled] .btn-microsoft.active{background-color:#2672ec;border-color:rgba(0,0,0,0.2)}
-.btn-microsoft .badge{color:#2672ec;background-color:#fff}
-.btn-odnoklassniki{color:#fff;background-color:#f4731c;border-color:rgba(0,0,0,0.2)}.btn-odnoklassniki:focus,.btn-odnoklassniki.focus{color:#fff;background-color:#d35b0a;border-color:rgba(0,0,0,0.2)}
-.btn-odnoklassniki:hover{color:#fff;background-color:#d35b0a;border-color:rgba(0,0,0,0.2)}
-.btn-odnoklassniki:active,.btn-odnoklassniki.active,.open>.dropdown-toggle.btn-odnoklassniki{color:#fff;background-color:#d35b0a;border-color:rgba(0,0,0,0.2)}.btn-odnoklassniki:active:hover,.btn-odnoklassniki.active:hover,.open>.dropdown-toggle.btn-odnoklassniki:hover,.btn-odnoklassniki:active:focus,.btn-odnoklassniki.active:focus,.open>.dropdown-toggle.btn-odnoklassniki:focus,.btn-odnoklassniki:active.focus,.btn-odnoklassniki.active.focus,.open>.dropdown-toggle.btn-odnoklassniki.focus{color:#fff;background-color:#b14c09;border-color:rgba(0,0,0,0.2)}
-.btn-odnoklassniki:active,.btn-odnoklassniki.active,.open>.dropdown-toggle.btn-odnoklassniki{background-image:none}
-.btn-odnoklassniki.disabled,.btn-odnoklassniki[disabled],fieldset[disabled] .btn-odnoklassniki,.btn-odnoklassniki.disabled:hover,.btn-odnoklassniki[disabled]:hover,fieldset[disabled] .btn-odnoklassniki:hover,.btn-odnoklassniki.disabled:focus,.btn-odnoklassniki[disabled]:focus,fieldset[disabled] .btn-odnoklassniki:focus,.btn-odnoklassniki.disabled.focus,.btn-odnoklassniki[disabled].focus,fieldset[disabled] .btn-odnoklassniki.focus,.btn-odnoklassniki.disabled:active,.btn-odnoklassniki[disabled]:active,fieldset[disabled] .btn-odnoklassniki:active,.btn-odnoklassniki.disabled.active,.btn-odnoklassniki[disabled].active,fieldset[disabled] .btn-odnoklassniki.active{background-color:#f4731c;border-color:rgba(0,0,0,0.2)}
-.btn-odnoklassniki .badge{color:#f4731c;background-color:#fff}
-.btn-openid{color:#fff;background-color:#f7931e;border-color:rgba(0,0,0,0.2)}.btn-openid:focus,.btn-openid.focus{color:#fff;background-color:#da7908;border-color:rgba(0,0,0,0.2)}
-.btn-openid:hover{color:#fff;background-color:#da7908;border-color:rgba(0,0,0,0.2)}
-.btn-openid:active,.btn-openid.active,.open>.dropdown-toggle.btn-openid{color:#fff;background-color:#da7908;border-color:rgba(0,0,0,0.2)}.btn-openid:active:hover,.btn-openid.active:hover,.open>.dropdown-toggle.btn-openid:hover,.btn-openid:active:focus,.btn-openid.active:focus,.open>.dropdown-toggle.btn-openid:focus,.btn-openid:active.focus,.btn-openid.active.focus,.open>.dropdown-toggle.btn-openid.focus{color:#fff;background-color:#b86607;border-color:rgba(0,0,0,0.2)}
-.btn-openid:active,.btn-openid.active,.open>.dropdown-toggle.btn-openid{background-image:none}
-.btn-openid.disabled,.btn-openid[disabled],fieldset[disabled] .btn-openid,.btn-openid.disabled:hover,.btn-openid[disabled]:hover,fieldset[disabled] .btn-openid:hover,.btn-openid.disabled:focus,.btn-openid[disabled]:focus,fieldset[disabled] .btn-openid:focus,.btn-openid.disabled.focus,.btn-openid[disabled].focus,fieldset[disabled] .btn-openid.focus,.btn-openid.disabled:active,.btn-openid[disabled]:active,fieldset[disabled] .btn-openid:active,.btn-openid.disabled.active,.btn-openid[disabled].active,fieldset[disabled] .btn-openid.active{background-color:#f7931e;border-color:rgba(0,0,0,0.2)}
-.btn-openid .badge{color:#f7931e;background-color:#fff}
-.btn-pinterest{color:#fff;background-color:#cb2027;border-color:rgba(0,0,0,0.2)}.btn-pinterest:focus,.btn-pinterest.focus{color:#fff;background-color:#9f191f;border-color:rgba(0,0,0,0.2)}
-.btn-pinterest:hover{color:#fff;background-color:#9f191f;border-color:rgba(0,0,0,0.2)}
-.btn-pinterest:active,.btn-pinterest.active,.open>.dropdown-toggle.btn-pinterest{color:#fff;background-color:#9f191f;border-color:rgba(0,0,0,0.2)}.btn-pinterest:active:hover,.btn-pinterest.active:hover,.open>.dropdown-toggle.btn-pinterest:hover,.btn-pinterest:active:focus,.btn-pinterest.active:focus,.open>.dropdown-toggle.btn-pinterest:focus,.btn-pinterest:active.focus,.btn-pinterest.active.focus,.open>.dropdown-toggle.btn-pinterest.focus{color:#fff;background-color:#801419;border-color:rgba(0,0,0,0.2)}
-.btn-pinterest:active,.btn-pinterest.active,.open>.dropdown-toggle.btn-pinterest{background-image:none}
-.btn-pinterest.disabled,.btn-pinterest[disabled],fieldset[disabled] .btn-pinterest,.btn-pinterest.disabled:hover,.btn-pinterest[disabled]:hover,fieldset[disabled] .btn-pinterest:hover,.btn-pinterest.disabled:focus,.btn-pinterest[disabled]:focus,fieldset[disabled] .btn-pinterest:focus,.btn-pinterest.disabled.focus,.btn-pinterest[disabled].focus,fieldset[disabled] .btn-pinterest.focus,.btn-pinterest.disabled:active,.btn-pinterest[disabled]:active,fieldset[disabled] .btn-pinterest:active,.btn-pinterest.disabled.active,.btn-pinterest[disabled].active,fieldset[disabled] .btn-pinterest.active{background-color:#cb2027;border-color:rgba(0,0,0,0.2)}
-.btn-pinterest .badge{color:#cb2027;background-color:#fff}
-.btn-reddit{color:#000;background-color:#eff7ff;border-color:rgba(0,0,0,0.2)}.btn-reddit:focus,.btn-reddit.focus{color:#000;background-color:#bcddff;border-color:rgba(0,0,0,0.2)}
-.btn-reddit:hover{color:#000;background-color:#bcddff;border-color:rgba(0,0,0,0.2)}
-.btn-reddit:active,.btn-reddit.active,.open>.dropdown-toggle.btn-reddit{color:#000;background-color:#bcddff;border-color:rgba(0,0,0,0.2)}.btn-reddit:active:hover,.btn-reddit.active:hover,.open>.dropdown-toggle.btn-reddit:hover,.btn-reddit:active:focus,.btn-reddit.active:focus,.open>.dropdown-toggle.btn-reddit:focus,.btn-reddit:active.focus,.btn-reddit.active.focus,.open>.dropdown-toggle.btn-reddit.focus{color:#000;background-color:#98ccff;border-color:rgba(0,0,0,0.2)}
-.btn-reddit:active,.btn-reddit.active,.open>.dropdown-toggle.btn-reddit{background-image:none}
-.btn-reddit.disabled,.btn-reddit[disabled],fieldset[disabled] .btn-reddit,.btn-reddit.disabled:hover,.btn-reddit[disabled]:hover,fieldset[disabled] .btn-reddit:hover,.btn-reddit.disabled:focus,.btn-reddit[disabled]:focus,fieldset[disabled] .btn-reddit:focus,.btn-reddit.disabled.focus,.btn-reddit[disabled].focus,fieldset[disabled] .btn-reddit.focus,.btn-reddit.disabled:active,.btn-reddit[disabled]:active,fieldset[disabled] .btn-reddit:active,.btn-reddit.disabled.active,.btn-reddit[disabled].active,fieldset[disabled] .btn-reddit.active{background-color:#eff7ff;border-color:rgba(0,0,0,0.2)}
-.btn-reddit .badge{color:#eff7ff;background-color:#000}
-.btn-soundcloud{color:#fff;background-color:#f50;border-color:rgba(0,0,0,0.2)}.btn-soundcloud:focus,.btn-soundcloud.focus{color:#fff;background-color:#c40;border-color:rgba(0,0,0,0.2)}
-.btn-soundcloud:hover{color:#fff;background-color:#c40;border-color:rgba(0,0,0,0.2)}
-.btn-soundcloud:active,.btn-soundcloud.active,.open>.dropdown-toggle.btn-soundcloud{color:#fff;background-color:#c40;border-color:rgba(0,0,0,0.2)}.btn-soundcloud:active:hover,.btn-soundcloud.active:hover,.open>.dropdown-toggle.btn-soundcloud:hover,.btn-soundcloud:active:focus,.btn-soundcloud.active:focus,.open>.dropdown-toggle.btn-soundcloud:focus,.btn-soundcloud:active.focus,.btn-soundcloud.active.focus,.open>.dropdown-toggle.btn-soundcloud.focus{color:#fff;background-color:#a83800;border-color:rgba(0,0,0,0.2)}
-.btn-soundcloud:active,.btn-soundcloud.active,.open>.dropdown-toggle.btn-soundcloud{background-image:none}
-.btn-soundcloud.disabled,.btn-soundcloud[disabled],fieldset[disabled] .btn-soundcloud,.btn-soundcloud.disabled:hover,.btn-soundcloud[disabled]:hover,fieldset[disabled] .btn-soundcloud:hover,.btn-soundcloud.disabled:focus,.btn-soundcloud[disabled]:focus,fieldset[disabled] .btn-soundcloud:focus,.btn-soundcloud.disabled.focus,.btn-soundcloud[disabled].focus,fieldset[disabled] .btn-soundcloud.focus,.btn-soundcloud.disabled:active,.btn-soundcloud[disabled]:active,fieldset[disabled] .btn-soundcloud:active,.btn-soundcloud.disabled.active,.btn-soundcloud[disabled].active,fieldset[disabled] .btn-soundcloud.active{background-color:#f50;border-color:rgba(0,0,0,0.2)}
-.btn-soundcloud .badge{color:#f50;background-color:#fff}
-.btn-tumblr{color:#fff;background-color:#2c4762;border-color:rgba(0,0,0,0.2)}.btn-tumblr:focus,.btn-tumblr.focus{color:#fff;background-color:#1c2d3f;border-color:rgba(0,0,0,0.2)}
-.btn-tumblr:hover{color:#fff;background-color:#1c2d3f;border-color:rgba(0,0,0,0.2)}
-.btn-tumblr:active,.btn-tumblr.active,.open>.dropdown-toggle.btn-tumblr{color:#fff;background-color:#1c2d3f;border-color:rgba(0,0,0,0.2)}.btn-tumblr:active:hover,.btn-tumblr.active:hover,.open>.dropdown-toggle.btn-tumblr:hover,.btn-tumblr:active:focus,.btn-tumblr.active:focus,.open>.dropdown-toggle.btn-tumblr:focus,.btn-tumblr:active.focus,.btn-tumblr.active.focus,.open>.dropdown-toggle.btn-tumblr.focus{color:#fff;background-color:#111c26;border-color:rgba(0,0,0,0.2)}
-.btn-tumblr:active,.btn-tumblr.active,.open>.dropdown-toggle.btn-tumblr{background-image:none}
-.btn-tumblr.disabled,.btn-tumblr[disabled],fieldset[disabled] .btn-tumblr,.btn-tumblr.disabled:hover,.btn-tumblr[disabled]:hover,fieldset[disabled] .btn-tumblr:hover,.btn-tumblr.disabled:focus,.btn-tumblr[disabled]:focus,fieldset[disabled] .btn-tumblr:focus,.btn-tumblr.disabled.focus,.btn-tumblr[disabled].focus,fieldset[disabled] .btn-tumblr.focus,.btn-tumblr.disabled:active,.btn-tumblr[disabled]:active,fieldset[disabled] .btn-tumblr:active,.btn-tumblr.disabled.active,.btn-tumblr[disabled].active,fieldset[disabled] .btn-tumblr.active{background-color:#2c4762;border-color:rgba(0,0,0,0.2)}
-.btn-tumblr .badge{color:#2c4762;background-color:#fff}
-.btn-twitter{color:#fff;background-color:#55acee;border-color:rgba(0,0,0,0.2)}.btn-twitter:focus,.btn-twitter.focus{color:#fff;background-color:#2795e9;border-color:rgba(0,0,0,0.2)}
-.btn-twitter:hover{color:#fff;background-color:#2795e9;border-color:rgba(0,0,0,0.2)}
-.btn-twitter:active,.btn-twitter.active,.open>.dropdown-toggle.btn-twitter{color:#fff;background-color:#2795e9;border-color:rgba(0,0,0,0.2)}.btn-twitter:active:hover,.btn-twitter.active:hover,.open>.dropdown-toggle.btn-twitter:hover,.btn-twitter:active:focus,.btn-twitter.active:focus,.open>.dropdown-toggle.btn-twitter:focus,.btn-twitter:active.focus,.btn-twitter.active.focus,.open>.dropdown-toggle.btn-twitter.focus{color:#fff;background-color:#1583d7;border-color:rgba(0,0,0,0.2)}
-.btn-twitter:active,.btn-twitter.active,.open>.dropdown-toggle.btn-twitter{background-image:none}
-.btn-twitter.disabled,.btn-twitter[disabled],fieldset[disabled] .btn-twitter,.btn-twitter.disabled:hover,.btn-twitter[disabled]:hover,fieldset[disabled] .btn-twitter:hover,.btn-twitter.disabled:focus,.btn-twitter[disabled]:focus,fieldset[disabled] .btn-twitter:focus,.btn-twitter.disabled.focus,.btn-twitter[disabled].focus,fieldset[disabled] .btn-twitter.focus,.btn-twitter.disabled:active,.btn-twitter[disabled]:active,fieldset[disabled] .btn-twitter:active,.btn-twitter.disabled.active,.btn-twitter[disabled].active,fieldset[disabled] .btn-twitter.active{background-color:#55acee;border-color:rgba(0,0,0,0.2)}
-.btn-twitter .badge{color:#55acee;background-color:#fff}
-.btn-vimeo{color:#fff;background-color:#1ab7ea;border-color:rgba(0,0,0,0.2)}.btn-vimeo:focus,.btn-vimeo.focus{color:#fff;background-color:#1295bf;border-color:rgba(0,0,0,0.2)}
-.btn-vimeo:hover{color:#fff;background-color:#1295bf;border-color:rgba(0,0,0,0.2)}
-.btn-vimeo:active,.btn-vimeo.active,.open>.dropdown-toggle.btn-vimeo{color:#fff;background-color:#1295bf;border-color:rgba(0,0,0,0.2)}.btn-vimeo:active:hover,.btn-vimeo.active:hover,.open>.dropdown-toggle.btn-vimeo:hover,.btn-vimeo:active:focus,.btn-vimeo.active:focus,.open>.dropdown-toggle.btn-vimeo:focus,.btn-vimeo:active.focus,.btn-vimeo.active.focus,.open>.dropdown-toggle.btn-vimeo.focus{color:#fff;background-color:#0f7b9f;border-color:rgba(0,0,0,0.2)}
-.btn-vimeo:active,.btn-vimeo.active,.open>.dropdown-toggle.btn-vimeo{background-image:none}
-.btn-vimeo.disabled,.btn-vimeo[disabled],fieldset[disabled] .btn-vimeo,.btn-vimeo.disabled:hover,.btn-vimeo[disabled]:hover,fieldset[disabled] .btn-vimeo:hover,.btn-vimeo.disabled:focus,.btn-vimeo[disabled]:focus,fieldset[disabled] .btn-vimeo:focus,.btn-vimeo.disabled.focus,.btn-vimeo[disabled].focus,fieldset[disabled] .btn-vimeo.focus,.btn-vimeo.disabled:active,.btn-vimeo[disabled]:active,fieldset[disabled] .btn-vimeo:active,.btn-vimeo.disabled.active,.btn-vimeo[disabled].active,fieldset[disabled] .btn-vimeo.active{background-color:#1ab7ea;border-color:rgba(0,0,0,0.2)}
-.btn-vimeo .badge{color:#1ab7ea;background-color:#fff}
-.btn-vk{color:#fff;background-color:#587ea3;border-color:rgba(0,0,0,0.2)}.btn-vk:focus,.btn-vk.focus{color:#fff;background-color:#466482;border-color:rgba(0,0,0,0.2)}
-.btn-vk:hover{color:#fff;background-color:#466482;border-color:rgba(0,0,0,0.2)}
-.btn-vk:active,.btn-vk.active,.open>.dropdown-toggle.btn-vk{color:#fff;background-color:#466482;border-color:rgba(0,0,0,0.2)}.btn-vk:active:hover,.btn-vk.active:hover,.open>.dropdown-toggle.btn-vk:hover,.btn-vk:active:focus,.btn-vk.active:focus,.open>.dropdown-toggle.btn-vk:focus,.btn-vk:active.focus,.btn-vk.active.focus,.open>.dropdown-toggle.btn-vk.focus{color:#fff;background-color:#3a526b;border-color:rgba(0,0,0,0.2)}
-.btn-vk:active,.btn-vk.active,.open>.dropdown-toggle.btn-vk{background-image:none}
-.btn-vk.disabled,.btn-vk[disabled],fieldset[disabled] .btn-vk,.btn-vk.disabled:hover,.btn-vk[disabled]:hover,fieldset[disabled] .btn-vk:hover,.btn-vk.disabled:focus,.btn-vk[disabled]:focus,fieldset[disabled] .btn-vk:focus,.btn-vk.disabled.focus,.btn-vk[disabled].focus,fieldset[disabled] .btn-vk.focus,.btn-vk.disabled:active,.btn-vk[disabled]:active,fieldset[disabled] .btn-vk:active,.btn-vk.disabled.active,.btn-vk[disabled].active,fieldset[disabled] .btn-vk.active{background-color:#587ea3;border-color:rgba(0,0,0,0.2)}
-.btn-vk .badge{color:#587ea3;background-color:#fff}
-.btn-yahoo{color:#fff;background-color:#720e9e;border-color:rgba(0,0,0,0.2)}.btn-yahoo:focus,.btn-yahoo.focus{color:#fff;background-color:#500a6f;border-color:rgba(0,0,0,0.2)}
-.btn-yahoo:hover{color:#fff;background-color:#500a6f;border-color:rgba(0,0,0,0.2)}
-.btn-yahoo:active,.btn-yahoo.active,.open>.dropdown-toggle.btn-yahoo{color:#fff;background-color:#500a6f;border-color:rgba(0,0,0,0.2)}.btn-yahoo:active:hover,.btn-yahoo.active:hover,.open>.dropdown-toggle.btn-yahoo:hover,.btn-yahoo:active:focus,.btn-yahoo.active:focus,.open>.dropdown-toggle.btn-yahoo:focus,.btn-yahoo:active.focus,.btn-yahoo.active.focus,.open>.dropdown-toggle.btn-yahoo.focus{color:#fff;background-color:#39074e;border-color:rgba(0,0,0,0.2)}
-.btn-yahoo:active,.btn-yahoo.active,.open>.dropdown-toggle.btn-yahoo{background-image:none}
-.btn-yahoo.disabled,.btn-yahoo[disabled],fieldset[disabled] .btn-yahoo,.btn-yahoo.disabled:hover,.btn-yahoo[disabled]:hover,fieldset[disabled] .btn-yahoo:hover,.btn-yahoo.disabled:focus,.btn-yahoo[disabled]:focus,fieldset[disabled] .btn-yahoo:focus,.btn-yahoo.disabled.focus,.btn-yahoo[disabled].focus,fieldset[disabled] .btn-yahoo.focus,.btn-yahoo.disabled:active,.btn-yahoo[disabled]:active,fieldset[disabled] .btn-yahoo:active,.btn-yahoo.disabled.active,.btn-yahoo[disabled].active,fieldset[disabled] .btn-yahoo.active{background-color:#720e9e;border-color:rgba(0,0,0,0.2)}
-.btn-yahoo .badge{color:#720e9e;background-color:#fff}
 
 #profileModal{
 background:url('http://c.boylett.uk/images/wallpapers/009.jpg');background-size:100% 100%
@@ -187,7 +126,7 @@ background:url('http://c.boylett.uk/images/wallpapers/009.jpg');background-size:
   height: 7em;
   margin-right: auto;
   margin-left: auto;
-  border: .5em solid #f2f2f2;
+  border: .5em solid #eaeaea;
   border-radius: 100%;
   box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.1);
 }
@@ -216,7 +155,6 @@ background:url('http://c.boylett.uk/images/wallpapers/009.jpg');background-size:
   text-transform:uppercase;
   font-size:14px;
 }
-
 	.close-animatedModal{
 	color:#000
 	}
@@ -256,7 +194,7 @@ background:url('http://c.boylett.uk/images/wallpapers/009.jpg');background-size:
   opacity: 1;
 }
 .card {
-  width: 90%;
+  width: 20em;
 }
 
 .card-header {
@@ -267,17 +205,15 @@ background:url('http://c.boylett.uk/images/wallpapers/009.jpg');background-size:
   display: flex;
   -webkit-box-pack: center;
   -webkit-justify-content: center;
-      -ms-flex-pack: center;
-          justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
   background-image: url(bckg.jpg);
   background-size: cover;
   background-position: center center;
   padding: 25px 0px;
   border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
-  
+  border-top-right-radius: 10px;  
 }
-
 .card-header-menu {
   position: absolute;
   top: 0;
@@ -312,7 +248,6 @@ background:url('http://c.boylett.uk/images/wallpapers/009.jpg');background-size:
   background-size: cover;
   background-position: center center;
 }
-
 .card-content-member {
   position: relative;
   background-color: #fff;
@@ -325,7 +260,6 @@ background:url('http://c.boylett.uk/images/wallpapers/009.jpg');background-size:
 .card-content-member h2 {
   text-align: center;
 }
-
 .card-content-languages {
   background-color: #F3F5F6;
   padding: 5px;
@@ -416,7 +350,6 @@ background:url('http://c.boylett.uk/images/wallpapers/009.jpg');background-size:
   border: 3px solid #145762;
   box-sizing: border-box;
 }
-
 .card-content-summary {
   background-color: #fff;
   padding: 5px;
@@ -468,7 +401,6 @@ background:url('http://c.boylett.uk/images/wallpapers/009.jpg');background-size:
   font-size:14px;
   font-weight:normal;
 }
-
 .os-phrases h2.openz {
 	font-family: 'Dosis', 'Lato', sans-serif;
 	font-size: 35px;
@@ -873,6 +805,15 @@ input:focus {
 	  margin:0px 10px 10px 10px;
 	  border-radius:3px
 	}
+	md-tabs.md-default-theme md-tabs-wrapper, md-tabs md-tabs-wrapper {
+		background:rgba(0,0,0,0.7);
+	}
+	md-tabs .md-tab.md-active{
+		color:#fff;
+	}
+	md-tabs .md-tab {
+		color:#fff;
+	}
 	</style>
 	</head>
   <body ng-cloak style="background:#eaeaea" style="display:none">
@@ -1013,6 +954,7 @@ input:focus {
 	}(document, 'script', 'facebook-jssdk'));
 	
 	function logout(){
+	$('.close-profileModal').trigger('click');	
 	$('body').plainOverlay('show',{
 			opacity:0.8,
 			fillColor: '#000',
@@ -1061,32 +1003,13 @@ input:focus {
     <ul class="dropdown-menu md-whiteframe-z1">
       <li><a id="demo02" href="#acceptedModal">Accepted Requests</a></li>
       <li><a id="demo01" href="#animatedModal">Posted Requests</a></li>
-	  <li><a href="javascript: void(0)" onclick="editnum()">Edit Contact Number</a></li>
-	  <li><a href="#" onclick="logout()">Logout</a></li>
-	  <li><a id="demo04" href="#profileModal">My Profile</a></li>
+	  <li><a id="demo04" href="#profileModal">My Profile</a></li>	  
 	  <li style="display:none"><a id="demo03" href="#initModal" class="gn-icon gn-icon-search"></a></li>
     </ul>
   </md-button></li>				
-				<!--li id="mnuitm" class="gn-trigger" style="border-right:none;display:none;float:right">
-					<a class="gn-icon gn-icon-menu"></a>
-					<nav class="gn-menu-wrapper">
-						<div class="gn-scroller">
-							<ul class="gn-menu">
-								<li class="gn-search-item" style="display:none">
-									<a id="demo03" href="#initModal" class="gn-icon gn-icon-search"></a>
-								</li>
-								<li><a id="demo01" href="#animatedModal" class="gn-icon gn-icon-archive">Posted Requests</a></li>
-								<li><a id="demo02" href="#acceptedModal" class="gn-icon gn-icon-help">Accepted Requests</a></li>
-								<li style="display:none"><a id="demo04" href="#profileModal" class="gn-icon gn-icon-help">My Profile</a></li>
-								<li style="display:none"><a href="#0" class="gn-icon gn-icon-cog cd-signin">Registration</a></li>
-								<li><a href="#" class="gn-icon gn-icon-cog cd-signin" onclick="editnum()">Edit Contact Number</a></li>								
-							</ul>
-						</div>
-					</nav>
-				</li-->
-			</ul>			
-		</div>		
-		<div layout="row" ng-controller="AppCtrl" ng-cloak="" style="padding-top:60px;height:100%;background-color:#eee;background-size:contain background-repeat: no-repeat; background-size: 100% 100%;"  class="carddemoInCardActions">
+	</ul>			
+	</div>		
+	<div layout="row" ng-controller="AppCtrl" ng-cloak="" style="padding-top:60px;height:100%;background-color:#eee;background-size:contain background-repeat: no-repeat; background-size: 100% 100%;"  class="carddemoInCardActions">
   <div flex flex-xs="" flex-gt-xs="30">
   <md-card style="margin:14px 0px 0px 20px; box-shadow:0 27px 55px 0 rgba(0, 0, 0, 0.3), 0 17px 17px 0 rgba(0, 0, 0, 0.15);padding-bottom:2px">
   <md-card-header style="padding:20px 40px;">
@@ -1102,8 +1025,7 @@ input:focus {
   </md-card>
   </div>
   <div  flex flex-xs="" flex-gt-xs="30" style="padding-left:1px">
-  
-      <md-card id="rqstgist" style="max-width:350px;margin:0px;margin-top:14px;padding-bottom:1px;box-shadow:0px 20px 10px 0px rgba(0, 0, 0, 0.15)">
+    <md-card id="rqstgist" style="max-width:350px;margin:0px;margin-top:14px;padding-bottom:1px;box-shadow:0px 20px 10px 0px rgba(0, 0, 0, 0.15)">
 		<div style="border-top-right-radius:2px;height:200px;width:100%;background:#fff;background-size:contain; background-repeat:no-repeat; background-position:center;" id="tflbckg"></div>	  
         <md-card-header style="padding:15px 40px 15px 20px; border-top:1px solid #eaeaea; background-color:#ebf7fc">
           <md-card-avatar style="padding-top:5px">
@@ -1131,33 +1053,30 @@ input:focus {
           </div>
         </md-list-item>
 		<md-list-item class="md-2-line" style="min-height:55px">
-          <div class="md-list-item-text" style="margin:0">
+          <div class="md-list-item-text" style="margin:0;white-space: nowrap;overflow: hidden;text-overflow:ellipsis;width: 300px;">
             <p style="color:#000;font-weight:normal">Delivery Time</p>
 			<h3 style="font-size:14px" id="pdatetym"><img src="line.png" style="width:100%;display:inline;"></h3>            
           </div>
         </md-list-item>
       </md-list>
     </md-content>
-		
-         	<md-button class="md-raised md-primary" style="width:90%;margin-top:0;margin-left:5%" ng-click="accept2()">ACCEPT</md-button>			
+  	<md-button class="md-raised md-primary" style="width:90%;margin-top:0;margin-left:5%" ng-click="accept2()">ACCEPT</md-button>			
 		</md-card-content>	
        	<md-card-actions layout="row" layout-align="center" style="min-height:35px;margin-bottom:10px;">
 			<md-button id="prevbtn" style="display:none" onclick="showprev()">Previous</md-button>
 			<md-button class="md-raised" style="display:none;background:#eaeaea" id="nxtbtn" onclick="shownext()">Next</md-button>			
 		</md-card-actions>
-      </md-card>  
-  
+    </md-card>  
   </div>    
     <div flex flex-xs="" flex-gt-xs="40" style="background-color:transparent">
-    
-      <md-card style="margin-top:14px;padding:10px;padding-top:0;max-width:500px;box-shadow:0 27px 55px 0 rgba(0, 0, 0, 0.3), 0 17px 17px 0 rgba(0, 0, 0, 0.15)">
+    <md-card style="margin-top:14px;padding:10px;padding-top:0;max-width:500px;box-shadow:0 27px 55px 0 rgba(0, 0, 0, 0.3), 0 17px 17px 0 rgba(0, 0, 0, 0.15)">
 	   <md-card-header>         
           <md-card-header-text style="text-align:center">
 			<span class="md-subhead">Want something delivered ?</span>
             <span id="tytl" class="md-title" style="font-weight:normal;color:#d80000"></span>            
           </md-card-header-text>
         </md-card-header>
-		  <div id="card" onclick="card()" style="height:200px;width:90%;margin-left:5%;background:#eaeaea;display:none">	<div id="packagephoto" style="left:0; right:0; bottom:0; margin:auto; margin-top:90px; max-width:100%; max-height:200px; overflow:auto;color:#888;font-size:18px;height:30px;z-index:1;text-align:center;letter-spacing:1px" onclick="document.getElementById('files').click()">ADD PACKAGE PHOTO</div>
+		  <div id="card" onclick="card()" style="height:200px;width:90%;margin-left:5%;background:#eee;display:none">	<div id="packagephoto" style="left:0; right:0; bottom:0; margin:auto; margin-top:90px; max-width:100%; max-height:200px; overflow:auto;color:#888;font-size:18px;height:30px;z-index:1;text-align:center;letter-spacing:1px" onclick="document.getElementById('files').click()">ADD PACKAGE PHOTO</div>
 	  	<input type="file" id="files" name="upload" style="z-index:999;width:97%;height:200px; opacity: 0;-moz-opacity: 0;filter:progid:DXImageTransform.Microsoft.Alpha(opacity=0);"/></div>
     <div layout="row" id="pckginfo">
 	   <div flex>
@@ -1173,7 +1092,7 @@ input:focus {
 	  <input id="pickupname" type="text" ng-required="true">
     </md-input-container>    
     <md-input-container class="md-block" style="margin:0px;">
-      <label style="font-size:14px">Pickup Address (optional)</label>
+      <label style="font-size:14px">Pickup Address</label>
 	  <input id="pickupaddr" type="text" ng-required="true" value="">
     </md-input-container>
 	<md-input-container class="md-block" style="margin:0px">
@@ -1184,20 +1103,20 @@ input:focus {
 	<md-content id="lala2" style="padding-top:20px;display:none;overflow:hidden">
 	<md-datepicker onkeydown="return false;"  ng-model="myDate" md-placeholder="Delivery By" md-min-date="minDate" md-max-date="maxDate"></md-datepicker>
     <md-input-container style="margin-top:20px;margin-left:10px">
-        <label>Weight</label>
-        <select style="background:#fff;color:#000;margin: 7px 0px 0px 60px;border:none;font-size:14px" onChange="pckgweight = this.value">
+    <label>Weight</label>
+    <select style="background:#fff;color:#000;margin: 7px 0px 0px 60px;border:none;font-size:14px" onChange="pckgweight = this.value">
   <option value="1 Kg - 10 Kgs">1 - 10 Kgs</option>
   <option value="10 Kgs - 20 Kgs">10 - 20 Kgs</option>
   <option value="20 Kgs - 50 Kgs">20- 50 Kgs</option>
   <option value="50 Kgs & more">50 Kgs & more</option>
-</select>
-      </md-input-container>
+	</select>
+    </md-input-container>
 	</md-content>
 	</md-card-content>
 	</div>
 	<div flex>        
-		<md-card-content style="padding:5px 16px">
-        <md-content id="delvlala" class="md-no-momentum inputdemoIcons"> 
+	<md-card-content style="padding:5px 16px">
+    <md-content id="delvlala" class="md-no-momentum inputdemoIcons"> 
 	<md-input-container class="md-icon-float md-block" style="margin-bottom:0px">
       <label style="padding-left:40px">Delivery Area</label>
 	  <img src="search.png" style="width:28px;margin-top:0px;display:inline;position:absolute;cursor:pointer;left:0">
@@ -1208,7 +1127,7 @@ input:focus {
       <input id="deliveryname" type="text" ng-required="true">
     </md-input-container>    
 	<md-input-container class="md-block" style="margin:0px;">
-	  <label style="font-size:14px">Delivery Address (optional)</label>
+	  <label style="font-size:14px">Delivery Address</label>
       <input id="deliveryaddr" type="text" ng-required="true" value="">
     </md-input-container>
 	<md-input-container class="md-block" style="margin:0px">
@@ -1223,13 +1142,13 @@ input:focus {
     </md-input-container>
      <md-input-container style="margin-top:0;margin-left:0px">
         <label>Size</label>
-        <select style="background:#fff; color:#000;margin: 10px 0px 0px 40px;border:none;font-size:12px" onChange="pckgsize = this.value">
-  <option value="SMALL (FITS IN BAG)">SMALL(FITS IN BAG)</option>
-  <option value="MEDIUM (FITS IN CAR)">MEDIUM(FITS IN CAR)</option>
-  <option value="LARGE (FITS IN VAN)">LARGE(FITS IN VAN)</option>
-  <option value="HUGE (FITS IN TRUCK)">HUGE(FITS IN TRUCK)</option>
-</select>
-      </md-input-container>
+    <select style="background:#fff; color:#000;margin: 10px 0px 0px 40px;border:none;font-size:12px" onChange="pckgsize = this.value">
+	<option value="SMALL (FITS IN BAG)">SMALL(FITS IN BAG)</option>
+	<option value="MEDIUM (FITS IN CAR)">MEDIUM(FITS IN CAR)</option>
+	<option value="LARGE (FITS IN VAN)">LARGE(FITS IN VAN)</option>
+	<option value="HUGE (FITS IN TRUCK)">HUGE(FITS IN TRUCK)</option>
+	</select>
+    </md-input-container>
 	</md-content>
 	</md-card-content>
 	</div>	
@@ -1250,55 +1169,8 @@ input:focus {
 	<md-button id="postbtn" onclick="done()" class="md-raised md-primary" style="background:#2bb1de;width:90%;margin-top:0;margin-left:5%;margin-bottom:15px;display:none">DONE</md-button>			
 	<md-button id="prevbtn2" onclick="shwdetls()" class="md-raised" style="background:#eaeaea;display:none;width:30%;margin-left:35%">BACK</md-button>
 	</md-card>     
-     
-  </div>
-	</div>		
-	
-	<!--div id="animatedModal" style="background-color:#eee">
-		 <md-toolbar style="background-color:transparent">
-      <div class="md-toolbar-tools">
-        <h2 style="color:#000;width:100%;vertical-align:middle;text-align:center;color:#000;text-transform:uppercase;font-size:12px;font-weight:bold">
-		Posted Requests
-        </h2>
-        <span flex=""></span>
-        <md-button style="margin-right:50px;color:#000;opacity:0.7">
-          <div class="close-animatedModal"> 
-            <md-icon md-svg-src="close.svg" aria-label="close"></md-icon> CLOSE
-        </div> 
-        </md-button>
-       
-      </div>
-		</md-toolbar>	
-        <div class="modal-content" ng-controller="AppCtrl" ng-cloak style="margin:40px 15%;">
-        <md-content ng-show="postarr.length">
-		<md-list style="max-height:450px">
-        <md-list-item class="md-3-line" style="border-bottom:1px solid #d1d1d1" ng-repeat="msg in postarr" ng-if="msg.$id!='notification'">
-          <img data-ng-src="{{msg.img64}}" class="md-avatar" style="margin-left:20px;width:180px;height:180px;border-radius:10px">
-          <div class="md-list-item-text" layout="column" style="padding-top:25px;margin-top:0;padding-left:20px;">
-            <h3><span style="color:red;font-size:12px;letter-spacing:1px;margin-right:7px">YOU EARN </span> {{msg.fare}}</h3>
-            <h4 style="margin-top:10px">Size : <span style="color:#5f6f81;letter-spacing:1px">{{ msg.pckgsize }}</span> </h4>
-			<h4 style="margin-top:10px">Delivery By: <span style="color:#5f6f81;letter-spacing:1px">{{msg.deliverytime}} on {{ msg.deliverydate }}</span> </h4>
-			<h4 style="margin-top:10px">Pickup Area : <span style="color:#5f6f81;letter-spacing:1px">{{ msg.pickuparea }}</span> </h4>
-            <h4 style="margin-top:10px">Delivery Area : <span style="color:#5f6f81;letter-spacing:1px">{{ msg.deliveryarea }}</span></h4>
-			<h4 style="margin-top:10px">Status : <span style="color:#5f6f81;letter-spacing:1px">{{ msg.status }}</span></h4>			
-          </div>
-		<md-list flex flex-xs="" flex-gt-xs="30" style="padding-left:10px">
-		   <md-subheader class="md-no-sticky" ng-show="msg.acceptors != null">BECK Friends who accepted this Request</md-subheader>
-		   <md-subheader class="md-no-sticky" ng-show="msg.acceptors == null"> </md-subheader>
-		<md-list-item class="md-3-line" style="min-height:50px" ng-repeat="val in msg.acceptors">
-          <img ng-src="{{val.usrfbimg}}" class="md-avatar" style="border-radius:50%;width:40px;height:40px">
-          <div class="md-list-item-text" layout="column">
-            <h3 style="height:30px"><md-button ng-click="showprofile(val)" target="_blank" style="margin:0;font-size:12px;padding:0px">{{val.usrname}}</md-button></h3>
-            <h3 style="height:30px"><md-button ng-click="approvefrnd(val,msg.id)" class="md-primary" style="margin:0;font-size:12px;padding:0px 5px">APPROVE THIS PERSON TO CARRY IT</md-button></h3>
-          </div>
-        </md-list-item>	
-		</md-list>
-		</md-list-item>
-        </md-list>
-		</md-content>
-        </div>
-    </div-->
-	
+    </div>
+	</div>	
 	<div id="animatedModal" style="background:#eee" ng-controller="AppCtrl" ng-cloak>
 		 <md-toolbar style="background-color:transparent">
       <div class="md-toolbar-tools">        
@@ -1308,7 +1180,7 @@ input:focus {
         <span flex=""></span>
         <md-button style="margin-right:50px;color:#000;opacity:0.7">
           <div class="close-animatedModal"> 
-           <md-icon md-svg-src="close.svg" aria-label="close"></md-icon> CLOSE
+           <md-icon md-svg-src="close2.svg" aria-label="close" style="margin-right:5px"></md-icon> CLOSE
         </div> 
         </md-button>       
       </div>
@@ -1384,7 +1256,7 @@ input:focus {
         </div>		
 	</md-content>
     </div>
-	<div id="acceptedModal" style="background:#eee"  ng-controller="AppCtrl" ng-cloak>
+	<div id="acceptedModal" style="background:#eee">
 		 <md-toolbar style="background-color:transparent">
       <div class="md-toolbar-tools">        
         <h2 style="vertical-align:middle;text-align:center;color:#000;font-size:14px;text-transform:uppercase;font-weight:bold;margin-left:45%">
@@ -1393,13 +1265,13 @@ input:focus {
         <span flex=""></span>
         <md-button style="margin-right:50px;color:#000;opacity:0.7">
           <div class="close-acceptedModal"> 
-           <md-icon md-svg-src="close.svg" aria-label="close"></md-icon> CLOSE
+           <md-icon md-svg-src="close2.svg" aria-label="close" style="margin-right:5px"></md-icon> CLOSE
         </div> 
         </md-button>       
       </div>
 		</md-toolbar>	
-		<md-content style="background-color:transparent;overflow:auto; height:calc(100% - 75px)">
-        <div class="modal-content" >
+		<md-content style="background-color:transparent;overflow:auto;margin:0px 2px; height:calc(100% - 75px)">
+        <div class="modal-content" ng-controller="AppCtrl" ng-cloak >
         <div ng-show="accepts.length" layout="row">
 		<div flex ng-repeat="msg in accepts" ng-if="msg.$id!='notification'" style="max-width:350px;margin:0px 10px">
 		<md-card style="max-width:350px;box-shadow:0 27px 55px 0 rgba(0, 0, 0, 0.3), 0 17px 17px 0 rgba(0, 0, 0, 0.15)">		
@@ -1429,8 +1301,8 @@ input:focus {
 			<h3 style="font-size:12px">{{msg.delv}}</h3>            
           </div>
         </md-list-item>
-		<md-list-item class="md-2-line" style="min-height:45px;">
-          <div class="md-list-item-text" style="margin:0;white-space: nowrap;overflow: hidden;text-overflow:ellipsis;width: 300px;">
+		<md-list-item class="md-2-line" style="min-height:45px">
+          <div class="md-list-item-text" style="margin:0">
             <p style="color:#000;font-weight:normal">Delivery Time</p>
 			<h3 style="font-size:12px">{{msg.time}} on {{ msg.date }}</h3>            
           </div>
@@ -1442,10 +1314,7 @@ input:focus {
         </md-list-item>
       </md-list>
     </md-content>		
-       </md-card-content>	
-       	<!--md-card-actions layout="row" layout-align="center" style="min-height:35px;margin-bottom:10px;">
-			<md-button>SHOW DETAILS</md-button>					
-		</md-card-actions-->		
+       </md-card-content>			
       </md-card>		
         </div>		
 		</div>
@@ -1461,42 +1330,131 @@ input:focus {
         <span flex=""></span>
         <md-button style="margin-right:50px;color:#000;opacity:0.7">
           <div class="close-profileModal"> 
-           <md-icon md-svg-src="close.svg" aria-label="close"></md-icon> CLOSE
+           <md-icon md-svg-src="close2.svg" aria-label="close" style="margin-right:5px"></md-icon> CLOSE
         </div> 
         </md-button>       
       </div>
 		</md-toolbar>	
-        <div class="modal-content" ng-controller="AppCtrl" ng-cloak>
-        <md-content style="background-color:transparent;">
-		<div id="profilebody">
-		<img src="https://fbcdn-profile-a.akamaihd.net/hprofile-ak-xtp1/v/t1.0-1/p100x100/12592458_10153575299734263_3610452150972657034_n.jpg?oh=9f3c4759eb37272f76b21fe2f39c43cc&oe=57BEA544&__gda__=1467867804_0d19a32ae83267ccf221d787a3384910" class="profile-img" style="margin-left:100px">
-	<div class="profile-text" style="width:300px;padding-bottom:50px">
-    <h1 class="profile-name">Rahul Basu</h1>
+        <div class="modal-content" ng-controller="AppCtrl" ng-cloak style="height:calc(100% - 75px)">
+        <md-content style="background-color:transparent;height:100%">
+		<div layout="row" ng-controller="AppCtrl" ng-cloak="">
+	<div id="profilebody" flex flex-xs="" flex-gt-xs="30">
+	<img src="https://fbcdn-profile-a.akamaihd.net/hprofile-ak-xtp1/v/t1.0-1/p100x100/12592458_10153575299734263_3610452150972657034_n.jpg?oh=9f3c4759eb37272f76b21fe2f39c43cc&oe=57BEA544&__gda__=1467867804_0d19a32ae83267ccf221d787a3384910" class="profile-img" style="margin-left:100px">
+	<div class="profile-text" style="width:300px;padding-bottom:10px;box-shadow:0 27px 55px 0 rgba(0, 0, 0, 0.3), 0 17px 17px 0 rgba(0, 0, 0, 0.15)">
+    <h1 class="profile-name" style="padding-top:15px; border-top:1px solid rgba(0,0,0,0.1);background:#ebf7fc">Rahul Basu</h1>
     <span class="profile-title">VERIFIED 50%</span>
 	<div class="profile-title">
-	 <a class="btn btn-block btn-social btn-twitter" style="padding:15px;padding-left:45px;margin-top:15px;border-radius:10px;color:#fff;border:none">
-    <span class="fa fa-twitter" style="padding-top:7px;margin-left:5px" ></span> Connect with Twitter</a>
+		<!--a href="javascript:void(0)" class="btn btn-block btn-social btn-facebook" style="padding:10px;padding-left:45px;margin-top:15px;border-radius:5px;color:#fff;border:none;text-transform:none">
+		<span class="fa fa-facebook" style="padding-top:3px;margin-left:5px" ></span> Connect with Facebook</a-->
+		<a href="javascript:void(0)" class="btn btn-block btn-social btn-facebook" style="opacity:0.7;pointer-events:none;padding:10px;padding-left:45px;margin-top:15px;border-radius:5px;color:#fff;border:none;text-transform:none">
+		<span class="fa fa-check-circle" style="padding-top:3px;margin-left:5px" ></span> Facebook Verified</a>		
 	</div>
 	<div class="profile-title">
-	 <a class="btn btn-block btn-social btn-facebook" style="padding:15px;padding-left:45px;margin-top:15px;border-radius:10px;color:#fff;border:none">
-    <span class="fa fa-facebook" style="padding-top:7px;margin-left:5px" ></span> Connect with Facebook</a>
+		<a id="customBtn" href="javascript:void(0)" class="btn btn-block btn-social btn-google" style="padding:10px;padding-left:45px;margin-top:15px;border-radius:5px;color:#fff;border:none;text-transform:none">
+		<span class="fa fa-google" style="padding-top:3px;margin-left:5px" ></span> Connect with Google</a>
+		<a href="javascript:void(0)" class="btn btn-block btn-social btn-facebook" style="display:none;pointer-events:none;opacity:0.7;padding:10px;padding-left:45px;margin-top:15px;border-radius:5px;color:#fff;border:none;text-transform:none">
+		<span class="fa fa-check-circle" style="padding-top:3px;margin-left:5px" ></span> Google Verified</a>
 	</div>
 	<div class="profile-title">
-	 <a class="btn btn-block btn-social btn-google" style="padding:15px;padding-left:45px;margin-top:15px;border-radius:10px;color:#fff;border:none">
-    <span class="fa fa-google" style="padding-top:7px;margin-left:5px" ></span> Connect with Google</a>
+		<a href="javascript:void(0)" onclick="liLogin()" class="btn btn-block btn-social btn-linkedin" style="padding:10px;padding-left:45px;margin-top:15px;border-radius:5px;color:#fff;border:none;text-transform:none">
+		<span class="fa fa-linkedin" style="padding-top:3px;margin-left:5px" ></span> Connect with LinkedIn</a>
+		<a href="javascript:void(0)" class="btn btn-block btn-social btn-facebook" style="display:none;pointer-events:none;opacity:0.7;padding:10px;padding-left:45px;margin-top:15px;border-radius:5px;color:#fff;border:none;text-transform:none">
+		<span class="fa fa-check-circle" style="padding-top:3px;margin-left:5px" ></span> LinkedIn Verified</a>
+		<md-button md-no-ink class="md-primary" onclick="editnum()" style="font-weight:bold;margin-bottom:0;font-size:12px">EDIT CONTACT NUMBER</md-button>
+		<md-button onclick="logout()" style="margin-top:0;font-size:12px;font-weight:bold">LOGOUT</md-button>
 	</div>
 	</div>
-		</div>				
-		</md-content>
+	</div>
+	<div flex flex-xs="" flex-gt-xs="70" style="padding-right:50px;padding-top:56px" ng-controller="AppCtrl">		
+	<md-tabs md-dynamic-height md-border-bottom style="background:#fff;box-shadow:0 27px 55px 0 rgba(0, 0, 0, 0.3), 0 17px 17px 0 rgba(0, 0, 0, 0.15)">
+      <md-tab label="RECOMMENDED">
+        <md-content class="md-padding">
+        <div ng-show="accepts.length" layout="row">		
+		<div flex ng-repeat="msg in accepts" ng-if="msg.$id!='notification'" style="max-width:350px;margin:0px 10px;padding-top:10px;padding-bottom:15px;">
+		<md-card style="max-width:350px; border:1px solid #ccc">		
+		<div style="display:none;border-top-right-radius:2px;height:200px;width:100%;background:#fff;background-size:contain; background-repeat:no-repeat; background-position:center;" ng-style="{'background-image': 'url({{ msg.img }})'}"></div>	  
+        <md-card-header style="padding:15px 40px 15px 20px; border-top:1px solid #eaeaea; background-color:#ebf7fc">
+          <md-card-avatar style="padding-top:5px">
+            <md-icon md-svg-icon="moneyz.svg" style="padding:0;background:#ebf7fc;color:#000"></md-icon>
+          </md-card-avatar>
+		  <md-card-header-text>
+			<span class="md-title" style="color:#000"><span style="font-size:14px;opacity:0.7;color:#d80000;letter-spacing:1px">YOU EARN</span> : <span style="color:#000;font-size:18px;font-weight:normal">{{msg.fare}}</span></span>   
+			<span class="md-subhead" style="letter-spacing:1px"><span style="color:#000;font-weight:normal;font-size:12px;margin-left:10px">{{msg.size}}</span></span>
+          </md-card-header-text>
+        </md-card-header>
+        <md-card-content style="padding:0px">
+		 <md-divider></md-divider>
+        <md-content>		
+      <md-list flex style="padding-bottom:10px;padding-top:10px">       
+        <md-list-item class="md-2-line" style="min-height:45px">
+          <div class="md-list-item-text" style="margin:0;white-space: nowrap;overflow: hidden;text-overflow:ellipsis;width: 300px;">
+            <p style="color:#16a765;font-weight:normal">Pickup Area</p>
+			<h3 style="font-size:12px">{{msg.pickup}}</h3>            
+          </div>
+        </md-list-item>
+		<md-list-item class="md-2-line" style="min-height:45px">
+          <div class="md-list-item-text" style="margin:0;white-space: nowrap;overflow: hidden;text-overflow:ellipsis;width: 300px;">
+            <p style="color:#d80000;font-weight:normal">Delivery Area</p>
+			<h3 style="font-size:12px">{{msg.delv}}</h3>            
+          </div>
+        </md-list-item>
+		<md-list-item class="md-2-line" style="min-height:45px">
+          <div class="md-list-item-text" style="margin:0">
+            <p style="color:#000;font-weight:normal">Delivery Time</p>
+			<h3 style="font-size:12px">{{msg.time}} on {{ msg.date }}</h3>            
+          </div>
+        </md-list-item>		
+			<md-button id="prevbtn">Show Image</md-button>
+			<md-button class="md-raised md-primary">ACCEPT THIS REQUEST</md-button>			
+	    </md-list>
+    </md-content>		
+       </md-card-content>			
+      </md-card>		
         </div>
+		</div>
+        </md-content>
+      </md-tab>      
+    <md-tab label="ADD ROUTES">
+    <md-content class="md-padding" style="padding-top:0">
+        <h1 class="md-display-2" style="padding-left:15px;margin-bottom:0">Where are you travelling?</h1>
+    <md-content layout-gt-sm="row" layout-padding style="padding-top:0">
+	<div>
+      <md-input-container style="padding-top:0">
+        <label>Starting Location</label>
+        <input type="text">
+      </md-input-container>
+      <md-input-container style="padding-top:0">
+        <label>Ending Location</label>
+        <input type="text">
+      </md-input-container>
+	  <md-button class="md-raised md-primary" style="vertical-align:15px;padding-left:25px;padding-right:25px">ADD ROUTE</md-button>
+    </div>
+    </md-content>
+    </md-content>
+    </md-tab>
+	<md-tab label="IDENTITY">
+        <md-content class="md-padding" style="padding-top:0">
+          <h1 class="md-display-2" style="text-align:center;margin-top:0">Verify your Identity (Any 2 valid Govt. IDs)</h1>
+          <div layout="row" style="padding-bottom:45px">	
+		  <div style="height:200px;width:100%;background:#fff;background-size:contain; background-repeat:no-repeat; background-position:center; background-image:url(bckg.jpg)"></div>	  
+          <div style="height:200px;width:100%;background:#fff;background-size:contain; background-repeat:no-repeat; background-position:center; background-image:url(bckg2.jpg)"></div>	  
+		  </div>
+		</md-content>
+      </md-tab>
+    </md-tabs>
+	</div>
+	</div>	
+	</md-content>
+    </div>
     </div>
 	<div id="initModal">
 	<div class="close-initModal" style="display:none">CLOSE</div> 	
-	<md-content style="background-color:transparent;overflow:auto;height:calc(100% - 75px);background-image:url('http://beckserver.ap-southeast-1.elasticbeanstalk.com/images/hero.jpg');text-align:center;color:#888;font-size:16px;width:100%; height: 600px; position:absolute; left:0; right:0; top:0; bottom:0; max-width:100%; background-color:#000; -webkit-background-size: contain; background-size:contain;-moz-background-size: contain; -o-background-size: contain; background-repeat: no-repeat; background-size: 100% 100%;">
+	<div style="background-image:url('http://beckserver.ap-southeast-1.elasticbeanstalk.com/images/hero.jpg');text-align:center;color:#888;font-size:16px;width:100%; height: 600px; position:absolute; left:0; right:0; top:0; bottom:0; max-width:100%; max-height:100%; background-color:#000; -webkit-background-size: contain; background-size:contain;-moz-background-size: contain; -o-background-size: contain; background-repeat: no-repeat; background-size: 100% 100%;">
 	<ul id="gn-menu" class="gn-menu-main" style="border-radius:50px;margin:0 auto; top:30%;width:60%;margin-left:20%;border-bottom:1px solid #c6d0da;position: absolute;z-index:999;">								
 		<li style="border-radius:50px;width:100%;padding-left:20px;padding-right:10px;font-size:18px;border-right:none"><img src="search.png" style="width:28px;margin-top:17px;display:inline;position:absolute;"><input id="searchlocinit" placeholder="Where are you?" type="search" class="gn-search" style="padding-left:40px;width:90%;display:inline"></li>
 	</ul>
-	</md-content>
 	</div>
+	</div>
+	<script>startApp();</script>
 	</body>
 </html>
