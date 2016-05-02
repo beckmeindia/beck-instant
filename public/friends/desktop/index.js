@@ -4,7 +4,8 @@
 	var pfare, psize, pweight, ppickup, ppickupaddr, pdelv,pdelvaddr,pdatetym,pckgimg,imagz, pusrid, pusrphn, porderid;
 	var loggedin=0,usrname="",usremail="",usrphone="",usrid="", usrfbimg="", usrfbid="", fbflag=0, usrnewmail="";
 	var otp; var otpmail; var locerr = 0; var hiname = 0; var acceptsloaded = 0; var fare =""; var conval = 1; var convcurr="INR";
-	var clicklogin=0; var arrPckgs = []; var rsltshow = 0;  var arraccepts = []; var revrsdone = 0; var mycenter; var lognclckd = 0; var flgg=0;
+	var clicklogin=0;
+	var arrPckgs = []; var rsltshow = 0;  var arraccepts = []; var revrsdone = 0; var mycenter; var lognclckd = 0; var flgg=0;
 
 angular.module('MyApp',['ngMaterial',"firebase"]) 
  .controller('PositionDemoCtrl', function DemoCtrl($mdDialog) {
@@ -24,9 +25,11 @@ angular.module('MyApp',['ngMaterial',"firebase"])
       originatorEv = null;
     };
   })
-.controller('AppCtrl', ["$scope", "$firebaseArray", '$mdSidenav',
-function($scope, $firebaseArray, $mdSidenav) {
-	$scope.descriptor="";	
+.controller('AppCtrl', ["$scope", "$firebaseArray", 
+function($scope, $firebaseArray) {
+	$scope.data = {};
+  $scope.data.cb4 = false;
+  $scope.descriptor="";
 	$scope.imagePath = 'download.png';
   var imagePath = 'download.png';
    $scope.myDate = null;
@@ -39,11 +42,12 @@ function($scope, $firebaseArray, $mdSidenav) {
       (new Date()).getFullYear(),
       (new Date()).getMonth() + 2,
       (new Date()).getDate());	 
-	  	  
+	$scope.determinateValue = 0;
+          
 	  $scope.post2 = function(){
 			if(img64==""){}else{
 			if(loggedin==1){
-			if(usrfbid=="" || usrfbid==null || usrfbid === undefined || usrfbid === null){ befrlogin()}
+			if(usrfbid=="" || usrfbid==null || usrfbid === undefined || usrfbid === null){ login()}
 			else if(usrphone=="" || usrphone==null || usrphone === undefined || usrphone === null){
 			
 				swal({title: "Mobile Verification", text: "",   type: "input",   showCancelButton: false,   closeOnConfirm: false,   animation: "slide-from-top",   inputPlaceholder: "Your 10-digit mobile number" }, 				
@@ -77,7 +81,7 @@ function($scope, $firebaseArray, $mdSidenav) {
 			$scope.myDate = null;
 			}
 			}	else{ $('#signleft').click();
-			//befrlogin() 
+			//login() 
 			};
 			}			
 		}	  
@@ -86,7 +90,7 @@ function($scope, $firebaseArray, $mdSidenav) {
 		clicklogin=1;
 		if(loggedin==1){
 		if(usrfbid=="" || usrfbid==null || usrfbid === undefined || usrfbid === null){
-			befrlogin();
+			login();
 		}else if(usrphone=="" || usrphone==null || usrphone === undefined || usrphone === null){
 			
 				swal({title: "Mobile Verification", text: "",   type: "input",   showCancelButton: false,   closeOnConfirm: false,   animation: "slide-from-top",   inputPlaceholder: "Your 10-digit mobile number" }, 				
@@ -130,8 +134,8 @@ function($scope, $firebaseArray, $mdSidenav) {
 		clearInterval(interval);
 		firebaseRef.child("users").child(usrid).child("accepts").child(arrPckgs[rsltshow].id).update(arrPckgs[rsltshow]);
 		firebaseRef.child("users").child(usrid).child("accepts").update({notification:"yes"});
-		firebaseRef.child("users").child(arrPckgs[rsltshow].usrid).child("posts").update({notification:"yes"});
 		firebaseRef.child("users").child(arrPckgs[rsltshow].usrid).child("posts").child(arrPckgs[rsltshow].id).update({status:"Waiting for Approval"});
+		firebaseRef.child("users").child(arrPckgs[rsltshow].usrid).child("posts").update({notification:"yes"});
 		firebaseRef.child("users").child(arrPckgs[rsltshow].usrid).child("posts").child(arrPckgs[rsltshow].id).child("acceptors").child(usrid).update({id:usrid,usrname:usrname,usrphone:usrphone, usrfbid:usrfbid, usrfbimg:usrfbimg}).then(function() {
 		smsacceptdm(arrPckgs[rsltshow].usrphn);smsacceptsupp(usrphone); var actionz = "BECK friend "+ usrname +" accepted a new order: " + arrPckgs[rsltshow].id; mailcall(actionz,usremail,usrphone);	
 		$('body').plainOverlay('hide');
@@ -145,13 +149,14 @@ function($scope, $firebaseArray, $mdSidenav) {
 		}
 		else{
 			fbflag = 1; $('#signleft').click();
-			//befrlogin();
+			//login();
 		}
 		};
 		
 		$scope.showprofile = function(value){
 			window.open('http://www.fb.com/'+value.usrfbid,'_blank');
 		}
+		
 		
 		$scope.approvefrnd = function(val,idpckgmatch){			
 			//needs to be checked
@@ -187,41 +192,44 @@ function($scope, $firebaseArray, $mdSidenav) {
 				/*
 				if(arr.$getRecord("notification").$value == "no"){
 					document.getElementById("notif1").style.display="none";
-				}
-				else{
+				} else{
 					document.getElementById("notif1").style.display="inline";
 					document.getElementById("notif").style.display="inline";
 				}
 				*/
 			});
-			$scope.posts = $firebaseArray(firebaseRef.child("users").child(usrid).child("posts"));
-			$scope.posts.$loaded().then(function(arr){
-				$scope.postarr = arr;
-				/*
-				var interval = setInterval(function(){
-					if(revrsdone==1){
-					clearInterval(interval);					
-					for (var key in arr) {
-					if(arr[key].$id === undefined || arr[key].fare == 'GET QUOTE'){}else{
-					arr[key].fare = convcurr+" "+ Math.round(Number(arr[key].fare)/conval);
-					}
-					}										
-					}					
-					$scope.$apply(function() {
-					$scope.postarr = arr;
-					});
-				},1500);
-								
-				if(arr.$getRecord("notification").$value == "no"){
-					document.getElementById("notif2").style.display="none";					
+		$scope.posts = $firebaseArray(firebaseRef.child("users").child(usrid).child("posts"));
+		$scope.googleconnect = $firebaseArray(firebaseRef.child("users").child(usrid).child("account").child("google"));
+		$scope.accountdet = $firebaseArray(firebaseRef.child("users").child(usrid).child("account"));
+		$scope.accountdet.$loaded().then(function(arr){
+			for (var key in arr) {
+					if(arr[key].$id == "google"){
+						$scope.determinateValue+=10;
+					}if(arr[key].$id == "facebook"){
+						$scope.determinateValue+=10;
+					}if(arr[key].$id == "linkedin"){
+						$scope.determinateValue+=10;
+					}if(arr[key].$id == "usrphone"){
+						$scope.determinateValue+=20;
+					}else{}
 				}
-				else{
-					document.getElementById("notif2").style.display="inline";
-					document.getElementById("notif").style.display="inline";
-				}
-				*/
-			});
-		  }
+		});
+		$scope.linkedinconnect = $firebaseArray(firebaseRef.child("users").child(usrid).child("account").child("linkedin"));
+		$scope.fbconnect = $firebaseArray(firebaseRef.child("users").child(usrid).child("account").child("facebook"));
+		$scope.routes = $firebaseArray(firebaseRef.child("users").child(usrid).child("routes"));
+		$scope.routes.$loaded().then(function(arr){
+			if(arr.length > 4){
+				$scope.determinateValue+=20;
+			}else{
+				$scope.determinateValue+=arr.length*4;
+			}
+		});
+		$scope.addRoute = function() {
+			$scope.routes.$add({ startlat:startlat, startlng:startlng, strtlocaddr:strtlocaddr, endlat:endlat, endlng:endlng, endlocaddr:endlocaddr});
+			document.getElementById("strtloc").value = ""; document.getElementById("endloc").value = "";
+			startlat=0; startlng=0; strtlocaddr="";endlat=0; endlng=0; endlocaddr="";
+		};
+		}
 		},2000);	
 }])
 .config(function($mdDateLocaleProvider) {
@@ -309,7 +317,7 @@ function($scope, $firebaseArray, $mdSidenav) {
 		document.getElementById("pckgctr").innerHTML="Loading...";
 			for (var i = 0; i < hotSpotMapMarkers.length; i++)
 			hotSpotMapMarkers[i].setMap(null);
-		 // document.getElementById("rqstgist").style.display="none";
+		  //document.getElementById("rqstgist").style.display="none";
 		  google.maps.event.trigger(map, 'resize');
 		  rsltshow = 0;
 		  if(path) path.setMap(null);
@@ -443,7 +451,7 @@ var nofkeys=0;
 		nofkeys = arrPckgs.length;
 		if(nofkeys==0){
 			document.getElementById("pckgctr").innerHTML = "Searching More...";
-			document.getElementById("rqstgist").style.display="none";
+			//document.getElementById("rqstgist").style.display="none";
 			rfrshresults(mycenter);
 			for (var i = 0; i < hotSpotMapMarkers.length; i++)
 			hotSpotMapMarkers[i].setMap(null);
@@ -744,7 +752,8 @@ $(document).ready(function(){
     return text;
 	}
 	
-	function post(){	
+	function post(){
+		var delidate = deliverydate;		
 		$('body').plainOverlay('show',{
 			opacity:0.8,
 			fillColor: '#000',
@@ -756,7 +765,7 @@ $(document).ready(function(){
 			description = document.getElementById("descriptor").value;
 		}
 		
-		firebaseRef.child("packages").child(orderid).update({order:{img64:img64,description:description,id:orderid,lat:pickuplat,lon:pickuplng,usrid:usrid,usrphone:usrphone,usrname:usrname,usremail:usremail,pickuplat:pickuplat,pickuplng:pickuplng, delvlat:delvlat, delvlng:delvlng, pickuparea:pickuparea, pickupaddr:pickupaddr, pickupname:pickupname, pickupnum:pickupnum, deliveryaddr:deliveryaddr, deliveryarea:deliveryarea, deliverynum:deliverynum, deliveryname:deliveryname,deliverydate:deliverydate,deliverytime:deliverytime, pckgvalue:pckgvalue, pckgweight:pckgweight,pckgsize:pckgsize,fare:fare}},function(error){
+		firebaseRef.child("packages").child(orderid).update({order:{img64:img64,description:description,id:orderid,lat:pickuplat,lon:pickuplng,usrid:usrid,usrphone:usrphone,usrname:usrname,usremail:usremail,pickuplat:pickuplat,pickuplng:pickuplng, delvlat:delvlat, delvlng:delvlng, pickuparea:pickuparea, pickupaddr:pickupaddr, pickupname:pickupname, pickupnum:pickupnum, deliveryaddr:deliveryaddr, deliveryarea:deliveryarea, deliverynum:deliverynum, deliveryname:deliveryname,deliverydate:delidate,deliverytime:deliverytime, pckgvalue:pckgvalue, pckgweight:pckgweight,pckgsize:pckgsize,fare:fare}},function(error){
 		if (error) {
 			swal({   title: "POST FAILED",   text: "Oops! Failed to post. Please try again",   type: "error",   confirmButtonText: "OK" });
 		} else {
@@ -766,7 +775,7 @@ $(document).ready(function(){
 		});
 		var orderid2 = orderid+"D";
 		firebaseRef.child("packages").child(orderid).update({img:{img64:img64}}).then(function() {
-		firebaseRef.child("users").child(usrid).child("posts").child(orderid).update({status:"Waiting for Accept",img64:img64,description:description,id:orderid,lat:pickuplat,lon:pickuplng,usrid:usrid,usrphone:usrphone,usrname:usrname,usremail:usremail,pickuplat:pickuplat,pickuplng:pickuplng, delvlat:delvlat, delvlng:delvlng, pickuparea:pickuparea, deliverydate:deliverydate, pickupaddr:pickupaddr, pickupname:pickupname, pickupnum:pickupnum, deliveryaddr:deliveryaddr, deliveryarea:deliveryarea, deliverynum:deliverynum, deliveryname:deliveryname,deliverytime:deliverytime, pckgvalue:pckgvalue, pckgweight:pckgweight,pckgsize:pckgsize,fare:fare2});
+		firebaseRef.child("users").child(usrid).child("posts").child(orderid).update({status:"Waiting for Accept",img64:img64,description:description,id:orderid,lat:pickuplat,lon:pickuplng,usrid:usrid,usrphone:usrphone,usrname:usrname,usremail:usremail,pickuplat:pickuplat,pickuplng:pickuplng, delvlat:delvlat, delvlng:delvlng, pickuparea:pickuparea, deliverydate:delidate, pickupaddr:pickupaddr, pickupname:pickupname, pickupnum:pickupnum, deliveryaddr:deliveryaddr, deliveryarea:deliveryarea, deliverynum:deliverynum, deliveryname:deliveryname,deliverytime:deliverytime, pckgvalue:pckgvalue, pckgweight:pckgweight,pckgsize:pckgsize,fare:fare2});
 		firebaseRef.child("users").child(usrid).child("posts").update({notification:"yes"});
 		geoFire.set(orderid, [pickuplat, pickuplng]).then(function() {}, function(error) {
 		swal({   title: "POST FAILED",   text: "Oops! Failed to post. Please try again",   type: "error",   confirmButtonText: "OK" });
@@ -910,25 +919,28 @@ $(document).ready(function(){
 	}
 	
 	function editnum(){
-		
+		//if(loggedin==1){
 			if(usrphone){
 				swal({   title: "Change number",   text: "Your present registered number is +"+usrphone+". Are you sure you want to change it?", html: true,   type: "warning",   showCancelButton: true,   confirmButtonColor: "#2bb1de",   confirmButtonText: "Change it",   closeOnConfirm: false }, function(){ smsending() })
 			}
 				else {
 					swal({   title: "Update number",   text: "Please update to your latest contact number", html: true,   type: "warning",   showCancelButton: true,   confirmButtonColor: "#2bb1de",   confirmButtonText: "Update it",   closeOnConfirm: false}, function(){ smsending() })
 				}
-			
+		//	}else{login()};
 	}
 	
 	function smsending(){
+		var distinterval = setInterval(function(){
 		if(loggedin==1){
+			clearInterval(distinterval);
 				swal({title: "Mobile Verification", text: "", type: "input", closeOnConfirm: false, animation: "slide-from-top",   inputPlaceholder: "Your 10-digit mobile number" }, 				
 				function(inputValue){
+				if (inputValue === false) return false;
 				if((inputValue.length == 11) && (inputValue[0] == '0')){
 					inputValue = inputValue.substr(1,inputValue.length);
 				};
-				var number = inputValue.replace(/[^\d]/g, '').length;
-				if (inputValue === false) return false; 
+				var number = inputValue.replace(/[^\d]/g, '').length;	
+				
 				if (number != 10) {swal.showInputError("Please Enter your 10 digit mobile number (without adding zero in the beginning) and select your country code");     return false   }
 				if (String(document.getElementById("countrycd").value)+String(inputValue.replace(/[^\d]/g, '')) == String(usrphone)) {swal.showInputError("Please do not enter the existing registered mobile number");     return false   }
 				var intno = String(document.getElementById("countrycd").value)+String(inputValue.replace(/[^\d]/g, ''));
@@ -952,17 +964,15 @@ $(document).ready(function(){
 				});
 				});	
 				$(".sweet-alert p").html('<br>Please select your country and enter your mobile number<br>&nbsp;<br><select id="countrycd" style="padding:5px;font-size:14px; font-family:\'Maven Pro\', sans-serif;"><option data-countryCode="FR" value="33">France (+33)</option><option data-countryCode="DE" value="49">Germany (+49)</option><option data-countryCode="GR" value="30">Greece (+30)</option><option data-countryCode="HU" value="36">Hungary (+36)</option><option data-countryCode="IN" value="91" selected>India (+91)</option><option data-countryCode="ID" value="62">Indonesia (+62)</option><option data-countryCode="IT" value="39">Italy (+39)</option><option data-countryCode="JP" value="81">Japan (+81)</option><option data-countryCode="MY" value="60">Malaysia (+60)</option><option data-countryCode="MX" value="52">Mexico (+52)</option><option data-countryCode="MN" value="95">Myanmar (+95)</option><option data-countryCode="NL" value="31">Netherlands (+31)</option><option data-countryCode="NZ" value="64">New Zealand (+64)</option><option data-countryCode="PE" value="51">Peru (+51)</option><option data-countryCode="PH" value="63">Philippines (+63)</option><option data-countryCode="PL" value="48">Poland (+48)</option><option data-countryCode="RO" value="40">Romania (+40)</option><option data-countryCode="SG" value="65">Singapore (+65)</option><option data-countryCode="ZA" value="27">South Africa (+27)</option><option data-countryCode="ES" value="34">Spain (+34)</option><option data-countryCode="LK" value="94">Sri Lanka (+94)</option><option data-countryCode="SE" value="46">Sweden (+46)</option><option data-countryCode="CH" value="41">Switzerland (+41)</option><option data-countryCode="TH" value="66">Thailand (+66)</option><option data-countryCode="TR" value="90">Turkey (+90)</option><option data-countryCode="GB" value="44">UK (+44)</option></select>');
-			}
-			else{
-				befrlogin();
-			}
+			}			
+	},1000);
 	}
 	
 	function doClick(url) {
    if(loggedin==1)
        location.href = "#"+url;
    else
-       befrlogin();
+       login();
 	}
 	
 	var today,fare2="";
@@ -970,9 +980,15 @@ $(document).ready(function(){
 		pickupnum = document.getElementById("pickupnum").value;
 		deliverynum = document.getElementById("deliverynum").value;
 		 var phoneno = /^\d{10,13}$/;
-		if(document.getElementById("searchloc3").value=="" || document.getElementById("pickupnum").value=="" || document.getElementById("pickupname").value==""){
+		 if(!pickuplat || pickuplat==""){
+			sweetAlert("Pickup Area", "Please select from the locations suggested in pickup area", "error");
+		 }
+		 else if(!delvlat || delvlat==""){
+			sweetAlert("Delivery Area", "Please select from the locations suggested in delivery area", "error");
+		 }
+		else if(document.getElementById("searchloc3").value=="" || document.getElementById("pickupnum").value=="" || document.getElementById("pickupname").value=="" || document.getElementById("pickupaddr").value==""){
 			sweetAlert("Pickup Details", "Please fill all the details at Pickup Location!", "error");
-		}else if(document.getElementById("searchloc2").value=="" || document.getElementById("deliverynum").value=="" || document.getElementById("deliveryname").value==""){
+		}else if(document.getElementById("searchloc2").value=="" || document.getElementById("deliverynum").value=="" || document.getElementById("deliveryname").value=="" || document.getElementById("deliveryaddr").value==""){
 			sweetAlert("Delivery Details", "Please fill all the details at Delivery Location!", "error");
 		}else if(!pickupnum.match(phoneno)){
 			sweetAlert("Pickup Contact", "Please fill a valid 10-digit number for Pickup Location contact number", "error");
@@ -1239,7 +1255,7 @@ $(document).ready(function(){
 	document.getElementById("pdatetym").innerHTML = arrPckgs[i].datetym;
 	document.getElementById("ppickup").innerHTML = arrPckgs[i].pickup;	
 	document.getElementById("pdelv").innerHTML = arrPckgs[i].delv;	
-	document.getElementById("rqstgist").style.display="block";
+	//document.getElementById("rqstgist").style.display="block";
 	$("#tflbckg").css("background-image", "url('" + arrPckgs[i].img + "')");
 	if(i==0&&map===undefined){
 		window.location.reload();
@@ -1501,7 +1517,7 @@ $(document).ready(function(){
 	}
 	
 	
-	function befrlogin(){
+	function login(){
 		login();
 		//swal({ title: "Love to have you on board",   text: "Enter into your BECK Friends Account with Facebook",   type: "success",   showCancelButton: true,   confirmButtonColor: "#2bb1de",   confirmButtonText: "Go Ahead" }, function(){login()});		
 	}
@@ -1544,6 +1560,48 @@ $(document).ready(function(){
 	});
 	}
 	
+	var startlat = 0; var startlng = 0; var strtlocaddr = "";
+	function callautostart(){		
+		var autocomplete = new google.maps.places.Autocomplete(document.getElementById('strtloc'));
+        autocomplete.addListener('place_changed', function() {
+		  var place = autocomplete.getPlace();
+          if (!place.geometry) {
+           return;
+          }
+		 
+			var center = place.geometry.location;
+			startlat = center.lat(); startlng = center.lng(); strtlocaddr = document.getElementById("strtloc").value;			
+			if (place.address_components) {
+            address = [
+              (place.address_components[0] && place.address_components[0].short_name || ''),
+              (place.address_components[1] && place.address_components[1].short_name || ''),
+              (place.address_components[2] && place.address_components[2].short_name || '')
+            ].join(' ');			
+          }          
+        });
+	}
+	
+	var endlat = 0; var endlng = 0; var endlocaddr = ""; 
+	function callautoend(){		
+		var autocomplete = new google.maps.places.Autocomplete(document.getElementById('endloc'));
+        autocomplete.addListener('place_changed', function() {
+		  var place = autocomplete.getPlace();
+          if (!place.geometry) {
+           return;
+          }
+		   
+			var center = place.geometry.location;
+			endlat = center.lat(); endlng = center.lng(); endlocaddr = document.getElementById("endloc").value;
+			if (place.address_components) {
+            address = [
+              (place.address_components[0] && place.address_components[0].short_name || ''),
+              (place.address_components[1] && place.address_components[1].short_name || ''),
+              (place.address_components[2] && place.address_components[2].short_name || '')
+            ].join(' ');			
+          }          
+        });
+	}
+	
 	function callautoinit(){		
 		var autocomplete = new google.maps.places.Autocomplete(document.getElementById('searchlocinit'));
         autocomplete.bindTo('bounds', map); 	
@@ -1567,7 +1625,6 @@ $(document).ready(function(){
 			for (var i = 0; i < hotSpotMapMarkers.length; i++)
 			hotSpotMapMarkers[i].setMap(null);
 			if(path) path.setMap(null); 
-			//document.getElementById("rqstgist").style.display="none";
 			document.getElementById("pckgctr").innerHTML="Loading...";
 			var address = ''; rsltshow = 0; google.maps.event.trigger(map, 'resize');
 			$("#tflbckg").css("background-image", "url('preloader.gif')");
@@ -1615,6 +1672,11 @@ $(document).ready(function(){
 			document.getElementById("pckgctr").innerHTML="Loading...";
 			var address = ''; rsltshow = 0; google.maps.event.trigger(map, 'resize');
 			$("#tflbckg").css("background-image", "url('preloader.gif')");
+			document.getElementById("pfare").innerHTML = '';
+			document.getElementById("psize").innerHTML = '<img src="line.png" style="width:70%;display:inline;">';
+			document.getElementById("ppickup").innerHTML = '<img src="line.png" style="width:100%;display:inline;">';
+			document.getElementById("pdelv").innerHTML = '<img src="line.png" style="width:100%;display:inline;">';
+			document.getElementById("pdatetym").innerHTML = '<img src="line.png" style="width:100%;display:inline;">';
 			$('#map').plainOverlay('show',{opacity:0.8, fillColor: '#000', progress: function() { return $('<div style="font-size:40px;color:#fff;font-weight:bold">Loading...</div>') }});
 			if (place.address_components) {
             address = [
@@ -1652,8 +1714,9 @@ $(document).ready(function(){
 				if((inputValue.length == 11) && (inputValue[0] == '0')){
 					inputValue = inputValue.substr(1,inputValue.length);
 				};
-				var number = inputValue.replace(/[^\d]/g, '').length ;
 				if (inputValue === false) return false; 
+				var number = inputValue.replace(/[^\d]/g, '').length;	
+				
 				if (number != 10) {swal.showInputError("Please Enter your 10 digit mobile number (without adding zero in the beginning) and select your country code");     return false   }
 				var intno = String(document.getElementById("countrycd").value)+String(inputValue.replace(/[^\d]/g, ''));
 				if(document.getElementById("countrycd").value == '91'){
@@ -1669,7 +1732,8 @@ $(document).ready(function(){
 				if(usremail=="" || usremail===undefined){ swal({   title: "Your Email!",   text: "Oops! There was a problem confirming your email",   type: "input",   showCancelButton: true,   closeOnConfirm: false,   animation: "slide-from-top",   inputPlaceholder: "Your email here" }, function(inputValuez){   if (inputValuez === false) return false;      if (inputValuez === "") {     swal.showInputError("You need to write something!");     return false   }     usrnewmail = String(inputValuez).replace(/[^a-zA-Z0-9]/g, ' '); usremail = inputValuez})};
 				firebaseRef.child("users").child(usrnewmail).child("account").update({
 					usrname:usrname, usremail:usremail, usrid:usrnewmail, usrphone:intno
-				});				
+				});		
+								
 				usrphone = intno;
 				usrid = usrnewmail;
 				var regsclbck = "New user registered on friends : "+usrname+" "+usrphone+" "+usremail;
