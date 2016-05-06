@@ -39,15 +39,22 @@ var googleUser = {};
   function attachSignin(element) {
     auth2.attachClickHandler(element, {},
         function(googleUser) {
-		var googleID = googleUser.getBasicProfile().getId();
-		var googleName = googleUser.getBasicProfile().getName();
-		var googleEmail = googleUser.getBasicProfile().getEmail();
-		var googleImgurl = googleUser.getBasicProfile().getImageUrl();
+		var googleID = "";
+		googleID = googleUser.getBasicProfile().getId();
+		var googleName = "";
+		googleName = googleUser.getBasicProfile().getName();
+		var googleEmail = "";
+		googleEmail = googleUser.getBasicProfile().getEmail();
+		var googleImgurl = "";
+		googleImgurl = googleUser.getBasicProfile().getImageUrl();
+		if(googleEmail==usremail){		
 		firebaseRef.child("users").child(usrid).child("account").child("google").update({
-			name:googleName, email:googleEmail, googlimg:googleImgurl, id:googleID
+			name:googleName, email:googleEmail, id:googleID
 		});	
-		//angular.element('[ng-controller=AppCtrl]').scope().$apply();
-        }, function(error) {
+		}else{
+		sweetAlert("Oops...", "You need to connect the same Google account with this email. Tip: Logout from Google and try again", "error");		
+		}
+		}, function(error) {
           console.log(JSON.stringify(error, undefined, 2));
         });
   }
@@ -62,9 +69,13 @@ var googleUser = {};
             var pictureUrl = profile.pictureUrls.values[0];
             var profileUrl = profile.publicProfileUrl;
             var country = profile.location.name;
+			if(emailAddress==usremail){
 			firebaseRef.child("users").child(usrid).child("account").child("linkedin").update({
 				name:name, email:emailAddress, linkdimg:pictureUrl, id:id, profileurl:profileUrl, location:country
 			});	
+			}else{
+			sweetAlert("Oops...", "You need to connect the same LinkedIn account with this email. Tip: Logout from LinkedIn and try again", "error");		
+			}
         });
 		}
 	
@@ -134,7 +145,6 @@ background:url('http://c.boylett.uk/images/wallpapers/009.jpg');background-size:
   height: 7em;
   margin-right: auto;
   margin-left: auto;
-  border: .5em solid #eaeaea;
   border-radius: 100%;
   box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.1);
 }
@@ -156,7 +166,7 @@ background:url('http://c.boylett.uk/images/wallpapers/009.jpg');background-size:
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   padding-bottom: 10px;
   padding-top:10px;
-  font-size: 20px;
+  font-size: 14px;
   text-transform: uppercase;
   margin-top:0;
 }
@@ -831,11 +841,11 @@ input:focus {
 		<div class="cd-user-modal-container">
 			<ul class="cd-switcher" style="list-style-type: none;padding-left:0">
 				<li class="regli"><a id="signinbtnn" class="rgli" href="#0" style="text-decoration: none;">Sign In</a></li>
-				<li class="regli"><a class="rgli" href="#0" style="text-decoration: none;">New Account</a></li>
+				<li class="regli"><a id="signupbtnn" class="rgli" href="#0" style="text-decoration: none;">New Account</a></li>
 			</ul>
 			<div id="cd-login">
 				<form class="cd-form">
-					<!--p class="fieldset">
+					<p class="fieldset">
 						<label class="image-replace cd-email" for="signin-email">Your E-mail</label>
 						<input class="full-width has-padding has-border" id="signin-email" type="email" placeholder="E-mail">						
 					</p>
@@ -848,7 +858,7 @@ input:focus {
 					</p>
 					<p class="fieldset" style="text-align:center">
 						<label for="accept-terms">OR</label>
-					</p-->
+					</p>
 					<p class="fieldset">
 						<input class="full-width has-padding" type="button" style="background:#3b5998;color:#fff" value="Login with Facebook" onclick="login()">
 					</p>
@@ -859,7 +869,7 @@ input:focus {
 					<p class="fieldset">
 						<input class="full-width has-padding" type="button" style="background:#3b5998;color:#fff" value="Connect with Facebook" onclick="login()">
 					</p>
-					<!--p class="fieldset" style="text-align:center">
+					<p class="fieldset" style="text-align:center">
 						<label for="accept-terms">OR</label>
 					</p>					
 					<p class="fieldset">
@@ -877,10 +887,10 @@ input:focus {
 					</p>
 					<p class="fieldset">
 						<input class="full-width has-padding" type="button" value="Sign Up" style="background:#b7405d;color:#fff" onclick="signupmail()">
-					</p-->										
+					</p>										
 					<p class="fieldset"  style="text-align:center">
-						<label for="accept-terms">By signing up, you agree to the <a style="text-decoration:none" href="../../terms.html" target="_blank">Terms</a></label>
 					</p>
+						<label for="accept-terms"><a style="text-decoration:none" href="../../terms.html" target="_blank">Signup Terms</a></label>
 				</form>				
 			</div>
 			<a id="myanchor" href="#0" class="cd-close-form">Close</a>
@@ -888,7 +898,7 @@ input:focus {
 	</div>
   
   <script>
-   var map,directionsService, directionsDisplay;	
+	var map,directionsService, directionsDisplay;	
     function initMap(){
 	directionsService = new google.maps.DirectionsService;
 	directionsDisplay = new google.maps.DirectionsRenderer;
@@ -921,43 +931,12 @@ input:focus {
 	}
 	google.maps.event.addDomListener(window, 'load', initMap);	   
 	
-  window.fbAsyncInit = function() {
+	window.fbAsyncInit = function() {
     FB.init({
       appId      : '949587018459748',
       xfbml      : true,
       version    : 'v2.5'
     });
-	
-	FB.getLoginStatus(function(response) {
-	if (response.status === 'connected') {
-	FB.api('/me?fields=id,email,name,picture.height(100)', function(response) {	
-	  document.getElementById("profile_img").src = String(response.picture.data.url);
-	  document.getElementById("namehdr").innerHTML = 'Hi ' + String(response.name).split(" ")[0].substring(0, 10);		 
-	  document.getElementById("namehdr2").style.display = "inline-block";
-	  usrname = String(response.name); usremail = String(response.email);
-	  usrfbid = String(response.id); usrfbimg = String(response.picture.data.url);
-	  var usrnewml = String(usremail).replace(/[^a-zA-Z0-9]/g, ' ');
-		firebaseRef.child("users").child(usrnewml).child("account").child("facebook").update({
-			fbimg:usrfbimg, name:usrname, email:usremail, id:usrfbid
-		});	
-	  checkfirebase(usremail);
-    });	
-	document.getElementById("signleft").style.display = "none";
-	}
-	else {
-	hiname = 1; acceptsloaded=1;
-	loggedin=0,usrname="",usremail="",usrphone="",usrid="";
-	if(localStorage.getItem('svemail')){
-		document.getElementById("signin-email").value = localStorage.getItem('svemail');
-		document.getElementById("signin-password").value = localStorage.getItem('svpsw');
-		loginmail();
-	}else if(sessionStorage.getItem('svemail')){
-		document.getElementById("signin-email").value = sessionStorage.getItem('svemail');
-		document.getElementById("signin-password").value = sessionStorage.getItem('svpsw');
-		loginmail();
-	}
-	}
-	});	
 	};
 
 	(function(d, s, id){
@@ -981,43 +960,98 @@ input:focus {
 	return false;
 	}
 	
-	function login(){
-	clicklogin=1;
-	
+	function fbConnect(){
 	FB.login(function(response) {
 	if (response.authResponse) {
 	if (response.status === 'connected') {	
 	FB.api('/me?fields=id,email,name,picture.height(100)', function(response) {
-	document.getElementById("profile_img").src = String(response.picture.data.url);
-	  document.getElementById("namehdr").innerHTML = 'Hi ' + String(response.name).split(" ")[0].substring(0, 10);	 
-	  document.getElementById("namehdr2").style.display = "inline-block";
-	   usrfbimg = String(response.picture.data.url); usrname = String(response.name); usremail = String(response.email); usrfbid = String(response.id);
-		var usrnewml = String(usremail).replace(/[^a-zA-Z0-9]/g, ' ');
-		firebaseRef.child("users").child(usrnewml).child("account").child("facebook").update({
-			fbimg:usrfbimg, name:usrname, email:usremail, id:usrfbid
-		});	
-	  checkfirebase(usremail); 	  
+	   var fbimg = String(response.picture.data.url); var fbname = String(response.name); var fbmail = String(response.email); var fbid = String(response.id);
+		if(fbmail==usremail){
+		firebaseRef.child("users").child(usrid).child("account").child("facebook").update({
+			fbimg:fbimg, fbname:fbname, fbemail:fbmail, fbid:fbid
+		});
+		if(fbimg || fbimg !="undefined"){
+			firebaseRef.child("users").child(usrid).child("account").update({
+				usrimg:fbimg
+			});
+		}				
+		}
+		else if(fbmail =="undefined"){
+		firebaseRef.child("users").child(usrid).child("account").child("facebook").update({
+			fbimg:fbimg, fbname:fbname, fbid:fbid
+		});
+		if(fbimg || fbimg !="undefined"){
+			firebaseRef.child("users").child(usrid).child("account").update({
+				usrimg:fbimg
+			});
+		}
+		}
+		else{
+		sweetAlert("Oops...", "You need to connect the same Facebook account with this email. Tip: Logout from Facebook and try again", "error");		
+		}
+	})
+	}else{
+	sweetAlert("Oops...", "Something went wrong. Could not Connect you", "error");
+	}
+	}
+	})
+	}
+	
+	function login(){
+	FB.login(function(response) {
+	if (response.authResponse) {
+	if (response.status === 'connected') {	
+	FB.api('/me?fields=id,email,name,picture.height(100)', function(response) {
+	usrfbimg = String(response.picture.data.url); usrname = String(response.name); usremail = String(response.email); usrfbid = String(response.id);
+	var usrnwmail = String(usremail).replace(/[^a-zA-Z0-9]/g, ' ');
+	if(usrnwmail=="undefined"){
+	swal({   title: "Email not received!",   text: "Could you please enter your emailaddress",   type: "input",   showCancelButton: false,   closeOnConfirm: false,   animation: "slide-from-top",   inputPlaceholder: "Your E-mail Address" }, function(inputValue){   if (inputValue === false) return false;      if (inputValue === "") {     swal.showInputError("You need to write an email address!");     return false   }      
+	mailconfirm(inputValue);
+	//swal("Nice!", "You wrote: " + inputValue, "success"); 
+	swal({title: "E-mail verification Code", text: "Please enter the 4 digit Verification Code sent to your E-mail",   type: "input",   showCancelButton: false,   closeOnConfirm: false,   animation: "slide-from-top",   inputPlaceholder: "Verification Code" }, 
+				function(emailVal){
+				if (emailVal === false) return false;
+				if (emailVal != otpmail) {     swal.showInputError("Please Enter the correct 4 digits");     return false   }
+				firebaseRef.createUser({ email    : usremail,  password : passwd}, function(error, userData) {
+					if (error) {
+						swal("Oops...", "There was a problem creating your Account. Please try Again", "error");
+						$('body').plainOverlay('hide');
+						return;
+					} else {
+						swal("Account Created!", "We shall keep you updated with trips on your route", "success");
+						firebaseRef.child("users").child(usrnewmail).child("account").update({usrimg:usrimg,usrname:usrname, usremail:usremail, usrid:usrnewmail});	
+						document.cookie = "beckusrmail="+usremail+"; expires=Wed, 14 Feb 2029 12:00:00 UTC";
+						usrid = usrnewmail; var regsclbck = "New user registered on friends : "+usrname+" "+usremail;
+						mailcall(regsclbck); loggedin = 1;
+						// check before displaying whether first time or what is the scene
+				document.getElementById("namehdr").innerHTML = 'Hi ' + usrname.split(" ")[0].substring(0, 10);		 
+				document.getElementById("namehdr2").style.display = "inline-block"; document.getElementById("signleft").style.display = "none";
+				loggedin = 1; //document.getElementById("mnuitm").style.display="none"; document.getElementById("tgnmlyn").style.paddingLeft = "20px";
+				$('#myanchor').click();						
+				};
+				})
+				});
+	});
+	}
+	checkfirebasefb(usremail,usrfbimg,usrname,usrfbid); 	  
     })
 	}else{
 	sweetAlert("Oops...", "Something went wrong. Could not Log you in", "error");
 	};
-	document.getElementById("signleft").style.display = "none";
 	}
 	else {
-	acceptsloaded=1;
-	loggedin=0,usrname="",usremail="",usrphone="",usrid="";
+	acceptsloaded=1; loggedin=0,usrname="",usremail="",usrphone="",usrid=""; //check these things
 	}
-	} , {scope: 'email'});	
+	},{scope: 'email'});	
 	}
-	
 	</script>
-  <script src="index.js"></script>
+	<script src="index.js"></script>
 		<div class="container" ng-controller="PositionDemoCtrl as ctrl" ng-cloak>	
 			<ul id="gn-menu" class="gn-menu-main" style="border-bottom:1px solid #c6d0da;position: absolute;z-index:999;">								
 				<li id="tgnmlyn" style="padding-left:60px;padding-right:60px;font-size:24px;font-family: 'Maven Pro', sans-serif;">BECK <span style="color:#ff0000;">Friends</span></li>
 				<li id="mnuitm2" style="display:none;padding-left:20px;padding-right:10px;font-size:18px;border-right:none;width:50%"><img src="search.png" style="width:28px;margin-top:17px;display:inline;position:absolute;"><input placeholder="What is Your Location?" type="search" id="searchloc" class="gn-search" style="padding-left:40px;width:100%;display:inline"></li>
 				<li id="lastbit" style="display:none;padding-left:0px;padding-right:0px;font-size:18px;" ><md-button id="signleft" style="margin-top:-5px;background:#FF5274;color:#fff;margin-left:40px;margin-right:40px">LOGIN</md-button>
-				<md-button id="namehdr2" class="md-primary dropdown" ng-click="myDropdownIsActive=!myDropdownIsActive" ng-class="{active:myDropdownIsActive}" style="margin:0;height:95%;padding-left:40px;padding-right:40px;display:none">
+	<md-button id="namehdr2" class="md-primary dropdown" ng-click="myDropdownIsActive=!myDropdownIsActive" ng-class="{active:myDropdownIsActive}" style="margin:0;height:95%;padding-left:40px;padding-right:40px;display:none">
     <img id="profile_img" src="profile.png" style="margin-top:-5px;margin-right:15px;border-radius:50%;width:40px;height:40px;vertical-align: middle;"><span id="namehdr" style="color:#252525">Hi Rahul</span><img src="downarr.png" style="margin-left:10px;border-radius:50%;width:16px;height:16px;vertical-align: middle;">
     <ul class="dropdown-menu md-whiteframe-z1">
       <li><a id="demo02" href="#acceptedModal">Accepted Requests</a></li>
@@ -1025,7 +1059,7 @@ input:focus {
 	  <li><a id="demo04" href="#profileModal">My Profile</a></li>	  
 	  <li style="display:none"><a id="demo03" href="#initModal" class="gn-icon gn-icon-search"></a></li>
     </ul>
-  </md-button></li>				
+	</md-button></li>				
 	</ul>			
 	</div>		
 	<div layout="row" ng-controller="AppCtrl" ng-cloak="" style="padding-top:60px;height:100%;background-color:#eee;background-size:contain background-repeat: no-repeat; background-size: 100% 100%;"  class="carddemoInCardActions">
@@ -1159,8 +1193,8 @@ input:focus {
       <label>Delivery Time</label>
 	  <input id="scrollDefaultExample" onkeydown="return false;" type="text" class="time ui-timepicker-input" autocomplete="off">
     </md-input-container>
-     <md-input-container style="margin-top:0;margin-left:0px">
-        <label>Size</label>
+    <md-input-container style="margin-top:0;margin-left:0px">
+	<label>Size</label>
     <select style="background:#fff; color:#000;margin: 10px 0px 0px 40px;border:none;font-size:12px" onChange="pckgsize = this.value">
 	<option value="SMALL (FITS IN BAG)">SMALL(FITS IN BAG)</option>
 	<option value="MEDIUM (FITS IN CAR)">MEDIUM(FITS IN CAR)</option>
@@ -1173,15 +1207,15 @@ input:focus {
 	</div>	
 	</div>
 	<md-card-header id="farediv" style="padding-left:40px;padding-top:0;">         
-          <md-card-header-text >
+        <md-card-header-text >
 			<span class="md-subhead">ESTIMATE^</span>
             <span id="fare" class="md-title" style="font-weight:normal;color:rgb(63,81,181)">Calculating...</span>
 			<span class="md-subhead" style="font-size:12px">^Actual FARE to be mutually decided</span>			
-          </md-card-header-text>
+        </md-card-header-text>
     </md-card-header>
 	<md-input-container id="descrip" class="md-block" style="margin-left:20px;margin-right:20px">
-          <label>Additional Information (optional)</label>
-          <textarea id="descriptor" ng-model="descriptor" placeholder="Package description or other info about this Request" rows="2" md-select-on-focus></textarea>
+        <label>Additional Information (optional)</label>
+        <textarea id="descriptor" ng-model="descriptor" placeholder="Package description or other info about this Request" rows="2" md-select-on-focus></textarea>
     </md-input-container>
 	<md-button id="posting" ng-click="post2()" class="md-raised md-primary" style="width:90%;;margin-left:5%">POST THIS REQUEST</md-button>
  	<md-button id="nxt" onclick="next()" class="md-raised md-primary" style="background:#5f6f81;width:90%;margin-top:0;margin-left:5%;margin-bottom:15px">NEXT</md-button>
@@ -1191,7 +1225,7 @@ input:focus {
     </div>
 	</div>	
 	<div id="animatedModal" style="background:#eee" ng-controller="AppCtrl" ng-cloak>
-		 <md-toolbar style="background-color:transparent">
+	<md-toolbar style="background-color:transparent">
       <div class="md-toolbar-tools">        
         <h2 style="vertical-align:middle;text-align:center;color:#000;font-size:14px;text-transform:uppercase;font-weight:bold;margin-left:45%">
 		Posted Requests
@@ -1358,13 +1392,13 @@ input:focus {
         <md-content style="background-color:transparent;height:100%">
 		<div layout="row" ng-controller="AppCtrl" ng-cloak="">
 	<div id="profilebody" flex flex-xs="" flex-gt-xs="30">
-	<img src="https://fbcdn-profile-a.akamaihd.net/hprofile-ak-xtp1/v/t1.0-1/p100x100/12592458_10153575299734263_3610452150972657034_n.jpg?oh=9f3c4759eb37272f76b21fe2f39c43cc&oe=57BEA544&__gda__=1467867804_0d19a32ae83267ccf221d787a3384910" class="profile-img" style="margin-left:100px">
+	<img ng-src="{{accountz.usrimg}}" class="profile-img" style="margin-left:100px">
 	<div class="profile-text" style="width:300px;padding-bottom:10px;box-shadow:0 27px 55px 0 rgba(0, 0, 0, 0.3), 0 17px 17px 0 rgba(0, 0, 0, 0.15)">
-    <h1 class="profile-name">Rahul Basu</h1>
+    <h1 class="profile-name">{{accountz.usrname}}</h1>
     <span class="profile-title" ng-cloak>{{determinateValue}}% COMPLETED<br>
 	<md-progress-linear style="margin-top:10px" md-mode="determinate" value="{{determinateValue}}"></md-progress-linear>
 	<div class="profile-title" style="margin-top:20px" >
-		<a ng-show="!fbconnect.length" href="javascript:void(0)" class="btn btn-block btn-social btn-facebook" style="padding:10px;padding-left:45px;margin-top:15px;border-radius:5px;color:#fff;border:none;text-transform:none">
+		<a ng-show="!fbconnect.length" href="javascript:void(0)" onclick="fbConnect()" class="btn btn-block btn-social btn-facebook" style="padding:10px;padding-left:45px;margin-top:15px;border-radius:5px;color:#fff;border:none;text-transform:none">
 		<span class="fa fa-facebook" style="padding-top:3px;margin-left:5px" ></span> Connect with Facebook</a>
 		<a ng-show="fbconnect.length" href="javascript:void(0)" class="btn btn-block btn-social btn-facebook" style="opacity:0.7;pointer-events:none;padding:10px;padding-left:45px;margin-top:15px;border-radius:5px;color:#fff;border:none;text-transform:none">
 		<span class="fa fa-check-circle" style="padding-top:3px;margin-left:5px" ></span> Facebook Verified</a>		
@@ -1387,7 +1421,37 @@ input:focus {
 	</div>
 	<div flex flex-xs="" flex-gt-xs="70" style="padding-right:50px;padding-top:56px" ng-controller="AppCtrl">		
 	<md-tabs md-dynamic-height md-border-bottom style="background:#fff;box-shadow:0 27px 55px 0 rgba(0, 0, 0, 0.3), 0 17px 17px 0 rgba(0, 0, 0, 0.15)">
-    <md-tab ng-show="routes.length" label="TRIPS FOR YOU">
+        
+    <md-tab label="ADD ROUTES">
+    <md-content class="md-padding" style="padding-top:0; height:372px">
+        <h1 class="md-display-2" style="padding-left:15px;margin-bottom:0;line-height:34px;margin-left:15px">Where are you travelling?</h1>
+    <md-content layout-gt-sm="row" layout-padding style="padding-top:0">
+	<div>
+      <md-input-container style="padding-top:0;margin-bottom:0;margin-left:15px">
+        <label>Starting Location</label>
+        <input type="text" id="strtloc" placeholder="Type here" style="font-size:12px;width:250px">
+      </md-input-container>
+      <md-input-container style="padding-top:0;margin-bottom:0">
+        <label>Ending Location</label>
+        <input type="text" id="endloc" placeholder="Type here" style="font-size:12px;width:250px">
+      </md-input-container>
+	  <md-button class="md-raised md-primary" style="vertical-align:-5px;padding-left:25px;padding-right:25px;margin-left:30px;font-size:12px" ng-click="addRoute()">ADD ROUTE</md-button>
+    <md-list ng-show="routes.length" style="padding:0;height:240px;padding-right:100px;overflow-y:auto">
+	<md-subheader class="md-no-sticky" style="10px 16px 0px 16px">Added Routes</md-subheader>
+	<md-list-item class="md-3-line" ng-repeat="route in routes">
+        <img src="package_route.png" class="md-avatar" alt="route image" style="width:50px;height:50px"/>
+        <div class="md-list-item-text" layout="column">
+          <h4 style="margin-top:8px">{{ route.strtlocaddr }}</h4> 
+		  <h4 style="margin-top:8px">{{ route.endlocaddr }}</h4> 
+        </div>
+		<md-button ng-click="routes.$remove(route)" style="margin:auto">DELETE</md-button> 
+    </md-list-item>
+	</md-list>
+	</div>
+    </md-content>
+    </md-content>
+    </md-tab>
+	<!--md-tab ng-show="routes.length" label="TRIPS FOR YOU">
         <md-content class="md-padding" style="padding-top:20px;padding-bottom:30px">
         <div ng-show="accepts.length" layout="row">		
 		<div flex ng-repeat="msg in accepts" ng-if="msg.$id!='notification'" style="max-width:350px;margin:0px 10px;padding-top:10px;padding-bottom:15px;">
@@ -1433,39 +1497,10 @@ input:focus {
         </div>
 		</div>
         </md-content>
-      </md-tab>      
-    <md-tab label="ADD ROUTES">
-    <md-content class="md-padding" style="padding-top:0">
-        <h1 class="md-display-2" style="padding-left:15px;margin-bottom:0;line-height:34px;margin-left:15px">Where are you travelling?</h1>
-    <md-content layout-gt-sm="row" layout-padding style="padding-top:0">
-	<div>
-      <md-input-container style="padding-top:0;margin-bottom:0;margin-left:15px">
-        <label>Starting Location</label>
-        <input type="text" id="strtloc" placeholder="Type here" style="font-size:12px;width:250px">
-      </md-input-container>
-      <md-input-container style="padding-top:0;margin-bottom:0">
-        <label>Ending Location</label>
-        <input type="text" id="endloc" placeholder="Type here" style="font-size:12px;width:250px">
-      </md-input-container>
-	  <md-button class="md-raised md-primary" style="vertical-align:-5px;padding-left:25px;padding-right:25px;margin-left:30px;font-size:12px" ng-click="addRoute()">ADD ROUTE</md-button>
-    <md-list ng-show="routes.length" style="padding:0;height:240px;padding-right:100px;overflow-y:auto">
-	<md-subheader class="md-no-sticky" style="10px 16px 0px 16px">Added Routes</md-subheader>
-	<md-list-item class="md-3-line" ng-repeat="route in routes">
-        <img src="package_route.png" class="md-avatar" alt="route image" style="width:50px;height:50px"/>
-        <div class="md-list-item-text" layout="column">
-          <h4 style="margin-top:8px">{{ route.strtlocaddr }}</h4> 
-		  <h4 style="margin-top:8px">{{ route.endlocaddr }}</h4> 
-        </div>
-		<md-button ng-click="routes.$remove(route)" style="margin:auto">DELETE</md-button> 
-    </md-list-item>
-	</md-list>
-	</div>
-    </md-content>
-    </md-content>
-    </md-tab>
+    </md-tab-->  
 	<md-tab label="VERIFIFICATION">
-        <md-content class="md-padding" style="padding-top:0">
-          <h1 class="md-display-2" style="text-align:center;margin-top:0">Verify your Identity (Any 2 valid Govt. IDs)</h1>
+        <md-content class="md-padding" style="padding-top:0; height:372px">
+          <h1 class="md-display-2" style="text-align:center;margin-top:0">Verify your Identity (Any 2 valid Government issued IDs)</h1>
           <div layout="row" style="padding-bottom:90px">	
 		  <div style="height:200px;width:100%;background:#fff;background-size:contain; background-repeat:no-repeat; background-position:center; background-image:url(bckg.jpg)"></div>	  
           <div style="height:200px;width:100%;background:#fff;background-size:contain; background-repeat:no-repeat; background-position:center; background-image:url(bckg2.jpg)"></div>	  
@@ -1486,6 +1521,6 @@ input:focus {
 	</ul>
 	</div>
 	</div>
-	<script>startApp();</script>
+	<script></script>
 	</body>
 </html>
