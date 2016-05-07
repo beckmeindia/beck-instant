@@ -47,7 +47,7 @@ function($scope, $firebaseArray, $firebaseObject) {
 		    postctr = 1;
 			if(loggedin==1){
 			if(usrphone=="" || usrphone==null || usrphone === undefined || usrphone === null){
-				swal({   title: "Oops...",   text: "You can't post a request without adding your phone number!",   type: "warning",   showCancelButton: true,   confirmButtonColor: "#3b5998",   confirmButtonText: "Yes, Verify!",   cancelButtonText: "No",   closeOnConfirm: false,   closeOnCancel: false }, function(isConfirm){   if (isConfirm) {    editnum()   } else {     swal("Cancelled", "Your posting process could not be completed", "error");   } });
+				swal({   title: "Oops...",   text: "You can't post a request without adding your phone number!",   type: "warning",   showCancelButton: true,   confirmButtonColor: "#3b5998",   confirmButtonText: "Yes, Verify!",   cancelButtonText: "No",   closeOnConfirm: false,   closeOnCancel: false }, function(isConfirm){   if (isConfirm) {    smsending()   } else {     swal("Cancelled", "Your posting process could not be completed", "error");   } });
 			}
 			else{
 			post();
@@ -62,7 +62,7 @@ function($scope, $firebaseArray, $firebaseObject) {
 		  acceptctr = 1;
 		if(loggedin==1){
 		if(usrphone=="" || usrphone==null || usrphone === undefined || usrphone === null){
-			swal({   title: "Oops...",   text: "You can't accept a request without adding your phone number!",   type: "warning",   showCancelButton: true,   confirmButtonColor: "#3b5998",   confirmButtonText: "Yes, Verify!",   cancelButtonText: "No",   closeOnConfirm: false,   closeOnCancel: false }, function(isConfirm){   if (isConfirm) {    editnum()   } else {     swal("Cancelled", "Your accept process could not be completed", "error");   } });
+			swal({   title: "Oops...",   text: "You can't accept a request without adding your phone number!",   type: "warning",   showCancelButton: true,   confirmButtonColor: "#3b5998",   confirmButtonText: "Yes, Verify!",   cancelButtonText: "No",   closeOnConfirm: false,   closeOnCancel: false }, function(isConfirm){   if (isConfirm) {    smsending()   } else {     swal("Cancelled", "Your accept process could not be completed", "error");   } });
 		}
 		else if(usrid==arrPckgs[rsltshow].usrid){
 			sweetAlert("Oops...", "You can't accept the same Request posted by you!", "error");
@@ -185,7 +185,11 @@ function($scope, $firebaseArray, $firebaseObject) {
 		} if(dataSnapshot.child("linkedin").val()){
 			percentage += 10;
 		} if(dataSnapshot.child("routes").val()){
-			percentage += (dataSnapshot.child("routes").numChildren())*5;
+			if((dataSnapshot.child("routes").numChildren())*5 >= 20){
+				percentage += 20;
+			}else{
+				percentage += (dataSnapshot.child("routes").numChildren())*5;
+			}			
 		} if(dataSnapshot.child("idverify").val()){
 			percentage += (dataSnapshot.child("idverify").numChildren())*15;
 		} if(dataSnapshot.child("usrphone").val()){
@@ -820,7 +824,7 @@ $(document).ready(function(){
 				if(postctr==1){ $("#posting").click(); postctr=0; }else if(acceptctr==1){ $("#accepting").click(); acceptctr=0};
 				document.getElementById("namehdr").innerHTML = 'Hi ' + usrname.split(" ")[0].substring(0, 10);		 
 				document.getElementById("namehdr2").style.display = "inline-block"; document.getElementById("signleft").style.display = "none";
-				document.getElementById("profile_img").src = usrimg;
+				document.getElementById("profile_img").src = usrimg; $('body').plainOverlay('hide');
 				$('#myanchor').click();						
 				};
 				})
@@ -833,12 +837,18 @@ $(document).ready(function(){
 		if(document.getElementById("signin-email").value==""||document.getElementById("signin-password").value==""){
 			swal({   title: "Insufficient Details",   text: "Oops! Please fill all details for Signing In",   type: "error",   confirmButtonText: "OK" });
 			return;
-		}		
+		}
+		$('body').plainOverlay('show',{
+			opacity:0.8,
+			fillColor: '#000',
+			progress: function() { return $('<div style="font-size:40px;color:#fff;font-weight:bold">Working...</div>'); }
+		});		
 		usremail = document.getElementById("signin-email").value;
 		passwd = document.getElementById("signin-password").value;
 		usrnewmail = String(usremail).replace(/[^a-zA-Z0-9]/g, ' ');
 		firebaseRef.authWithPassword({email:usremail, password : passwd}, function(error, authData) {
 		if (error) {
+			$('body').plainOverlay('hide');
 			sweetAlert("Incorrect credentials", "Please try with correct E-mail & password. If you are a new user, please Sign Up", "error"); return;
 		}else{
 		firebaseRef.child("users").child(usrnewmail).child("account").once("value", function(snapshot) {			
@@ -852,10 +862,10 @@ $(document).ready(function(){
 				$('#myanchor').click(); $('body').plainOverlay('hide');	if(postctr==1){ $("#posting").click(); postctr=0; }else if(acceptctr==1){ $("#accepting").click(); acceptctr=0};
 				document.getElementById("namehdr").innerHTML = 'Hi ' + usrname.split(" ")[0].substring(0, 10);		 
 				document.getElementById("namehdr2").style.display = "inline-block"; document.getElementById("signleft").style.display = "none";
-				document.getElementById("profile_img").src = usrimg;
+				document.getElementById("profile_img").src = usrimg; $('body').plainOverlay('hide');
 			}else{
 				$('#signupbtnn').click();
-				sweetAlert("New User?", "Are a new user, please Sign Up", "warning");
+				sweetAlert("New User?", "Are a new user, please Sign Up", "warning"); $('body').plainOverlay('hide');
 				return;
 			}
 	  })
@@ -876,7 +886,7 @@ $(document).ready(function(){
 		var distinterval = setInterval(function(){
 		if(loggedin==1){
 			clearInterval(distinterval);
-				swal({title: "Mobile Verification", text: "", type: "input", closeOnConfirm: false, animation: "slide-from-top",   inputPlaceholder: "Your 10-digit mobile number" }, 				
+				swal({title: "Mobile Verification", text: "", type: "input", closeOnConfirm: false, showCancelButton:true, animation: "slide-from-top",   inputPlaceholder: "Your 10-digit mobile number" }, 				
 				function(inputValue){
 				if (inputValue === false) return false;
 				if((inputValue.length == 11) && (inputValue[0] == '0')){
@@ -1644,7 +1654,8 @@ $(document).ready(function(){
 			fillColor: '#000',
 			progress: function() { return $('<div style="font-size:40px;color:#fff;font-weight:bold">Working...</div>'); }
 		});
-		firebaseRef.child("users").child(usrnewmail).child("account").once("value", function(snapshot){			
+		firebaseRef.child("users").child(usrnewmail).child("account").once("value", function(snapshot){		
+				
 			if(snapshot.val()){
 				usrname = snapshot.child("usrname").val();
 				usremail=  snapshot.child("usremail").val();
@@ -1654,13 +1665,13 @@ $(document).ready(function(){
 				loggedin = 1; document.cookie = "beckusrmail="+usremail+"; expires=Wed, 14 Feb 2029 12:00:00 UTC"; $('#myanchor').click();
 				if(postctr==1){ $("#posting").click(); postctr=0; }else if(acceptctr==1){ $("#accepting").click(); acceptctr=0};
 				document.getElementById("profile_img").src = usrimg; document.getElementById("namehdr").innerHTML = 'Hi ' + usrname.split(" ")[0].substring(0, 10);		 
-				document.getElementById("namehdr2").style.display = "inline-block"; document.getElementById("signleft").style.display = "none";
+				document.getElementById("namehdr2").style.display = "inline-block"; document.getElementById("signleft").style.display = "none"; $('body').plainOverlay('hide');	
 			}
 			else{
 			firebaseRef.child("users").child(usrnewmail).child("account").child("facebook").update({fbimg:usrfbimg, name:usrname, email:usremail, id:usrfbid});
 			firebaseRef.child("users").child(usrnewmail).child("account").update({usrimg:usrfbimg,usrname:usrname, usremail:usremail, usrid:usrnewmail});	
-			$('#myanchor').click(); $('body').plainOverlay('hide');	document.cookie = "beckusrmail="+usremail+"; expires=Wed, 14 Feb 2029 12:00:00 UTC";
-			usrimg = snapshot.child("usrimg").val(); document.getElementById("profile_img").src = usrimg;
+			$('#myanchor').click(); document.cookie = "beckusrmail="+usremail+"; expires=Wed, 14 Feb 2029 12:00:00 UTC";
+			usrimg = snapshot.child("usrimg").val(); document.getElementById("profile_img").src = usrimg; $('body').plainOverlay('hide');	
 			document.getElementById("namehdr").innerHTML = 'Hi ' + usrname.split(" ")[0].substring(0, 10);
 			document.getElementById("namehdr2").style.display = "inline-block"; document.getElementById("signleft").style.display = "none";
 			}			
