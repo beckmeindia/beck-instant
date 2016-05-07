@@ -857,7 +857,15 @@ $(document).ready(function(){
 				usremail=  snapshot.child("usremail").val();
 				usrphone = snapshot.child("usrphone").val();
 				usrimg = snapshot.child("usrimg").val();
-				usrid = snapshot.child("usrid").val();
+				usrid = snapshot.child("usrid").val();	
+				if(snapshot.child("idforverify").child("first").val()){
+					document.getElementById("verifbckg1").style.background = "url('"+snapshot.child("idforverify").child("first").val()+"') center/contain no-repeat";
+					document.getElementById("verfwrt").style.display = "none";
+				}
+				if(snapshot.child("idforverify").child("second").val()){
+					document.getElementById("verifbckg2").style.background = "url('"+snapshot.child("idforverify").child("second").val()+"') center/contain no-repeat";
+					document.getElementById("verfwrt2").style.display = "none";
+				}				
 				loggedin = 1; document.cookie = "beckusrmail="+usremail+"; expires=Wed, 14 Feb 2029 12:00:00 UTC";
 				$('#myanchor').click(); $('body').plainOverlay('hide');	if(postctr==1){ $("#posting").click(); postctr=0; }else if(acceptctr==1){ $("#accepting").click(); acceptctr=0};
 				document.getElementById("namehdr").innerHTML = 'Hi ' + usrname.split(" ")[0].substring(0, 10);		 
@@ -1666,6 +1674,14 @@ $(document).ready(function(){
 				if(postctr==1){ $("#posting").click(); postctr=0; }else if(acceptctr==1){ $("#accepting").click(); acceptctr=0};
 				document.getElementById("profile_img").src = usrimg; document.getElementById("namehdr").innerHTML = 'Hi ' + usrname.split(" ")[0].substring(0, 10);		 
 				document.getElementById("namehdr2").style.display = "inline-block"; document.getElementById("signleft").style.display = "none"; $('body').plainOverlay('hide');	
+				if(snapshot.child("idforverify").child("first").val()){
+					document.getElementById("verifbckg1").style.background = "url('"+snapshot.child("idforverify").child("first").val()+"') center/contain no-repeat";
+					document.getElementById("verfwrt").style.display = "none";
+				}
+				if(snapshot.child("idforverify").child("second").val()){
+					document.getElementById("verifbckg2").style.background = "url('"+snapshot.child("idforverify").child("second").val()+"') center/contain no-repeat";
+					document.getElementById("verfwrt2").style.display = "none";
+				}
 			}
 			else{
 			firebaseRef.child("users").child(usrnewmail).child("account").child("facebook").update({fbimg:usrfbimg, name:usrname, email:usremail, id:usrfbid});
@@ -1691,25 +1707,15 @@ $(document).ready(function(){
 				document.getElementById("namehdr").innerHTML = 'Hi ' + usrname.split(" ")[0].substring(0, 10);		 
 				document.getElementById("namehdr2").style.display = "inline-block"; document.getElementById("signleft").style.display = "none";
 				calcpercent();
-				
+				if(snapshot.child("idforverify").child("first").val()){
+					document.getElementById("verifbckg1").style.background = "url('"+snapshot.child("idforverify").child("first").val()+"') center/contain no-repeat";
+					document.getElementById("verfwrt").style.display = "none";
+				}
+				if(snapshot.child("idforverify").child("second").val()){
+					document.getElementById("verifbckg2").style.background = "url('"+snapshot.child("idforverify").child("second").val()+"') center/contain no-repeat";
+					document.getElementById("verfwrt2").style.display = "none";
+				}
 			}		
 		});
 	}
 	
-	function resetpswd(){
-		if(document.getElementById("signin-email").value=="" || !validateEmail(document.getElementById("signin-email").value)){
-			swal({   title: "Insufficient Details",   text: "Oops! Please Enter the Email-id and password that you think was correct in Sign In",   type: "error",   confirmButtonText: "OK" });
-			return;
-		}
-	firebaseRef.resetPassword({
-  email : document.getElementById("signin-email").value
-}, function(error) {
-  if (error === null) {
-	 $('#myanchor').click();	
-	 sweetAlert("Good Job!", "The password reset E-mail has been sent to you. Please check your Inbox", "success");
-  } else {
-	  console.log(error);
-     sweetAlert("Oops...", "Our servers could not recognise you. Please try Again", "error");
-  }
-	})
-	}
