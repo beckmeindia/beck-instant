@@ -51,6 +51,7 @@ var googleUser = {};
 		firebaseRef.child("users").child(usrid).child("account").child("google").update({
 			name:googleName, email:googleEmail, id:googleID
 		});	
+		calcpercent();
 		}else{
 		sweetAlert("Oops...", "You need to connect the same Google account with this email. Tip: Logout from Google and try again", "error");		
 		}
@@ -59,8 +60,7 @@ var googleUser = {};
         });
   }
   
-  var getProfileData = function() { // Use the API call wrapper to request the member's basic profile data
-        console.log("profile data received");
+  var getProfileData = function() { 
 		IN.API.Profile("me").fields("id,firstName,lastName,email-address,picture-urls::(original),public-profile-url,location:(name)").result(function (me) {
             var profile = me.values[0];
             var id = profile.id;
@@ -73,6 +73,7 @@ var googleUser = {};
 			firebaseRef.child("users").child(usrid).child("account").child("linkedin").update({
 				name:name, email:emailAddress, linkdimg:pictureUrl, id:id, profileurl:profileUrl, location:country
 			});	
+			calcpercent();
 			}else{
 			sweetAlert("Oops...", "You need to connect the same LinkedIn account with this email. Tip: Logout from LinkedIn and try again", "error");		
 			}
@@ -86,6 +87,23 @@ var googleUser = {};
 			}			
 		</script>
 <style>
+#myProgress {
+  position: relative;
+  width: 100%;
+  margin-top:10px;
+  height: 10px;
+  background-color: #ddd;
+  border-radius:25px;
+}
+
+#myBar {
+  position: absolute;
+  width: 1%;
+  height: 100%;
+  background-color: #2bb1de;
+  border-radius:25px;
+}
+
 .btn-social{position:relative;padding-left:44px;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.btn-social>:first-child{position:absolute;left:0;top:0;bottom:0;width:32px;line-height:34px;font-size:1.6em;text-align:center;border-right:1px solid rgba(0,0,0,0.2)}
 .btn-social.btn-lg{padding-left:61px}.btn-social.btn-lg>:first-child{line-height:45px;width:45px;font-size:1.8em}
 .btn-social.btn-sm{padding-left:38px}.btn-social.btn-sm>:first-child{line-height:28px;width:28px;font-size:1.4em}
@@ -162,13 +180,14 @@ background:url('http://c.boylett.uk/images/wallpapers/009.jpg');background-size:
   margin-bottom: .75em;
   margin-left: -24px;
   border-top:1px solid rgba(0,0,0,0.1);
-  background:#ebf7fc;
+  background:#2bb1de;
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   padding-bottom: 10px;
   padding-top:10px;
   font-size: 14px;
   text-transform: uppercase;
   margin-top:0;
+  color:#fff;
 }
 
 .profile-title {
@@ -971,10 +990,11 @@ input:focus {
 			fbimg:fbimg, fbname:fbname, fbemail:fbmail, fbid:fbid
 		});
 		if(fbimg || fbimg !="undefined"){
-			firebaseRef.child("users").child(usrid).child("account").update({
-				usrimg:fbimg
-			});
-		}				
+			usrimg = fbimg;
+			firebaseRef.child("users").child(usrid).child("account").update({usrimg:usrimg});
+			document.getElementById("profile_img").src = usrimg;
+		}	
+		calcpercent();	
 		}
 		else if(fbmail =="undefined"){
 		firebaseRef.child("users").child(usrid).child("account").child("facebook").update({
@@ -985,6 +1005,7 @@ input:focus {
 				usrimg:fbimg
 			});
 		}
+		calcpercent()
 		}
 		else{
 		sweetAlert("Oops...", "You need to connect the same Facebook account with this email. Tip: Logout from Facebook and try again", "error");		
@@ -1005,35 +1026,19 @@ input:focus {
 	usrfbimg = String(response.picture.data.url); usrname = String(response.name); usremail = String(response.email); usrfbid = String(response.id);
 	var usrnwmail = String(usremail).replace(/[^a-zA-Z0-9]/g, ' ');
 	if(usrnwmail=="undefined"){
-	swal({   title: "Email not received!",   text: "Could you please enter your emailaddress",   type: "input",   showCancelButton: false,   closeOnConfirm: false,   animation: "slide-from-top",   inputPlaceholder: "Your E-mail Address" }, function(inputValue){   if (inputValue === false) return false;      if (inputValue === "") {     swal.showInputError("You need to write an email address!");     return false   }      
+	swal({   title: "Email not received!",   text: "Could you please enter your E-mail?",   type: "input",   showCancelButton: false,   closeOnConfirm: false,   animation: "slide-from-top",   inputPlaceholder: "Your E-mail Address" }, function(inputValue){   if (inputValue === false) return false;      if (inputValue === "") {     swal.showInputError("You need to write an email address!");     return false   }      
 	mailconfirm(inputValue);
-	//swal("Nice!", "You wrote: " + inputValue, "success"); 
 	swal({title: "E-mail verification Code", text: "Please enter the 4 digit Verification Code sent to your E-mail",   type: "input",   showCancelButton: false,   closeOnConfirm: false,   animation: "slide-from-top",   inputPlaceholder: "Verification Code" }, 
-				function(emailVal){
-				if (emailVal === false) return false;
-				if (emailVal != otpmail) {     swal.showInputError("Please Enter the correct 4 digits");     return false   }
-				firebaseRef.createUser({ email    : usremail,  password : passwd}, function(error, userData) {
-					if (error) {
-						swal("Oops...", "There was a problem creating your Account. Please try Again", "error");
-						$('body').plainOverlay('hide');
-						return;
-					} else {
-						swal("Account Created!", "We shall keep you updated with trips on your route", "success");
-						firebaseRef.child("users").child(usrnewmail).child("account").update({usrimg:usrimg,usrname:usrname, usremail:usremail, usrid:usrnewmail});	
-						document.cookie = "beckusrmail="+usremail+"; expires=Wed, 14 Feb 2029 12:00:00 UTC";
-						usrid = usrnewmail; var regsclbck = "New user registered on friends : "+usrname+" "+usremail;
-						mailcall(regsclbck); loggedin = 1;
-						// check before displaying whether first time or what is the scene
-				document.getElementById("namehdr").innerHTML = 'Hi ' + usrname.split(" ")[0].substring(0, 10);		 
-				document.getElementById("namehdr2").style.display = "inline-block"; document.getElementById("signleft").style.display = "none";
-				loggedin = 1; //document.getElementById("mnuitm").style.display="none"; document.getElementById("tgnmlyn").style.paddingLeft = "20px";
-				$('#myanchor').click();						
-				};
-				})
-				});
+		function(emailVal){
+			if (emailVal === false) return false;
+			if (emailVal != otpmail) {     swal.showInputError("Please Enter the correct 4 digits");     return false   }
+				usremail = emailVal; checkfirebasefb(usremail,usrfbimg,usrname,usrfbid); 				
+		});
 	});
+	}else{
+	checkfirebasefb(usremail,usrfbimg,usrname,usrfbid); 	
 	}
-	checkfirebasefb(usremail,usrfbimg,usrname,usrfbid); 	  
+	  
     })
 	}else{
 	sweetAlert("Oops...", "Something went wrong. Could not Log you in", "error");
@@ -1050,9 +1055,9 @@ input:focus {
 			<ul id="gn-menu" class="gn-menu-main" style="border-bottom:1px solid #c6d0da;position: absolute;z-index:999;">								
 				<li id="tgnmlyn" style="padding-left:60px;padding-right:60px;font-size:24px;font-family: 'Maven Pro', sans-serif;">BECK <span style="color:#ff0000;">Friends</span></li>
 				<li id="mnuitm2" style="display:none;padding-left:20px;padding-right:10px;font-size:18px;border-right:none;width:50%"><img src="search.png" style="width:28px;margin-top:17px;display:inline;position:absolute;"><input placeholder="What is Your Location?" type="search" id="searchloc" class="gn-search" style="padding-left:40px;width:100%;display:inline"></li>
-				<li id="lastbit" style="display:none;padding-left:0px;padding-right:0px;font-size:18px;" ><md-button id="signleft" style="margin-top:-5px;background:#FF5274;color:#fff;margin-left:40px;margin-right:40px">LOGIN</md-button>
+				<li id="lastbit" style="display:none;padding-left:0px;padding-right:0px;font-size:18px;" ><md-button id="signleft" style="display:none;margin-top:-5px;background:#3b5998;color:#fff;margin-left:40px;margin-right:40px">SIGNUP</md-button>
 	<md-button id="namehdr2" class="md-primary dropdown" ng-click="myDropdownIsActive=!myDropdownIsActive" ng-class="{active:myDropdownIsActive}" style="margin:0;height:95%;padding-left:40px;padding-right:40px;display:none">
-    <img id="profile_img" src="profile.png" style="margin-top:-5px;margin-right:15px;border-radius:50%;width:40px;height:40px;vertical-align: middle;"><span id="namehdr" style="color:#252525">Hi Rahul</span><img src="downarr.png" style="margin-left:10px;border-radius:50%;width:16px;height:16px;vertical-align: middle;">
+    <img id="profile_img" src="profile.png" style="margin-top:-5px;margin-right:15px;border-radius:50%;width:40px;height:40px;vertical-align: middle;"><span id="namehdr" style="color:#252525">Hi!</span><img src="downarr.png" style="margin-left:10px;border-radius:50%;width:16px;height:16px;vertical-align: middle;">
     <ul class="dropdown-menu md-whiteframe-z1">
       <li><a id="demo02" href="#acceptedModal">Accepted Requests</a></li>
       <li><a id="demo01" href="#animatedModal">Posted Requests</a></li>
@@ -1113,7 +1118,7 @@ input:focus {
         </md-list-item>
       </md-list>
     </md-content>
-  	<md-button class="md-raised md-primary" style="width:90%;margin-top:0;margin-left:5%" ng-click="accept2()">ACCEPT</md-button>			
+  	<md-button id="accepting" class="md-raised md-primary" style="width:90%;margin-top:0;margin-left:5%" ng-click="accept2()">ACCEPT</md-button>			
 		</md-card-content>	
        	<md-card-actions layout="row" layout-align="center" style="min-height:35px;margin-bottom:10px;">
 			<md-button id="prevbtn" style="display:none" onclick="showprev()">Previous</md-button>
@@ -1129,7 +1134,7 @@ input:focus {
             <span id="tytl" class="md-title" style="font-weight:normal;color:#d80000"></span>            
           </md-card-header-text>
         </md-card-header>
-		  <div id="card" onclick="card()" style="height:200px;width:90%;margin-left:5%;background:#eee;display:none">	<div id="packagephoto" style="left:0; right:0; bottom:0; margin:auto; margin-top:90px; max-width:100%; max-height:200px; overflow:auto;color:#888;font-size:18px;height:30px;z-index:1;text-align:center;letter-spacing:1px" onclick="document.getElementById('files').click()">ADD PACKAGE PHOTO</div>
+		  <div id="card" style="height:200px;width:90%;margin-left:5%;background:#eee;display:none"><div id="packagephoto" style="left:0; right:0; bottom:0; margin:auto; margin-top:90px; max-width:100%; max-height:200px; overflow:auto;color:#888;font-size:18px;height:30px;z-index:1;text-align:center;letter-spacing:1px" onclick="document.getElementById('files').click()">ADD PACKAGE PHOTO</div>
 	  	<input type="file" id="files" name="upload" style="z-index:999;width:97%;height:200px; opacity: 0;-moz-opacity: 0;filter:progid:DXImageTransform.Microsoft.Alpha(opacity=0);"/></div>
     <div layout="row" id="pckginfo">
 	   <div flex>
@@ -1395,8 +1400,8 @@ input:focus {
 	<img ng-src="{{accountz.usrimg}}" class="profile-img" style="margin-left:100px">
 	<div class="profile-text" style="width:300px;padding-bottom:10px;box-shadow:0 27px 55px 0 rgba(0, 0, 0, 0.3), 0 17px 17px 0 rgba(0, 0, 0, 0.15)">
     <h1 class="profile-name">{{accountz.usrname}}</h1>
-    <span class="profile-title" ng-cloak>{{determinateValue}}% COMPLETED<br>
-	<md-progress-linear style="margin-top:10px" md-mode="determinate" value="{{determinateValue}}"></md-progress-linear>
+    <span class="profile-title"><span id="calcperc">0% COMPLETED</span><br>
+	<div id="myProgress"><div id="myBar"></div></div>
 	<div class="profile-title" style="margin-top:20px" >
 		<a ng-show="!fbconnect.length" href="javascript:void(0)" onclick="fbConnect()" class="btn btn-block btn-social btn-facebook" style="padding:10px;padding-left:45px;margin-top:15px;border-radius:5px;color:#fff;border:none;text-transform:none">
 		<span class="fa fa-facebook" style="padding-top:3px;margin-left:5px" ></span> Connect with Facebook</a>
@@ -1414,18 +1419,17 @@ input:focus {
 		<span class="fa fa-linkedin" style="padding-top:3px;margin-left:5px" ></span> Connect with LinkedIn</a>
 		<a ng-show="linkedinconnect.length" href="javascript:void(0)" class="btn btn-block btn-social btn-linkedin" style="pointer-events:none;opacity:0.7;padding:10px;padding-left:45px;margin-top:15px;border-radius:5px;color:#fff;border:none;text-transform:none">
 		<span class="fa fa-check-circle" style="padding-top:3px;margin-left:5px" ></span> LinkedIn Verified</a>
-		<md-button md-no-ink class="md-primary" onclick="editnum()" style="font-weight:bold;margin-bottom:0;font-size:12px"><md-icon md-svg-icon="edit.svg" style="vertical-align:-7px;color:blue;opacity:0.7;width:15px;margin-right:5px"></md-icon> CONTACT NUMBER</md-button>
+		<md-button onclick="editnum()" style="font-weight:bold;margin-bottom:0;font-size:12px;color:#000"><md-icon md-svg-icon="edit.svg" style="vertical-align:-7px;color:#000;width:15px;margin-right:5px"></md-icon> CONTACT NUMBER</md-button>
 		<md-button onclick="logout()" style="margin-top:0;font-size:12px;font-weight:bold">LOGOUT</md-button>
 	</div>
 	</div>
 	</div>
-	<div flex flex-xs="" flex-gt-xs="70" style="padding-right:50px;padding-top:56px" ng-controller="AppCtrl">		
+	<div flex flex-xs="" flex-gt-xs="70" style="padding-right:50px;padding-top:56px">		
 	<md-tabs md-dynamic-height md-border-bottom style="background:#fff;box-shadow:0 27px 55px 0 rgba(0, 0, 0, 0.3), 0 17px 17px 0 rgba(0, 0, 0, 0.15)">
-        
     <md-tab label="ADD ROUTES">
-    <md-content class="md-padding" style="padding-top:0; height:372px">
+    <md-content style="padding:0; height:376px">
         <h1 class="md-display-2" style="padding-left:15px;margin-bottom:0;line-height:34px;margin-left:15px">Where are you travelling?</h1>
-    <md-content layout-gt-sm="row" layout-padding style="padding-top:0">
+    <md-content layout-gt-sm="row" layout-padding style="padding:0 auto">
 	<div>
       <md-input-container style="padding-top:0;margin-bottom:0;margin-left:15px">
         <label>Starting Location</label>
@@ -1436,11 +1440,11 @@ input:focus {
         <input type="text" id="endloc" placeholder="Type here" style="font-size:12px;width:250px">
       </md-input-container>
 	  <md-button class="md-raised md-primary" style="vertical-align:-5px;padding-left:25px;padding-right:25px;margin-left:30px;font-size:12px" ng-click="addRoute()">ADD ROUTE</md-button>
-    <md-list ng-show="routes.length" style="padding:0;height:240px;padding-right:100px;overflow-y:auto">
+    <md-list ng-show="routes.length" style="padding:0;height:240px;padding-right:10px;overflow-y:scroll">
 	<md-subheader class="md-no-sticky" style="10px 16px 0px 16px">Added Routes</md-subheader>
 	<md-list-item class="md-3-line" ng-repeat="route in routes">
         <img src="package_route.png" class="md-avatar" alt="route image" style="width:50px;height:50px"/>
-        <div class="md-list-item-text" layout="column">
+        <div class="md-list-item-text" layout="column" style="max-width:60%">
           <h4 style="margin-top:8px">{{ route.strtlocaddr }}</h4> 
 		  <h4 style="margin-top:8px">{{ route.endlocaddr }}</h4> 
         </div>
@@ -1452,7 +1456,7 @@ input:focus {
     </md-content>
     </md-tab>
 	<!--md-tab ng-show="routes.length" label="TRIPS FOR YOU">
-        <md-content class="md-padding" style="padding-top:20px;padding-bottom:30px">
+        <md-content class="md-padding" style="padding-top:20px;padding-bottom:30px;height:376px">
         <div ng-show="accepts.length" layout="row">		
 		<div flex ng-repeat="msg in accepts" ng-if="msg.$id!='notification'" style="max-width:350px;margin:0px 10px;padding-top:10px;padding-bottom:15px;">
 		<md-card style="max-width:350px; border:1px solid #ccc">		
@@ -1499,11 +1503,11 @@ input:focus {
         </md-content>
     </md-tab-->  
 	<md-tab label="VERIFIFICATION">
-        <md-content class="md-padding" style="padding-top:0; height:372px">
+        <md-content class="md-padding" style="padding-top:0; height:376px">
           <h1 class="md-display-2" style="text-align:center;margin-top:0">Verify your Identity (Any 2 valid Government issued IDs)</h1>
-          <div layout="row" style="padding-bottom:90px">	
-		  <div style="height:200px;width:100%;background:#fff;background-size:contain; background-repeat:no-repeat; background-position:center; background-image:url(bckg.jpg)"></div>	  
-          <div style="height:200px;width:100%;background:#fff;background-size:contain; background-repeat:no-repeat; background-position:center; background-image:url(bckg2.jpg)"></div>	  
+          <div layout="row" style="padding-bottom:60px">		  
+		  <div id="verifbckg1" style="height:200px;width:300px; margin:0 50px;background:#eee;background-size:contain; background-repeat:no-repeat; background-position:center;"><span id="verfwrt" style="z-index:999;color:#888;margin-top:90px;margin-left:70px;position:absolute" onclick="document.getElementById('verf1').click()">Add 1st Identity Proof</span><input type="file" id="verf1" name="upload1" style="background:#888;z-index:999;width:300px;height:200px; opacity: 0;-moz-opacity: 0;filter:progid:DXImageTransform.Microsoft.Alpha(opacity=0);"/></div>
+		  <div id="verifbckg2" style="height:200px;width:300px;background:#eee;background-size:contain; background-repeat:no-repeat; background-position:center;"><span id="verfwrt2" style="z-index:999;color:#888;margin-top:90px;margin-left:70px;position:absolute" onclick="document.getElementById('verf2').click()">Add 2nd Identity Proof</span><input type="file" id="verf2" name="upload2" style="background:#888;z-index:999;width:300px;height:200px; opacity: 0;-moz-opacity: 0;filter:progid:DXImageTransform.Microsoft.Alpha(opacity=0);"/></div>	  
 		  </div>
 		</md-content>
     </md-tab>
