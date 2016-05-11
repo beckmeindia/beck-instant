@@ -7,7 +7,7 @@
 	var usrimg = "data:image/jpeg;base64,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";
 	var arrPckgs = [], rsltshow = 0, arraccepts = [], revrsdone = 0, mycenter, lognclckd = 0, flgg=0, postctr = 0, acceptctr = 0;
 
-angular.module('MyApp',['ngMaterial','firebase','ngMessages','ngSanitize']) 
+angular.module('MyApp',['ngMaterial',"firebase"]) 
  .controller('PositionDemoCtrl', function DemoCtrl($mdDialog) {
     var originatorEv;
     this.openMenu = function($mdOpenMenu, ev) {
@@ -25,11 +25,8 @@ angular.module('MyApp',['ngMaterial','firebase','ngMessages','ngSanitize'])
       originatorEv = null;
     };
   })
-.controller('AppCtrl', ["$scope", "$firebaseArray", "$firebaseObject", "$mdDialog", "$mdMedia",
-function($scope, $firebaseArray, $firebaseObject, $mdDialog, $mdMedia) {
-	 $scope.status = '  ';
-  $scope.customFullscreen = $mdMedia('xs') || $mdMedia('sm');
-
+.controller('AppCtrl', ["$scope", "$firebaseArray", "$firebaseObject", 
+function($scope, $firebaseArray, $firebaseObject) {
 	$scope.data = {};
   $scope.data.cb4 = false;
   $scope.descriptor="";
@@ -81,10 +78,10 @@ function($scope, $firebaseArray, $firebaseObject, $mdDialog, $mdMedia) {
 			});
 		clearInterval(interval);
 		firebaseRef.child("users").child(usrid).child("accepts").child(arrPckgs[rsltshow].id).update(arrPckgs[rsltshow]);
+		firebaseRef.child("users").child(usrid).child("accepts").update({notification:"yes"});
 		firebaseRef.child("users").child(arrPckgs[rsltshow].usrid).child("posts").child(arrPckgs[rsltshow].id).update({status:"Waiting for Approval"});
 		firebaseRef.child("users").child(arrPckgs[rsltshow].usrid).child("posts").update({notification:"yes"});
-		firebaseRef.child("users").child(arrPckgs[rsltshow].usrid).child("posts").child(arrPckgs[rsltshow].id).child("acceptors").child(usrid).update({id:usrid,usrname:usrname,usrphone:usrphone, usrimg:usrimg}).then(function() {
-		firebaseRef.child("users").child(usrid).child("accepts").update({notification:"yes"});		
+		firebaseRef.child("users").child(arrPckgs[rsltshow].usrid).child("posts").child(arrPckgs[rsltshow].id).child("acceptors").child(usrid).update({id:usrid,usrname:usrname,usrphone:usrphone, usrfbid:usrfbid, usrfbimg:usrfbimg}).then(function() {
 		smsacceptdm(arrPckgs[rsltshow].usrphn);smsacceptsupp(usrphone); var actionz = "BECK friend "+ usrname +" accepted a new order: " + arrPckgs[rsltshow].id; mailcall(actionz,usremail,usrphone);	
 		$('body').plainOverlay('hide');
 		swal("Succesfully Accepted", "The details of the request you accepted has been sent to you through SMS", "success");
@@ -99,88 +96,29 @@ function($scope, $firebaseArray, $firebaseObject, $mdDialog, $mdMedia) {
 			$('#signupbtnn').click();
 		}
 		};
-	var accptrid,accptrname,accptrphone,accptrfbid,accptrlinkdid,accptrgooglid;
-	$scope.showprofile = function(ev,value,idpckg){
-		$scope.fbshow = 0;$scope.googleshow = 0;$scope.linkdinshow = 0;
-		$scope.accptrnm = "Loading..."; $scope.accptrcomp = "Loading..."; $scope.accptrimg = "profile.png";
-		$scope.accptrlocation = " -- "; $scope.accptrcompany = " -- ";
-		accptrname = value.usrname; accptrphone = value.usrphone;
-		accptrid = value.id; $scope.cols = 10; idpckgmatch = idpckg;
-		firebaseRef.child("users").child(accptrid).child("account").once("value", function(dataSnapshot) {	
-		$scope.$apply(function () {
-            $scope.accptrnm = dataSnapshot.child("usrname").val();
-			$scope.accptrcomp = dataSnapshot.child("completed").val() +"% verified";
-			$scope.cols = dataSnapshot.child("completed").val();
-			if(dataSnapshot.child("facebook").val()){
-				accptrfbid = dataSnapshot.child("facebook").child("fbid").val();
-				$scope.fbshow = 1;
-			}if(dataSnapshot.child("google").val()){
-				accptrgooglid = dataSnapshot.child("google").child("id").val();
-				$scope.googleshow = 1;
-			}if(dataSnapshot.child("linkedin").val()){
-				accptrlinkdid = dataSnapshot.child("linkedin").child("profileurl").val();
-				$scope.linkdinshow = 1;
-			}
-			$scope.accptrimg = dataSnapshot.child("usrimg").val();
-			$scope.accptrlocation = dataSnapshot.child("location").val();
-			$scope.accptrcompany = String(dataSnapshot.child("company").val()).split(" ")[1].substring(0, 20);
-        });		
-		})
-	
-	
-    var useFullScreen = ($mdMedia('sm') || $mdMedia('xs'))  && $scope.customFullscreen;
-
-    $mdDialog.show({
-	 controller: function () { this.parent = $scope; $scope.hide = function() {$scope.fbshow = 0; $scope.linkdinshow=0;$scope.googleshow=0;$mdDialog.hide()}; $scope.cancel = function() {$scope.fbshow = 0; $scope.linkdinshow=0;$scope.googleshow=0;$mdDialog.cancel()}; $scope.answer = function(answer) {$mdDialog.hide(answer);} },
-	controllerAs: 'ctrl',
-      templateUrl: 'dialog1.tmpl.html',
-      parent: angular.element(document.body),
-      targetEvent: ev,
-      clickOutsideToClose:true,
-      fullscreen: useFullScreen
-    })
-    .then(function(answer) {
-      $scope.status = 'You said the information was "' + answer + '".';
-    }, function() {
-      $scope.status = 'You cancelled the dialog.';
-    });
-
-
-
-    $scope.$watch(function() {
-      return $mdMedia('xs') || $mdMedia('sm');
-    }, function(wantsFullScreen) {
-      $scope.customFullscreen = (wantsFullScreen === true);
-    });
-
-	};
-	
-	$scope.accptrfb = function(){
-		window.open('http://www.fb.com/'+accptrfbid,'_blank');
-	}
-	
-	$scope.accptrgoogl = function(){
-		window.open('https://plus.google.com/'+accptrgooglid,'_blank');
-	}
-	
-	$scope.accptrlinkdin = function(){
-		window.open(accptrlinkdid,'_blank');
-	}	
 		
-		$scope.approvefrnd = function(){
-				$scope.hide();
-				swal({   title: "Confirm BECK Friend",   text: "Are you sure you want to confirm this person to carry your package?",   type: "info",   showCancelButton: true,   closeOnConfirm: false,   showLoaderOnConfirm: true, }, function(){   		
-				var actionz = "BECK friend "+ accptrname +" was selected for order: " + idpckgmatch;
-				mailcall(actionz,accptrid,accptrphone);
-				smsmatchsuppl(accptrphone); 
-				smsmatchdmnd(usrphone,accptrname,accptrphone);
+		$scope.showprofile = function(value){
+			window.open('http://www.fb.com/'+value.usrfbid,'_blank');
+		}
+		
+		
+		$scope.approvefrnd = function(val,idpckgmatch){			
+			//needs to be checked
+			if(val === undefined){
+				swal("Select a BECK FRIEND", "Please select the BECK friend who would complete your request")
+			}else{
+				var actionz = "BECK friend "+ val.usrname +" was selected for order: " + idpckgmatch;
+				mailcall(actionz,val.id,val.usrphone);
+				smsmatchsuppl(val.usrphone); 
+				smsmatchdmnd(usrphone,val.usrname,val.usrphone);
+				var otherid = val.id;				
 				firebaseRef.child("users").child(usrid).child("posts").child(idpckgmatch).update({"status":"Approved & Completed"});
-				firebaseRef.child("users").child(accptrid).child("accepts").child(idpckgmatch).update({"status":"Approved"}).then(function() {
+				firebaseRef.child("users").child(otherid).child("accepts").child(idpckgmatch).update({"status":"Approved"}).then(function() {
 				firebaseRef.child("users").child(usrid).child("posts").child(idpckgmatch).child("acceptors").remove();
 				geoFire.remove(idpckgmatch);				
 				swal("Succesfully Connected", "The details of the BECK Friend your approved for this request has been sent you through SMS", "success");
-				});		
-			});	
+				});				
+			}
 		}
 		
 		var intervall = setInterval(function(){
@@ -216,20 +154,12 @@ function($scope, $firebaseArray, $firebaseObject, $mdDialog, $mdMedia) {
 		$scope.routes = $firebaseArray(firebaseRef.child("users").child(usrid).child("account").child("routes"));
 		
 		$scope.addRoute = function() {
-			if(document.getElementById("strtloc").value=="" || document.getElementById("endloc").value==""){
-				swal({   title: "Route Locations",   text: "Please add both the starting and ending locations of your route",   type: "error",   confirmButtonText: "Ok" });
-			}else if(startlat==0 || endlat==0 || startlng==0 || endlng==0){
-				swal({   title: "Route Locations",   text: "For starting and ending lcoations, please select from the results that appear",   type: "error",   confirmButtonText: "Ok" });
-			}else{
 			$scope.routes.$add({ startlat:startlat, startlng:startlng, strtlocaddr:strtlocaddr, endlat:endlat, endlng:endlng, endlocaddr:endlocaddr});
 			document.getElementById("strtloc").value = ""; document.getElementById("endloc").value = "";
 			startlat=0; startlng=0; strtlocaddr="";endlat=0; endlng=0; endlocaddr=""; calcpercent();
-			}
-			
 		};
 		}
 		},2000);	
- 
 }])
 .config(function($mdDateLocaleProvider) {
 	var initdt = "Delivery By";
@@ -244,8 +174,7 @@ function($scope, $firebaseArray, $firebaseObject, $mdDialog, $mdMedia) {
 	      
     };
 });
-
-
+	
 	function calcpercent(){
 	var percentage = 0;
 	firebaseRef.child("users").child(usrid).child("account").once("value", function(dataSnapshot) {
@@ -266,9 +195,8 @@ function($scope, $firebaseArray, $firebaseObject, $mdDialog, $mdMedia) {
 		} if(dataSnapshot.child("usrphone").val()){
 			percentage += 20;
 		}
-	document.getElementById("calcperc").innerHTML = percentage +"% completed"; move(percentage);
-	});
-	firebaseRef.child("users").child(usrid).child("account").update({completed:percentage});	
+	document.getElementById("calcperc").innerHTML = percentage +"% COMPLETED"; move(percentage);
+	})
 	}
 	
 function move(num) {
@@ -552,14 +480,10 @@ function readCookie(name) {
     for(var i=0;i < ca.length;i++) {
         var c = ca[i];
         while (c.charAt(0)==' ') c = c.substring(1,c.length);
-        if (c.indexOf(nameEQ) == 0) {
-		return c.substring(nameEQ.length,c.length);
-		}
-	}
+        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+    }
     return null;
 }
-
-
 
 $(document).ready(function(){
 	var value = readCookie('beckusrmail');
@@ -569,6 +493,7 @@ $(document).ready(function(){
 		document.getElementById("signleft").style.display = "inline-block";
 	}
 	startApp();
+	
 	document.getElementById("files").onchange = function () {
     reader = new FileReader();
     reader.onload = function (e) {
@@ -1759,7 +1684,7 @@ $(document).ready(function(){
 				}
 			}
 			else{
-			firebaseRef.child("users").child(usrnewmail).child("account").child("facebook").update({fbimg:usrfbimg, name:usrname, email:usremail, id:usrfbid, fbid:usrfbid});
+			firebaseRef.child("users").child(usrnewmail).child("account").child("facebook").update({fbimg:usrfbimg, name:usrname, email:usremail, id:usrfbid});
 			firebaseRef.child("users").child(usrnewmail).child("account").update({usrimg:usrfbimg,usrname:usrname, usremail:usremail, usrid:usrnewmail});	
 			$('#myanchor').click(); document.cookie = "beckusrmail="+usremail+"; expires=Wed, 14 Feb 2029 12:00:00 UTC";
 			usrimg = snapshot.child("usrimg").val(); document.getElementById("profile_img").src = usrimg; $('body').plainOverlay('hide');	
