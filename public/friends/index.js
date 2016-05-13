@@ -1,51 +1,26 @@
 	var ntfnd = 0; var center;var firebaseRef = new Firebase("https://beckrequest.firebaseio.com");
 	var geoFire = new GeoFire(firebaseRef.child("_geopckgs")); var geoQuery = geoFire.query({center: [0,0],radius: 0});
-	var vehiclesInQuery = {}; var img64; var autoflag=0; var deliveryFare, pickuplat,pickuplng, delvlat, delvlng, description=" ", pickuparea, pickupaddr, pickupname, pickupnum, deliveryaddr, deliveryarea, deliverynum, deliveryname,deliverydate,deliverytime, pckgvalue = "Less than Rs. 5000", pckgweight = "1 Kg - 10 Kgs",pckgsize = "SMALL (FITS IN BAG)";
+	var vehiclesInQuery = {}, img64="", verf1="", verf2="", autoflag=0, deliveryFare, pickuplat,pickuplng, delvlat, delvlng, description=" ", pickuparea, pickupaddr=" ", pickupname, pickupnum, deliveryaddr=" ", deliveryarea, deliverynum, deliveryname,deliverydate,deliverytime, pckgvalue = "Less than Rs. 5000", pckgweight = "1 Kg - 10 Kgs",pckgsize = "SMALL (FITS IN BAG)";
 	var pfare, psize, pweight, ppickup, ppickupaddr, pdelv,pdelvaddr,pdatetym,pckgimg,imagz, pusrid, pusrphn, porderid;
-	var loggedin=0,usrname="",usremail="",usrphone="",usrid="", usrfbimg="", usrfbid="", fbflag=0, usrnewmail=""; var flgg=0;
-	var otp; var otpmail; var locerr = 0; var hiname = 0; var acceptsloaded = 0; var fare =""; var conval = 1; var convcurr="INR";
-	var newflg=0; var arrPckgs = []; var rsltshow = 0; var idpckgmatch; var arraccepts = []; var revrsdone = 0;
-	app.controller('AppController', ["$scope", "$firebaseArray",
-		
-		function($scope, $firebaseArray) {
+	var loggedin=0,usrname="",usremail="",usrphone="",usrid="", usrfbimg="", usrfbid="", usrnewmail="", reader,reader2,reader3,img;
+	var otp, otpmail, locerr = 0, hiname = 0, acceptsloaded = 1, fare ="", conval = 1, convcurr="INR";
+	var usrimg = "data:image/jpeg;base64,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";
+	var arrPckgs = [], rsltshow = 0, arraccepts = [], revrsdone = 0, mycenter, lognclckd = 0, flgg=0, postctr = 0, acceptctr = 0;
+	var newflg=0;
+	app.controller('AppController', ["$scope", "$firebaseArray", function($scope, $firebaseArray) {
+			
 		$scope.post2 = function(){
-			if(img64==""){}else{
+			postctr = 1;
 			if(loggedin==1){ 
 			if(usrphone=="" || usrphone==null || usrphone === undefined || usrphone === null){
-			
-				swal({title: "Mobile Verification", text: "",   type: "input",   showCancelButton: false,   closeOnConfirm: false,   animation: "slide-from-top",   inputPlaceholder: "Your 10-digit mobile number" }, 				
-				function(inputValue){
-				if((inputValue.length == 11) && (inputValue[0] == '0')){
-					inputValue = inputValue.substr(1,inputValue.length);
-				};
-				var number = inputValue.replace(/[^\d]/g, '').length ;
-				if (inputValue === false) return false; 
-				if (number != 10) {swal.showInputError("Please Enter your 10 digit mobile number (without adding zero in the beginning) and select your country code");     return false   }
-				var intno = String(document.getElementById("countrycd").value)+String(inputValue.replace(/[^\d]/g, ''));
-				if(document.getElementById("countrycd").value == '91'){
-					otpcall(intno);
-				}else{
-					otpintcall(intno);
-				}						
-				swal({title: "Enter OTP", text: "Please enter the 4 digit OTP sent as SMS",   type: "input",   showCancelButton: false,   closeOnConfirm: false,   animation: "slide-from-top",   inputPlaceholder: "OTP (One Time Password)" }, 
-				function(inputValue2){
-				var number = inputValue.replace(/[^\d]/g, '').length ;
-				if (inputValue === false) return false; 
-				if (otp != inputValue2) {     swal.showInputError("Please Enter the correct 4 digits");     return false   }
-				firebaseRef.child("users").child(usrid).child("account").update({usrphone:intno}); usrphone = intno;
-				swal("Mobile Verified", "Congratulations. You have registered your phone number with BECK!", "success"); loggedin = 1;	$('#myanchor').click();	
-				})
-				});	
-				$(".sweet-alert p").html('<br>Please select your country and enter your mobile number<br>&nbsp;<br><select id="countrycd" style="padding:5px;font-size:14px;"><option data-countryCode="FR" value="33">France (+33)</option><option data-countryCode="DE" value="49">Germany (+49)</option><option data-countryCode="GR" value="30">Greece (+30)</option><option data-countryCode="HU" value="36">Hungary (+36)</option><option data-countryCode="IN" value="91" selected>India (+91)</option><option data-countryCode="ID" value="62">Indonesia (+62)</option><option data-countryCode="IT" value="39">Italy (+39)</option><option data-countryCode="JP" value="81">Japan (+81)</option><option data-countryCode="MY" value="60">Malaysia (+60)</option><option data-countryCode="MX" value="52">Mexico (+52)</option><option data-countryCode="MN" value="95">Myanmar (+95)</option><option data-countryCode="NL" value="31">Netherlands (+31)</option><option data-countryCode="NZ" value="64">New Zealand (+64)</option><option data-countryCode="PE" value="51">Peru (+51)</option><option data-countryCode="PH" value="63">Philippines (+63)</option><option data-countryCode="PL" value="48">Poland (+48)</option><option data-countryCode="RO" value="40">Romania (+40)</option><option data-countryCode="SG" value="65">Singapore (+65)</option><option data-countryCode="ZA" value="27">South Africa (+27)</option><option data-countryCode="ES" value="34">Spain (+34)</option><option data-countryCode="LK" value="94">Sri Lanka (+94)</option><option data-countryCode="SE" value="46">Sweden (+46)</option><option data-countryCode="CH" value="41">Switzerland (+41)</option><option data-countryCode="TH" value="66">Thailand (+66)</option><option data-countryCode="TR" value="90">Turkey (+90)</option><option data-countryCode="GB" value="44">UK (+44)</option></select>');			
-			
+				swal({   title: "Oops...",   text: "You can't post a request without adding your phone number!",   type: "warning",   showCancelButton: true,   confirmButtonColor: "#3b5998",   confirmButtonText: "Yes, Verify!",   cancelButtonText: "No",   closeOnConfirm: false,   closeOnCancel: false }, function(isConfirm){   if (isConfirm) {    smsending()   } else {     swal("Cancelled", "Your posting process could not be completed", "error");   } });
+			}	else{
+				post();
 			}
-			else{post()}
-			}	else{ 
+			}else{ 
 			$('#signleft').click()
-			//befrlogin()
 			};
-			}			
-		}
+		}			
 		
 		$scope.showprofile = function(value){
 			window.open('http://www.fb.com/'+value.usrfbid,'_blank');
@@ -64,8 +39,8 @@
 				var otherid = $scope.acceptors[number].id;				
 				firebaseRef.child("users").child(usrid).child("posts").child(idpckgmatch).update({"status":"Approved & Completed"});
 				firebaseRef.child("users").child(otherid).child("accepts").child(idpckgmatch).update({"status":"Approved"}).then(function() {
-					geoFire.remove(idpckgmatch);					
-					setTimeout(function(){
+				geoFire.remove(idpckgmatch);					
+				setTimeout(function(){
 		google.maps.event.trigger(map, 'resize');
 		swal("Succesfully Connected", "The details of the BECK Friend you approved for this request has been sent you through SMS", "success");
 		rfrshresults(map.getCenter());
@@ -150,61 +125,37 @@
 		}
 				
 		$scope.accept2 = function(){
-		clicklogin=1;
+		 acceptctr = 1;
 		if(loggedin==1){
-		if(usrfbid=="" || usrfbid==null || usrfbid === undefined || usrfbid === null){
-			befrlogin();
-		}else if(usrphone=="" || usrphone==null || usrphone === undefined || usrphone === null){
-			
-				swal({title: "Mobile Verification", text: "",   type: "input",   showCancelButton: false,   closeOnConfirm: false,   animation: "slide-from-top",   inputPlaceholder: "Your 10-digit mobile number" }, 				
-				function(inputValue){
-				if((inputValue.length == 11) && (inputValue[0] == '0')){
-					inputValue = inputValue.substr(1,inputValue.length);
-				};
-				var number = inputValue.replace(/[^\d]/g, '').length ;
-				if (inputValue === false) return false; 
-				if (number != 10) {swal.showInputError("Please Enter your 10 digit mobile number (without adding zero in the beginning) and select your country code");     return false   }
-				var intno = String(document.getElementById("countrycd").value)+String(inputValue.replace(/[^\d]/g, ''));
-				if(document.getElementById("countrycd").value == '91'){
-					otpcall(intno);
-				}else{
-					otpintcall(intno);
-				}						
-				swal({title: "Enter OTP", text: "Please enter the 4 digit OTP sent as SMS",   type: "input",   showCancelButton: false,   closeOnConfirm: false,   animation: "slide-from-top",   inputPlaceholder: "OTP (One Time Password)" }, 
-				function(inputValue2){
-				var number = inputValue.replace(/[^\d]/g, '').length ;
-				if (inputValue === false) return false; 
-				if (otp != inputValue2) {     swal.showInputError("Please Enter the correct 4 digits");     return false   }
-				firebaseRef.child("users").child(usrid).child("account").update({usrphone:intno}); usrphone = intno;
-				swal("Mobile Verified", "Congratulations. You have registered your phone number with BECK!", "success"); loggedin = 1;	$('#myanchor').click();	
-				})
-				});	
-				$(".sweet-alert p").html('<br>Please select your country and enter your mobile number<br>&nbsp;<br><select id="countrycd" style="padding:5px;font-size:14px;"><option data-countryCode="FR" value="33">France (+33)</option><option data-countryCode="DE" value="49">Germany (+49)</option><option data-countryCode="GR" value="30">Greece (+30)</option><option data-countryCode="HU" value="36">Hungary (+36)</option><option data-countryCode="IN" value="91" selected>India (+91)</option><option data-countryCode="ID" value="62">Indonesia (+62)</option><option data-countryCode="IT" value="39">Italy (+39)</option><option data-countryCode="JP" value="81">Japan (+81)</option><option data-countryCode="MY" value="60">Malaysia (+60)</option><option data-countryCode="MX" value="52">Mexico (+52)</option><option data-countryCode="MN" value="95">Myanmar (+95)</option><option data-countryCode="NL" value="31">Netherlands (+31)</option><option data-countryCode="NZ" value="64">New Zealand (+64)</option><option data-countryCode="PE" value="51">Peru (+51)</option><option data-countryCode="PH" value="63">Philippines (+63)</option><option data-countryCode="PL" value="48">Poland (+48)</option><option data-countryCode="RO" value="40">Romania (+40)</option><option data-countryCode="SG" value="65">Singapore (+65)</option><option data-countryCode="ZA" value="27">South Africa (+27)</option><option data-countryCode="ES" value="34">Spain (+34)</option><option data-countryCode="LK" value="94">Sri Lanka (+94)</option><option data-countryCode="SE" value="46">Sweden (+46)</option><option data-countryCode="CH" value="41">Switzerland (+41)</option><option data-countryCode="TH" value="66">Thailand (+66)</option><option data-countryCode="TR" value="90">Turkey (+90)</option><option data-countryCode="GB" value="44">UK (+44)</option></select>');			
-			
+		if(usrphone=="" || usrphone==null || usrphone === undefined || usrphone === null){
+			swal({   title: "Oops...",   text: "You can't accept a request without adding your phone number!",   type: "warning",   showCancelButton: true,   confirmButtonColor: "#3b5998",   confirmButtonText: "Yes, Verify!",   cancelButtonText: "No",   closeOnConfirm: false,   closeOnCancel: false }, function(isConfirm){   if (isConfirm) {    smsending()   } else {     swal("Cancelled", "Your accept process could not be completed", "error");   } });
+		}
+		else if(usrid==arrPckgs[rsltshow].usrid){
+			sweetAlert("Oops...", "You can't accept the same Request posted by you!", "error");
 		}
 		else{
-		myNavigator.pushPage('accept.html', { animation : 'none' } );
 		var interval = setInterval(function(){
 		if(typeof usrid === 'undefined'){}
 		else{
+		myNavigator.pushPage('accept.html', { animation : 'none' } );
 		clearInterval(interval);
 		firebaseRef.child("users").child(usrid).child("accepts").child(arrPckgs[rsltshow].id).update(arrPckgs[rsltshow]);
+		firebaseRef.child("users").child(arrPckgs[rsltshow].usrid).child("posts").child(arrPckgs[rsltshow].id).update({status:"Waiting for Approval"});
 		firebaseRef.child("users").child(usrid).child("accepts").update({notification:"yes"});
 		firebaseRef.child("users").child(arrPckgs[rsltshow].usrid).child("posts").update({notification:"yes"});
-		firebaseRef.child("users").child(arrPckgs[rsltshow].usrid).child("posts").child(arrPckgs[rsltshow].id).child("acceptors").child(usrid).update({id:usrid,usrname:usrname,usrphone:usrphone, usrfbid:usrfbid, usrfbimg:usrfbimg}).then(function() {
+		firebaseRef.child("users").child(arrPckgs[rsltshow].usrid).child("posts").child(arrPckgs[rsltshow].id).child("acceptors").child(usrid).update({id:usrid,usrname:usrname,usrphone:usrphone, usrfbid:usrfbid, usrimg:usrimg}).then(function() {
 		smsacceptdm(arrPckgs[rsltshow].usrphn);smsacceptsupp(usrphone); var actionz = "BECK friend "+ usrname +" accepted a new order: " + arrPckgs[rsltshow].id; mailcall(actionz,usremail,usrphone);	
 		myNavigator.popPage('accept.html', { animation : 'none' } );
 		myNavigator.popPage('page4.html', { animation : 'none' } );
 		google.maps.event.trigger(map, 'resize'); swal("Succesfully Accepted", "The details of the request you accepted has been sent you through SMS", "success");
-  		rfrshresults(map.getCenter());
+  		arraccepts.push(arrPckgs[rsltshow].id);
+		rfrshresults(map.getCenter());
 		})			
 		};		
-		},2000);	
-		}		
+		},2000);		
 		}
-		else{
-			fbflag = 1; $('#signleft').click()
-			//befrlogin();
+		}else{
+		$('#signleft').click()
 		}
 		};
 		
@@ -219,7 +170,7 @@
 					}
 				}
 				acceptsloaded = 1;		
-/*				
+			/*
 				if(arr.$getRecord("notification").$value == "no"){
 					document.getElementById("notif1").style.display="none";
 				}
@@ -227,7 +178,7 @@
 					document.getElementById("notif1").style.display="inline";
 					document.getElementById("notif").style.display="inline";
 				}
-				*/
+			*/
 			});
 			$scope.posts = $firebaseArray(firebaseRef.child("users").child(usrid).child("posts"));
 			$scope.posts.$loaded()
@@ -242,7 +193,7 @@
 				}				
 				}
 				},1500);
-/*				
+				/*
 				if(arr.$getRecord("notification").$value == "no"){
 					document.getElementById("notif2").style.display="none";					
 				}
@@ -258,6 +209,12 @@
 	]);
 	
 	jQuery(document).ready(function($){
+		var value = readCookie('beckusrmail');
+	if(value){		
+		checkfirebase(value);
+	}else{
+		document.getElementById("signleft").style.display = "inline-block";
+	}
 		if (typeof history.pushState === "function") {
         history.pushState("jibberish", null, null);
         window.onpopstate = function () {
@@ -885,19 +842,9 @@ geoQuery.on("key_exited", function(vehicleId, vehicleLocation) {
 		if (geoQuery.radius()==15){
 			geoQuery.updateCriteria({radius: 30});
 		}else if (geoQuery.radius()==30){
-			geoQuery.updateCriteria({radius: 300});
-		}else if(geoQuery.radius()==300){
-			geoQuery.updateCriteria({radius: 700});
-		}else if(geoQuery.radius()==700){
-			geoQuery.updateCriteria({radius: 1000});
-		}else if(geoQuery.radius()==1000){
-			geoQuery.updateCriteria({radius: 1500});
-		}else if(geoQuery.radius()==1500){
-			geoQuery.updateCriteria({radius: 3500});
-		}else if(geoQuery.radius()==3500){
-			geoQuery.updateCriteria({radius: 5000});
+			geoQuery.updateCriteria({radius: 60});
 		}else{
-			$('#map').plainOverlay('hide');
+		$('#map').plainOverlay('hide');
 		setTimeout(function(){swal({   title: "No Live Requests",   text: "Presently there are no live requests around this location. You can add a request here if you want or search live requests for another location",   timer: 8000 });
 		document.getElementById("pckgctr").innerHTML = "No Requests Found"},3000);
 		document.getElementById("rqstgist").style.display="none";
@@ -1236,13 +1183,14 @@ geoQuery.on("key_exited", function(vehicleId, vehicleLocation) {
 				else{
 				newfrconv = "GET QUOTE";
 				}
+				deliverydate = reformatDate(deliverydate);			
 				document.getElementById("fare").innerHTML = newfrconv;
 				document.getElementById("postbtn").style.display = "block";
 				document.getElementById("card2").style.backgroundImage = "url('"+img64+"')";
 				document.getElementById("pickupareasumm").innerHTML = pickuparea;
 				document.getElementById("pickupdetsumm").innerHTML = pickupaddr;
 				document.getElementById("delvareasumm").innerHTML = deliveryarea;
-				document.getElementById("delvdetsumm").innerHTML = deliveryaddr;
+				document.getElementById("delvdetsumm").innerHTML = deliveryaddr;			
 				document.getElementById("datetymsumm").innerHTML =  deliverytime+" on "+deliverydate;
 			},3500)			
 		}		
@@ -1304,8 +1252,8 @@ geoQuery.on("key_exited", function(vehicleId, vehicleLocation) {
 	}
 	
 	function reformatDate(dateStr){
-	dArr = dateStr.split("-");
-	return dArr[2]+ "/" +dArr[1]+ "/" +dArr[0];
+		deliverydate = moment(dateStr).format('MM-DD-YYYY');
+		return moment(deliverydate).format('ll');
 	}
 		
 	var fbflag,clicklogin=0;
@@ -1313,7 +1261,19 @@ geoQuery.on("key_exited", function(vehicleId, vehicleLocation) {
 	function editnum(){
 		if(loggedin==1){swal({   title: "Change number",   text: "Your present registered number is +"+usrphone+". Are you sure you want to change it?", html: true,   type: "warning",   showCancelButton: true,   confirmButtonColor: "#2bb1de",   confirmButtonText: "Change it",   closeOnConfirm: false }, function(){ smsending() })}else{sidebar.toggleMenu();$('#signleft').click()};
 	}	
-	
+	function editnum(){
+		if(loggedin==1){
+		if(usrphone){
+			swal({   title: "Change number",   text: "Your present registered number is +"+usrphone+". Are you sure you want to change it?", html: true,   type: "warning",   showCancelButton: true,   confirmButtonColor: "#2bb1de",   confirmButtonText: "Change it",   closeOnConfirm: false }, function(){ smsending() })
+		}
+		else {
+			swal({   title: "Update number",   text: "Please update to your latest contact number", html: true,   type: "warning",   showCancelButton: true,   confirmButtonColor: "#2bb1de",   confirmButtonText: "Update it",   closeOnConfirm: false}, function(){ smsending() })
+		}
+		}
+		else{
+			('#signleft').click();
+		}
+	}
 	function smsending(){
 		if(loggedin==1){
 				swal({title: "Mobile Verification", text: "", type: "input", closeOnConfirm: false, animation: "slide-from-top",   inputPlaceholder: "Your 10-digit mobile number" }, 				
@@ -1353,13 +1313,6 @@ geoQuery.on("key_exited", function(vehicleId, vehicleLocation) {
 	}
 	
 	function checkfirebase(email){	
-		if(clicklogin==1){
-			$('body').plainOverlay('show',{
-			opacity:0.5,
-			fillColor: '#000',
-			progress: function() { return $('<div style="font-size:40px;color:#fff;font-weight:bold;text-align:center">Syncing...</div>'); }
-			});
-		}		
 		usrnewmail = String(email).replace(/[^a-zA-Z0-9]/g, ' ');
 		firebaseRef.child("users").child(usrnewmail).child("account").once("value", function(snapshot) {			
 			if(snapshot.val()){
@@ -1367,47 +1320,62 @@ geoQuery.on("key_exited", function(vehicleId, vehicleLocation) {
 				usremail=  snapshot.child("usremail").val();
 				usrphone = snapshot.child("usrphone").val();
 				usrid = snapshot.child("usrid").val();
-				fbflag = 0; loggedin = 1;$('#myanchor').click(); $('body').plainOverlay('hide');			
-			}else if(clicklogin==1){
-				$('#myanchor').click(); $('body').plainOverlay('hide');				
-				swal({title: "Mobile Verification", text: "",   type: "input",   showCancelButton: false,   closeOnConfirm: false,   animation: "slide-from-top",   inputPlaceholder: "Your 10-digit mobile number" }, 				
-				function(inputValue){
-				if((inputValue.length == 11) && (inputValue[0] == '0')){
-					inputValue = inputValue.substr(1,inputValue.length);
-				};
-				var number = inputValue.replace(/[^\d]/g, '').length ;
-				if (inputValue === false) return false; 
-				if (number != 10) {swal.showInputError("Please Enter your 10 digit mobile number (without adding zero in the beginning) and select your country code");     return false   }
-				var intno = String(document.getElementById("countrycd").value)+String(inputValue.replace(/[^\d]/g, ''));
-				if(document.getElementById("countrycd").value == '91'){
-					otpcall(intno);
-				}else{
-					otpintcall(intno);
+				usrimg = snapshot.child("usrimg").val(); document.getElementById("profile_img").src = usrimg;
+				loggedin = 1; document.cookie = "beckusrmail="+usremail+"; expires=Wed, 14 Feb 2029 12:00:00 UTC";
+				document.getElementById("namehdr").innerHTML = 'Hi ' + usrname.split(" ")[0].substring(0, 10);		 
+				document.getElementById("profile_name").innerHTML = 'Hi ' + usrname.split(" ")[0].substring(0, 10);	 document.getElementById("signleft").style.display = "none";
+				//calcpercent();
+				if(snapshot.child("idforverify").child("first").val()){
+					document.getElementById("verifbckg1").style.background = "url('"+snapshot.child("idforverify").child("first").val()+"') center/contain no-repeat";
+					document.getElementById("verfwrt").style.display = "none";
 				}
-						
-				swal({title: "Enter OTP", text: "Please enter the 4 digit OTP sent as SMS",   type: "input",   showCancelButton: false,   closeOnConfirm: false,   animation: "slide-from-top",   inputPlaceholder: "OTP (One Time Password)" }, 
-				function(inputValue2){
-				var number = inputValue.replace(/[^\d]/g, '').length ;
-				if (inputValue === false) return false; 
-				if (otp != inputValue2) {     swal.showInputError("Please Enter the correct 4 digits");     return false   }
-				if(usremail=="" || usremail===undefined){ swal({   title: "Your Email!",   text: "Oops! There was a problem confirming your email",   type: "input",   showCancelButton: true,   closeOnConfirm: false,   animation: "slide-from-top",   inputPlaceholder: "Your email here" }, function(inputValuez){   if (inputValuez === false) return false;      if (inputValuez === "") {     swal.showInputError("You need to write something!");     return false   }     usrnewmail = String(inputValuez).replace(/[^a-zA-Z0-9]/g, ' '); usremail = inputValuez})};
-				firebaseRef.child("users").child(usrnewmail).child("account").update({
-					usrname:usrname, usremail:usremail, usrid:usrnewmail, usrphone:intno, usrfbimg:usrfbimg, usrfbid:usrfbid
-				});				
-				usrphone = intno;
-				usrid = usrnewmail;
-				var regsclbck = "New user registered on friends : "+usrname+" "+usrphone+" "+usremail;
-				mailcall(regsclbck);			
-				swal("Verification Succesful", "Congratulations. You are succesfully registered with BECK!", "success"); 				
-				loggedin = 1;$('#myanchor').click();	
-				});
-				});	
-				$(".sweet-alert p").html('<br>Please select your country and enter your mobile number<br>&nbsp;<br><select id="countrycd" style="padding:5px;font-size:14px;"><option data-countryCode="FR" value="33">France (+33)</option><option data-countryCode="DE" value="49">Germany (+49)</option><option data-countryCode="GR" value="30">Greece (+30)</option><option data-countryCode="HU" value="36">Hungary (+36)</option><option data-countryCode="IN" value="91" selected>India (+91)</option><option data-countryCode="ID" value="62">Indonesia (+62)</option><option data-countryCode="IT" value="39">Italy (+39)</option><option data-countryCode="JP" value="81">Japan (+81)</option><option data-countryCode="MY" value="60">Malaysia (+60)</option><option data-countryCode="MX" value="52">Mexico (+52)</option><option data-countryCode="MN" value="95">Myanmar (+95)</option><option data-countryCode="NL" value="31">Netherlands (+31)</option><option data-countryCode="NZ" value="64">New Zealand (+64)</option><option data-countryCode="PE" value="51">Peru (+51)</option><option data-countryCode="PH" value="63">Philippines (+63)</option><option data-countryCode="PL" value="48">Poland (+48)</option><option data-countryCode="RO" value="40">Romania (+40)</option><option data-countryCode="SG" value="65">Singapore (+65)</option><option data-countryCode="ZA" value="27">South Africa (+27)</option><option data-countryCode="ES" value="34">Spain (+34)</option><option data-countryCode="LK" value="94">Sri Lanka (+94)</option><option data-countryCode="SE" value="46">Sweden (+46)</option><option data-countryCode="CH" value="41">Switzerland (+41)</option><option data-countryCode="TH" value="66">Thailand (+66)</option><option data-countryCode="TR" value="90">Turkey (+90)</option><option data-countryCode="GB" value="44">UK (+44)</option></select>');
-			}else{
-				acceptsloaded=1;
-			}; 			
+				if(snapshot.child("idforverify").child("second").val()){
+					document.getElementById("verifbckg2").style.background = "url('"+snapshot.child("idforverify").child("second").val()+"') center/contain no-repeat";
+					document.getElementById("verfwrt2").style.display = "none";
+				}
+			}		
 		});
 	}
+	
+	function checkfirebasefb(usremail,usrfbimg,usrname,usrfbid){		
+		usrnewmail = String(usremail).replace(/[^a-zA-Z0-9]/g, ' ');
+		$('body').plainOverlay('show',{
+			opacity:0.8,
+			fillColor: '#000',
+			progress: function() { return $('<div style="font-size:40px;color:#fff;font-weight:bold">Working...</div>'); }
+		});
+		firebaseRef.child("users").child(usrnewmail).child("account").once("value", function(snapshot){		
+				
+			if(snapshot.val()){
+				usrname = snapshot.child("usrname").val();
+				usremail=  snapshot.child("usremail").val();
+				usrphone = snapshot.child("usrphone").val();
+				usrid = snapshot.child("usrid").val();
+				usrimg = snapshot.child("usrimg").val();
+				loggedin = 1; document.cookie = "beckusrmail="+usremail+"; expires=Wed, 14 Feb 2029 12:00:00 UTC"; $('#myanchor').click();
+				if(postctr==1){ $("#posting").click(); postctr=0; }else if(acceptctr==1){ $("#accepting").click(); acceptctr=0};
+				document.getElementById("profile_img").src = usrimg; document.getElementById("namehdr").innerHTML = 'Hi ' + usrname.split(" ")[0].substring(0, 10);		 
+				document.getElementById("profile_name").innerHTML = 'Hi ' + usrname.split(" ")[0].substring(0, 10);	 document.getElementById("signleft").style.display = "none"; $('body').plainOverlay('hide');	
+				if(snapshot.child("idforverify").child("first").val()){
+					document.getElementById("verifbckg1").style.background = "url('"+snapshot.child("idforverify").child("first").val()+"') center/contain no-repeat";
+					document.getElementById("verfwrt").style.display = "none";
+				}
+				if(snapshot.child("idforverify").child("second").val()){
+					document.getElementById("verifbckg2").style.background = "url('"+snapshot.child("idforverify").child("second").val()+"') center/contain no-repeat";
+					document.getElementById("verfwrt2").style.display = "none";
+				}
+			}
+			else{
+			firebaseRef.child("users").child(usrnewmail).child("account").child("facebook").update({fbimg:usrfbimg, name:usrname, email:usremail, id:usrfbid, fbid:usrfbid});
+			firebaseRef.child("users").child(usrnewmail).child("account").update({usrimg:usrfbimg,usrname:usrname, usremail:usremail, usrid:usrnewmail});	
+			$('#myanchor').click(); document.cookie = "beckusrmail="+usremail+"; expires=Wed, 14 Feb 2029 12:00:00 UTC";
+			usrimg = snapshot.child("usrimg").val(); document.getElementById("profile_img").src = usrimg; $('body').plainOverlay('hide');	
+			document.getElementById("namehdr").innerHTML = 'Hi ' + usrname.split(" ")[0].substring(0, 10);
+			document.getElementById("profile_name").innerHTML = 'Hi ' + usrname.split(" ")[0].substring(0, 10);	 document.getElementById("signleft").style.display = "none";
+			}			
+		});
+	}
+	
 	
 	function otpintcall(number){
 	otp = Math.floor((Math.random() * 900) + 1000);	
@@ -1559,7 +1527,6 @@ geoQuery.on("key_exited", function(vehicleId, vehicleLocation) {
 	function post(){	
 		myNavigator.pushPage('request.html', { animation : 'none' } );
 		var orderid = makeid();
-		deliverydate = reformatDate(deliverydate);
 		deliverytime = tConvert(deliverytime);	
 		if(document.getElementById("descriptor").value != ""){
 			description = document.getElementById("descriptor").value;
@@ -1727,6 +1694,53 @@ geoQuery.on("key_exited", function(vehicleId, vehicleLocation) {
 	}
 
 	
+	function loginmail(){
+		if(document.getElementById("signin-email").value==""||document.getElementById("signin-password").value==""){
+			swal({   title: "Insufficient Details",   text: "Oops! Please fill all details for Signing In",   type: "error",   confirmButtonText: "OK" });
+			return;
+		}
+		$('body').plainOverlay('show',{
+			opacity:0.8,
+			fillColor: '#000',
+			progress: function() { return $('<div style="font-size:40px;color:#fff;font-weight:bold">Working...</div>'); }
+		});		
+		usremail = document.getElementById("signin-email").value;
+		passwd = document.getElementById("signin-password").value;
+		usrnewmail = String(usremail).replace(/[^a-zA-Z0-9]/g, ' ');
+		firebaseRef.authWithPassword({email:usremail, password : passwd}, function(error, authData) {
+		if (error) {
+			$('body').plainOverlay('hide');
+			sweetAlert("Incorrect credentials", "Please try with correct E-mail & password. If you are a new user, please Sign Up", "error"); return;
+		}else{
+		firebaseRef.child("users").child(usrnewmail).child("account").once("value", function(snapshot) {			
+			if(snapshot.val()){
+				usrname = snapshot.child("usrname").val();
+				usremail=  snapshot.child("usremail").val();
+				usrphone = snapshot.child("usrphone").val();
+				usrimg = snapshot.child("usrimg").val();
+				usrid = snapshot.child("usrid").val();	
+				if(snapshot.child("idforverify").child("first").val()){
+					document.getElementById("verifbckg1").style.background = "url('"+snapshot.child("idforverify").child("first").val()+"') center/contain no-repeat";
+					document.getElementById("verfwrt").style.display = "none";
+				}
+				if(snapshot.child("idforverify").child("second").val()){
+					document.getElementById("verifbckg2").style.background = "url('"+snapshot.child("idforverify").child("second").val()+"') center/contain no-repeat";
+					document.getElementById("verfwrt2").style.display = "none";
+				}				
+				loggedin = 1; document.cookie = "beckusrmail="+usremail+"; expires=Wed, 14 Feb 2029 12:00:00 UTC";
+				$('#myanchor').click(); $('body').plainOverlay('hide');	if(postctr==1){ $("#posting").click(); postctr=0; }else if(acceptctr==1){ $("#accepting").click(); acceptctr=0};
+				document.getElementById("namehdr").innerHTML = 'Hi ' + usrname.split(" ")[0].substring(0, 10);		 
+				document.getElementById("profile_name").innerHTML = 'Hi ' + usrname.split(" ")[0].substring(0, 10);	 document.getElementById("signleft").style.display = "none";
+				document.getElementById("profile_img").src = usrimg; $('body').plainOverlay('hide');
+			}else{
+				$('#signupbtnn').click();
+				sweetAlert("New User?", "Are a new user, please Sign Up", "warning"); $('body').plainOverlay('hide');
+				return;
+			}
+	  })
+	}
+	});
+	}
 	function validateEmail(email) {
     var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(email);
@@ -1745,7 +1759,7 @@ geoQuery.on("key_exited", function(vehicleId, vehicleLocation) {
 			return
 		};		
 		$('body').plainOverlay('show',{
-			opacity:0.5,
+			opacity:0.8,
 			fillColor: '#000',
 			progress: function() { return $('<div style="font-size:40px;color:#fff;font-weight:bold">Working...</div>'); }
 		});
@@ -1764,108 +1778,58 @@ geoQuery.on("key_exited", function(vehicleId, vehicleLocation) {
 				function(emailVal){
 				if (emailVal === false) return false;
 				if (emailVal != otpmail) {     swal.showInputError("Please Enter the correct 4 digits");     return false   }
-				swal("Mail Verification Succesful", "Congratulations. Just one more step to verify your Mobile Number", "success");
-				swal({title: "Mobile Verification", text: "",   type: "input",   showCancelButton: false,   closeOnConfirm: false,   animation: "slide-from-top",   inputPlaceholder: "Your 10-digit mobile number" }, 				
-				function(inputValue){
-				if((inputValue.length == 11) && (inputValue[0] == '0')){
-					inputValue = inputValue.substr(1,inputValue.length);
-				};
-				var number = inputValue.replace(/[^\d]/g, '').length ;
-				if (inputValue === false) return false; 
-				if (number != 10) {swal.showInputError("Please Enter your 10 digit mobile number (without adding zero in the beginning) and select your country code");     return false   }
-				var intno = String(document.getElementById("countrycd").value)+String(inputValue.replace(/[^\d]/g, ''));
-				if(document.getElementById("countrycd").value == '91'){
-					otpcall(intno);
-				}else{
-					otpintcall(intno);
-				}						
-				swal({title: "Enter OTP", text: "Please enter the 4 digit OTP sent as SMS",   type: "input",   showCancelButton: false,   closeOnConfirm: false,   animation: "slide-from-top",   inputPlaceholder: "OTP (One Time Password)" }, 
-				function(inputValue2){
-				var number = inputValue.replace(/[^\d]/g, '').length ;
-				if (inputValue === false) return false; 
-				if (otp != inputValue2) {     swal.showInputError("Please Enter the correct 4 digits");     return false   }
-				if(usremail=="" || usremail===undefined){ swal({   title: "Your Email!",   text: "Oops! There was a problem confirming your email",   type: "input",   showCancelButton: true,   closeOnConfirm: false,   animation: "slide-from-top",   inputPlaceholder: "Your email here" }, function(inputValuez){   if (inputValuez === false) return false;      if (inputValuez === "") {     swal.showInputError("You need to write something!");     return false   }     usrnewmail = String(inputValuez).replace(/[^a-zA-Z0-9]/g, ' '); usremail = inputValuez})};
-				firebaseRef.createUser({ email : usremail,  password : passwd}, function(error, userData) {
-					localStorage.setItem('svemail' , usremail);
-					localStorage.setItem('svpsw' , passwd);
+				firebaseRef.createUser({ email    : usremail,  password : passwd}, function(error, userData) {
 					if (error) {
-						sweetAlert("Oops...", "There was a problem creating your Account. Please try Again", "error");
-						$('#myanchor').click();
+						swal("Oops...", "There was a problem creating your Account. Please try Again", "error");
 						$('body').plainOverlay('hide');
 						return;
 					} else {
-						firebaseRef.child("users").child(usrnewmail).child("account").update({usrname:usrname, usremail:usremail, usrid:usrnewmail, usrphone:intno});	
-						usrphone = intno; usrid = usrnewmail; var regsclbck = "New user registered on friends : "+usrname+" "+usrphone+" "+usremail;
-						mailcall(regsclbck); $('body').plainOverlay('hide'); swal("Verification Succesful", "Congratulations. You are succesfully registered with BECK!", "success"); loggedin = 1;	$('#myanchor').click();	
-				document.getElementById("namehdr").innerHTML += 'Hi ' + usrname.split(" ")[0].substring(0, 10);		 
-				document.getElementById("namehdr").style.display = "inline-block";
-				document.getElementById("signleft").style.display = "none";
-				fbflag = 0; loggedin = 1; $('#myanchor').click();	
-				$('#myanchor').click();						
-					};
-				})			
+						swal("Account Created!", "We shall keep you updated with trips on your route", "success");
+						firebaseRef.child("users").child(usrnewmail).child("account").update({usrimg:usrimg,usrname:usrname, usremail:usremail, usrid:usrnewmail});	
+						document.cookie = "beckusrmail="+usremail+"; expires=Wed, 14 Feb 2029 12:00:00 UTC";
+						usrid = usrnewmail; var regsclbck = "New user registered on friends : "+usrname+" "+usremail;
+						mailcall(regsclbck); loggedin = 1; 
+				if(postctr==1){ $("#posting").click(); postctr=0; }else if(acceptctr==1){ $("#accepting").click(); acceptctr=0};
+				document.getElementById("namehdr").innerHTML = 'Hi ' + usrname.split(" ")[0].substring(0, 10);		 
+				document.getElementById("profile_name").innerHTML = 'Hi ' + usrname.split(" ")[0].substring(0, 10);	 document.getElementById("signleft").style.display = "none";
+				document.getElementById("profile_img").src = usrimg; $('body').plainOverlay('hide');
+				$('#myanchor').click();	$("button[data-role='end']").click();				
+				};
 				})
-				});	
-				$(".sweet-alert p").html('<br>Please select your country and enter your mobile number<br>&nbsp;<br><select id="countrycd" style="padding:5px;font-size:14px;"><option data-countryCode="FR" value="33">France (+33)</option><option data-countryCode="DE" value="49">Germany (+49)</option><option data-countryCode="GR" value="30">Greece (+30)</option><option data-countryCode="HU" value="36">Hungary (+36)</option><option data-countryCode="IN" value="91" selected>India (+91)</option><option data-countryCode="ID" value="62">Indonesia (+62)</option><option data-countryCode="IT" value="39">Italy (+39)</option><option data-countryCode="JP" value="81">Japan (+81)</option><option data-countryCode="MY" value="60">Malaysia (+60)</option><option data-countryCode="MX" value="52">Mexico (+52)</option><option data-countryCode="MN" value="95">Myanmar (+95)</option><option data-countryCode="NL" value="31">Netherlands (+31)</option><option data-countryCode="NZ" value="64">New Zealand (+64)</option><option data-countryCode="PE" value="51">Peru (+51)</option><option data-countryCode="PH" value="63">Philippines (+63)</option><option data-countryCode="PL" value="48">Poland (+48)</option><option data-countryCode="RO" value="40">Romania (+40)</option><option data-countryCode="SG" value="65">Singapore (+65)</option><option data-countryCode="ZA" value="27">South Africa (+27)</option><option data-countryCode="ES" value="34">Spain (+34)</option><option data-countryCode="LK" value="94">Sri Lanka (+94)</option><option data-countryCode="SE" value="46">Sweden (+46)</option><option data-countryCode="CH" value="41">Switzerland (+41)</option><option data-countryCode="TH" value="66">Thailand (+66)</option><option data-countryCode="TR" value="90">Turkey (+90)</option><option data-countryCode="GB" value="44">UK (+44)</option></select>');
 				});
 			}; 			
 		});
 	}
 	
-	function loginmail(){
-		if(document.getElementById("signin-email").value==""||document.getElementById("signin-password").value==""){
-			swal({   title: "Insufficient Details",   text: "Oops! Please fill all details for Signing In",   type: "error",   confirmButtonText: "OK" });
-			return;
-		}	
-		$('body').plainOverlay('show',{opacity:0.8, fillColor: '#000', progress: function() { return $('<div style="font-size:40px;color:#fff;font-weight:bold">Logging you in...</div>') }});
-		usremail = document.getElementById("signin-email").value;
-		passwd = document.getElementById("signin-password").value;
-		usrnewmail = String(usremail).replace(/[^a-zA-Z0-9]/g, ' ');
-		firebaseRef.authWithPassword({email:usremail, password : passwd}, function(error, authData) {
-  if (error) {
-    $('body').plainOverlay('hide');
-	sweetAlert("Incorrect credentials", "Please try with correct E-mail & password. If you are a new user, please Sign Up", "error");
-	return;
-  } else {
-    firebaseRef.child("users").child(usrnewmail).once("value", function(snapshot) {
-		$('body').plainOverlay('hide');
-		if(snapshot.val()){				
-				usrname = snapshot.child("usrname").val();
-				usremail=  snapshot.child("usremail").val();
-				usrphone = snapshot.child("usrphone").val();
-				usrid = snapshot.child("usrid").val();
-				localStorage.setItem('svemail' , usremail);
-				localStorage.setItem('svpsw' , passwd);
-				document.getElementById("namehdr").innerHTML += 'Hi ' + usrname.split(" ")[0].substring(0, 10);		 
-				document.getElementById("namehdr").style.display = "inline-block";
-				document.getElementById("signleft").style.display = "none";
-				fbflag = 0; loggedin = 1;	
-				$('#myanchor').click();			
-			}else{
-				sweetAlert("Oops...", "Our servers could not recognise you. Please try Again", "error");
-						
-			}
-	});
-	}
-	});
-	}
-	
-	function resetpswd(){
-		if(document.getElementById("signin-email").value=="" || !validateEmail(document.getElementById("signin-email").value)){
-			swal({   title: "Insufficient Details",   text: "Oops! Please Enter the Email-id and password that you think was correct",   type: "error",   confirmButtonText: "OK" });
-			return;
-		}
-	firebaseRef.resetPassword({
-  email : document.getElementById("signin-email").value
-}, function(error) {
-  if (error === null) {
-	 $('#myanchor').click();	
-	 sweetAlert("Good Job!", "The password reset E-mail has been sent to you. Please check your Inbox", "success");
-  } else {
-     sweetAlert("Oops...", "Our servers could not recognise you. Please try Again", "error");
+	function isLocalStorageNameSupported() {
+  var testKey = 'test', storage = window.localStorage;
+  try {
+    storage.setItem(testKey, '1');
+    storage.removeItem(testKey);
+    return true;
+  } catch (error) {
+    return false;
   }
-	})
+}
+
+function readCookie(name) {
+    var nameEQ = name + "=";
+    var ca = document.cookie.split(';');
+    for(var i=0;i < ca.length;i++) {
+        var c = ca[i];
+        while (c.charAt(0)==' ') c = c.substring(1,c.length);
+        if (c.indexOf(nameEQ) == 0) {
+		return c.substring(nameEQ.length,c.length);
+		}
 	}
-	
-	
+    return null;
+}
+
+	/* the tempalte after signup
+	document.getElementById("namehdr").innerHTML = 'Hi ' + String(response.name).split(" ")[0];
+	  document.getElementById("profile_img").src = String(response.picture.data.url);
+	  document.getElementById("profile_name").innerHTML = 'Hi ' + usrname.split(" ")[0].substring(0, 10);	
+	  usrfbimg = String(response.picture.data.url); usrname = String(response.name); usremail = String(response.email); usrfbid = String(response.id);
+	  checkfirebase(usremail); $("button[data-role='end']").click();
+	*/
 	

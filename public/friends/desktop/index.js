@@ -27,42 +27,42 @@ angular.module('MyApp',['ngMaterial','firebase','ngMessages','ngSanitize'])
   })
 .controller('AppCtrl', ["$scope", "$firebaseArray", "$firebaseObject", "$mdDialog", "$mdMedia",
 function($scope, $firebaseArray, $firebaseObject, $mdDialog, $mdMedia) {
-	 $scope.status = '  ';
-  $scope.customFullscreen = $mdMedia('xs') || $mdMedia('sm');
+	$scope.status = '  ';
+	$scope.customFullscreen = $mdMedia('xs') || $mdMedia('sm');
 
 	$scope.data = {};
-  $scope.data.cb4 = false;
-  $scope.descriptor="";
+	$scope.data.cb4 = false;
+	$scope.descriptor="";
 	$scope.imagePath = 'download.png';
-  var imagePath = 'download.png';
-   $scope.myDate = null;
-   $scope.postarr = {"length":null};
-  $scope.minDate = new Date(
+	var imagePath = 'download.png';
+	$scope.myDate = null;
+	$scope.postarr = {"length":null};
+	$scope.minDate = new Date(
       (new Date()).getFullYear(),
       (new Date()).getMonth(),
       (new Date()).getDate());
-  $scope.maxDate = new Date(
+	$scope.maxDate = new Date(
       (new Date()).getFullYear(),
       (new Date()).getMonth() + 2,
       (new Date()).getDate());	
-          
-	  $scope.post2 = function(){
-		    postctr = 1;
-			if(loggedin==1){
-			if(usrphone=="" || usrphone==null || usrphone === undefined || usrphone === null){
-				swal({   title: "Oops...",   text: "You can't post a request without adding your phone number!",   type: "warning",   showCancelButton: true,   confirmButtonColor: "#3b5998",   confirmButtonText: "Yes, Verify!",   cancelButtonText: "No",   closeOnConfirm: false,   closeOnCancel: false }, function(isConfirm){   if (isConfirm) {    smsending()   } else {     swal("Cancelled", "Your posting process could not be completed", "error");   } });
-			}
-			else{
+       
+	$scope.post2 = function(){
+		postctr = 1;
+		if(loggedin==1){
+		if(usrphone=="" || usrphone==null || usrphone === undefined || usrphone === null){
+			swal({   title: "Oops...",   text: "You can't post a request without adding your phone number!",   type: "warning",   showCancelButton: true,   confirmButtonColor: "#3b5998",   confirmButtonText: "Yes, Verify!",   cancelButtonText: "No",   closeOnConfirm: false,   closeOnCancel: false }, function(isConfirm){   if (isConfirm) {    smsending()   } else {     swal("Cancelled", "Your posting process could not be completed", "error");   } });
+		}
+		else{
 			post();
 			$scope.myDate = null;
-			}
-			}else{ 
+		}
+		}else{ 
 			$('#signupbtnn').click();
-			};		
-		}	  
-	  
-	  $scope.accept2 = function(){
-		  acceptctr = 1;
+		};		
+	}	  
+	
+	$scope.accept2 = function(){
+		acceptctr = 1;
 		if(loggedin==1){
 		if(usrphone=="" || usrphone==null || usrphone === undefined || usrphone === null){
 			swal({   title: "Oops...",   text: "You can't accept a request without adding your phone number!",   type: "warning",   showCancelButton: true,   confirmButtonColor: "#3b5998",   confirmButtonText: "Yes, Verify!",   cancelButtonText: "No",   closeOnConfirm: false,   closeOnCancel: false }, function(isConfirm){   if (isConfirm) {    smsending()   } else {     swal("Cancelled", "Your accept process could not be completed", "error");   } });
@@ -98,7 +98,8 @@ function($scope, $firebaseArray, $firebaseObject, $mdDialog, $mdMedia) {
 		else{
 			$('#signupbtnn').click();
 		}
-		};
+	};
+		
 	var accptrid,accptrname,accptrphone,accptrfbid,accptrlinkdid,accptrgooglid;
 	$scope.showprofile = function(ev,value,idpckg){
 		$scope.fbshow = 0;$scope.googleshow = 0;$scope.linkdinshow = 0;
@@ -208,13 +209,10 @@ function($scope, $firebaseArray, $firebaseObject, $mdDialog, $mdMedia) {
 		$scope.googleconnect = $firebaseArray(firebaseRef.child("users").child(usrid).child("account").child("google"));
 		$scope.accountz = $firebaseObject(firebaseRef.child("users").child(usrid).child("account"));
 		$scope.accountdet = $firebaseArray(firebaseRef.child("users").child(usrid).child("account"));
-		$scope.accountdet.$loaded().then(function(arr){			
-			calcpercent()
-		});
+		$scope.accountdet.$loaded().then(function(arr){	calcpercent() });
 		$scope.linkedinconnect = $firebaseArray(firebaseRef.child("users").child(usrid).child("account").child("linkedin"));
 		$scope.fbconnect = $firebaseArray(firebaseRef.child("users").child(usrid).child("account").child("facebook"));
 		$scope.routes = $firebaseArray(firebaseRef.child("users").child(usrid).child("account").child("routes"));
-		
 		$scope.addRoute = function() {
 			if(document.getElementById("strtloc").value=="" || document.getElementById("endloc").value==""){
 				swal({   title: "Route Locations",   text: "Please add both the starting and ending locations of your route",   type: "error",   confirmButtonText: "Ok" });
@@ -224,12 +222,10 @@ function($scope, $firebaseArray, $firebaseObject, $mdDialog, $mdMedia) {
 			$scope.routes.$add({ startlat:startlat, startlng:startlng, strtlocaddr:strtlocaddr, endlat:endlat, endlng:endlng, endlocaddr:endlocaddr});
 			document.getElementById("strtloc").value = ""; document.getElementById("endloc").value = "";
 			startlat=0; startlng=0; strtlocaddr="";endlat=0; endlng=0; endlocaddr=""; calcpercent();
-			}
-			
+			}			
 		};
 		}
-		},2000);	
- 
+		},2000);	 
 }])
 .config(function($mdDateLocaleProvider) {
 	var initdt = "Delivery By";
@@ -238,10 +234,9 @@ function($scope, $firebaseArray, $firebaseObject, $mdDialog, $mdMedia) {
 		   deliverydate="";
 		   return initdt;
 	   }else{
-		    deliverydate = moment(date).format('DD/MM/YYYY');
+		   deliverydate = moment(date).format('DD/MM/YYYY');
 		   return moment(date).format('ll');	
-	   }
-	      
+	   }	      
     };
 });
 
@@ -445,8 +440,6 @@ var nofkeys=0;
 			geoQuery.updateCriteria({radius: 30});
 		}else if (geoQuery.radius()==30){
 			geoQuery.updateCriteria({radius: 60});
-		}else if(geoQuery.radius()==60){
-			geoQuery.updateCriteria({radius: 100});
 		}else{
 		$('#map').plainOverlay('hide');
 		setTimeout(function(){swal({   title: "No Live Requests",   text: "Presently there are no live requests around this location. You can add a request here if you want or search live requests for another location",   timer: 8000 });
@@ -727,14 +720,24 @@ $(document).ready(function(){
 	$("#demo02").animatedModal({modalTarget:'acceptedModal',animationDuration:'.3s'});
 	$("#demo04").animatedModal({modalTarget:'profileModal',animationDuration:'.3s'});
 	$("#demo03").animatedModal({modalTarget:'initModal',animationDuration:'.3s',animatedIn:'none',animatedOut:'fadeOutUp'});
-	$("#demo03").trigger('click');	
-	shwdetls();
-	$("#os-phrases > h2.openz").lettering('words').children("span").lettering().children("span").lettering();
 	
-            var win = $(window),
-                foo = $('#typer');
-
-            foo.typer(["Send anything anywhere economically.", "Earn as you travel"]);
+	if(sessionStorage.getItem("startloclat") && sessionStorage.getItem("startloclng")){
+			var latsess = Number(sessionStorage.getItem("startloclat")); var lngless = Number(sessionStorage.getItem("startloclng"));
+			mycenter = new google.maps.LatLng(latsess,lngless);
+			geoQuery.updateCriteria({center: [latsess,lngless],  radius: 30});
+			if(path) path.setMap(null);
+			for (var i = 0; i < hotSpotMapMarkers.length; i++) 	hotSpotMapMarkers[i].setMap(null);
+			document.getElementById("pckgctr").innerHTML="Loading...";
+			var address = ''; rsltshow = 0;
+			$("#tflbckg").css("background-image", "url('preloader.gif')");
+			document.getElementById("mnuitm2").style.display="block";	
+			$('#map').plainOverlay('show',{opacity:0.8, fillColor: '#000', progress: function() { return $('<div style="font-size:40px;color:#fff;font-weight:bold">Loading...</div>') }});
+			document.getElementById("lastbit").style.display="block";
+			document.getElementById("searchloc").value = sessionStorage.getItem("startlocaddr");
+	}else{		
+		$("#demo03").trigger('click');	
+	}	
+	shwdetls();
 
 });
 
@@ -1675,13 +1678,16 @@ $(document).ready(function(){
 			$('#map').plainOverlay('show',{opacity:0.8, fillColor: '#000', progress: function() { return $('<div style="font-size:40px;color:#fff;font-weight:bold">Loading...</div>') }});
 			document.getElementById("lastbit").style.display="block";
 			document.getElementById("searchloc").value = document.getElementById("searchlocinit").value;
+			if(isLocalStorageNameSupported()){
+			sessionStorage.setItem("startloclat", center.lat()); sessionStorage.setItem("startloclng", center.lng());			
+			sessionStorage.setItem("startlocaddr", document.getElementById("searchlocinit").value);
+			}
 			if (place.address_components) {
             address = [
               (place.address_components[0] && place.address_components[0].short_name || ''),
               (place.address_components[1] && place.address_components[1].short_name || ''),
               (place.address_components[2] && place.address_components[2].short_name || '')
-            ].join(' ');
-			
+            ].join(' ');			
           }          
         });
 	}
@@ -1704,6 +1710,7 @@ $(document).ready(function(){
 			var center = place.geometry.location;
 			mycenter = center;
 			getReverseGeocodingData(center.lat(), center.lng());
+			sessionStorage.setItem("startloclat", center.lat()); sessionStorage.setItem("startloclng", center.lng());
 			geoQuery.updateCriteria({center: [center.lat(), center.lng()],  radius: 30});
 			if(path) path.setMap(null);
 			for (var i = 0; i < hotSpotMapMarkers.length; i++)
@@ -1724,9 +1731,9 @@ $(document).ready(function(){
               (place.address_components[0] && place.address_components[0].short_name || ''),
               (place.address_components[1] && place.address_components[1].short_name || ''),
               (place.address_components[2] && place.address_components[2].short_name || '')
-            ].join(' ');
-			
-          }          
+            ].join(' ')
+			};
+			sessionStorage.setItem("startlocaddr", document.getElementById("searchloc").value);			
         });
 	}
 	
@@ -1793,4 +1800,13 @@ $(document).ready(function(){
 			}		
 		});
 	}
-	
+	function isLocalStorageNameSupported() {
+  var testKey = 'test', storage = window.localStorage;
+  try {
+    storage.setItem(testKey, '1');
+    storage.removeItem(testKey);
+    return true;
+  } catch (error) {
+    return false;
+  }
+}
