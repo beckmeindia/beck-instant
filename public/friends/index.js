@@ -351,6 +351,7 @@ jQuery.fn.putCursorAtEnd = function() {
 		firebaseRef.child("users").child(usrid).child("posts").update({notification:"no"});
 	}
 	
+	
 	function openaccepts(){
 		myNavigator.pushPage('schedule.html', { animation : 'push' } );
 		firebaseRef.child("users").child(usrid).child("accepts").update({notification:"no"});
@@ -649,7 +650,7 @@ geoQuery.on("key_exited", function(vehicleId, vehicleLocation) {
 		weight:vehicle.order.pckgweight,
 		date: vehicle.order.deliverydate,
 		time: vehicle.order.deliverytime,
-		datetym: "By "+vehicle.order.deliverydate+" " + vehicle.order.deliverytime,
+		datetym: vehicle.order.deliverydate+" " + vehicle.order.deliverytime,
 		pickup: vehicle.order.pickuparea,
 		pickupname: vehicle.order.pickupname,
 		pickupnum: vehicle.order.pickupnum,
@@ -1710,7 +1711,7 @@ geoQuery.on("key_exited", function(vehicleId, vehicleLocation) {
 		firebaseRef.authWithPassword({email:usremail, password : passwd}, function(error, authData) {
 		if (error) {
 			$('body').plainOverlay('hide');
-			sweetAlert("Incorrect credentials", "Please try with correct E-mail & password. If you are a new user, please Sign Up", "error"); return;
+			sweetAlert("Incorrect credentials", "Please try with correct Email & password. If you are a new user, please Sign Up", "error"); return;
 		}else{
 		firebaseRef.child("users").child(usrnewmail).child("account").once("value", function(snapshot) {			
 			if(snapshot.val()){
@@ -1754,7 +1755,7 @@ geoQuery.on("key_exited", function(vehicleId, vehicleLocation) {
 		}
 		usremail = document.getElementById("signup-email").value;
 		if(!validateEmail(usremail)){
-			swal({   title: "Incorrect Email",   text: "Oops! Please enter a valid E-mail address & try again",   type: "error",   confirmButtonText: "OK" });
+			swal({   title: "Incorrect Email",   text: "Oops! Please enter a valid Email address & try again",   type: "error",   confirmButtonText: "OK" });
 			usremail="";
 			return
 		};		
@@ -1774,7 +1775,7 @@ geoQuery.on("key_exited", function(vehicleId, vehicleLocation) {
 			}else{
 				mailconfirm(usremail);
 				$('body').plainOverlay('hide');
-				swal({title: "E-mail verification Code", text: "Please enter the 4 digit Verification Code sent to your E-mail",   type: "input",   showCancelButton: false,   closeOnConfirm: false,   animation: "slide-from-top",   inputPlaceholder: "Verification Code" }, 
+				swal({title: "Email verification Code", text: "Please enter the 4 digit Verification Code sent to your Email",   type: "input",   showCancelButton: false,   closeOnConfirm: false,   animation: "slide-from-top",   inputPlaceholder: "Verification Code" }, 
 				function(emailVal){
 				if (emailVal === false) return false;
 				if (emailVal != otpmail) {     swal.showInputError("Please Enter the correct 4 digits");     return false   }

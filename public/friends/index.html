@@ -11,6 +11,46 @@
 	<script src="jquery.plainoverlay.min.js"></script>
 	<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBzPsPjOxzeJeld7JTP4jIbqnZ61FjKkzg&libraries=places"></script>
 	<script src="https://apis.google.com/js/api:client.js"></script>  		
+	<style>
+	.profile-wrapper2 {
+  padding: 16px 10px 0 10px;
+}
+
+.profile-image2 {
+  width: 50px;
+  height: 50px;
+  border-radius: 4px;
+  -webkit-border-radius: 4px;
+  border: inset 1px rgba(0, 0, 0, 0.3);
+}
+
+.profile-name2 {
+  font-size: 18px;
+  padding: 4px 0 2px 0;
+}
+
+.profile-email2 {
+  font-size: 15px;
+  opacity: 0.4;
+}
+
+.switch--list-item2{
+  margin-right: 0px;
+}
+
+.settings-header2 {
+  font-weight: 500;
+  font-size: 14px;
+  opacity: 0.4;
+  padding: 10px 0 0px 10px;
+  margin-bottom: -4px;
+}
+
+.settings-list2 {
+  margin-top: 10px;
+}
+
+	</style>
 	<script type="text/javascript" src="//platform.linkedin.com/in.js">
 		api_key: 75otfwd0leuxv7
 		</script>
@@ -33,7 +73,7 @@ var googleUser = {};
       attachSignin(document.getElementById('customBtn'));
     });
   };
-
+  
   function attachSignin(element) {
     auth2.attachClickHandler(element, {},
         function(googleUser) {
@@ -124,15 +164,15 @@ src="https://www.facebook.com/tr?id=1066721630052558&ev=PageView&noscript=1"
 			<div id="cd-login">
 				<form class="cd-form">
 					<p class="fieldset">
-						<label class="image-replace cd-email" for="signin-email">Your E-mail</label>
-						<input class="full-width has-padding has-border" id="signin-email" type="email" placeholder="E-mail">						
+						<label class="image-replace cd-email" for="signin-email">Your Email</label>
+						<input class="full-width has-padding has-border" id="signin-email" type="email" placeholder="Your Email">						
 					</p>
 					<p class="fieldset">
 						<label class="image-replace cd-password" for="signin-password">Your Password</label>
-						<input class="full-width has-padding has-border" id="signin-password" type="password"  placeholder="Password">
+						<input class="full-width has-padding has-border" id="signin-password" type="password"  placeholder="Your Password">
 					</p>
 					<p class="fieldset">
-						<input class="full-width" type="button" value="Login with E-mail" style="background:#b7405d;color:#fff" onclick="loginmail()">
+						<input class="full-width" type="button" value="Log In With Email" style="text-transform:uppercase;font-size:12px;background:#b7405d;color:#fff" onclick="loginmail()">
 					</p>
 					<p class="fieldset" style="text-align:center">
 						<label for="accept-terms">OR</label>
@@ -155,16 +195,16 @@ src="https://www.facebook.com/tr?id=1066721630052558&ev=PageView&noscript=1"
 						<input class="full-width has-padding has-border" id="signup-username" type="text" placeholder="Your Name">
 					</p>
 					<p class="fieldset">
-						<label class="image-replace cd-email" for="signup-email">Your E-mail</label>
-						<input class="full-width has-padding has-border" id="signup-email" type="email" placeholder="E-mail">
+						<label class="image-replace cd-email" for="signup-email">Your Email</label>
+						<input class="full-width has-padding has-border" id="signup-email" type="email" placeholder="Your Email">
 					</p>
 					<p class="fieldset">
 						<label class="image-replace cd-password" for="signup-password">Your Password</label>
-						<input class="full-width has-padding has-border" id="signup-password" type="text"  placeholder="Password">
+						<input class="full-width has-padding has-border" id="signup-password" type="text"  placeholder="Your Password">
 						<a href="#0" class="hide-password" style="text-decoration:none;color:#7c7c7c">Hide</a>
 					</p>
 					<p class="fieldset">
-						<input class="full-width has-padding" type="button" value="Sign Up" style="background:#b7405d;color:#fff" onclick="signupmail()">
+						<input class="full-width has-padding" type="button" value="Sign Up With Email" style="text-transform:uppercase;font-size:12px;background:#b7405d;color:#fff" onclick="signupmail()">
 					</p>										
 					<p class="fieldset"  style="text-align:center">
 					</p>
@@ -194,6 +234,7 @@ src="https://www.facebook.com/tr?id=1066721630052558&ev=PageView&noscript=1"
 	}(document, 'script', 'facebook-jssdk'));
 	
 	function logout() {
+	if(loggedin==1){
 	swal({   title: "Logout",   text: "Are you sure you want to logout of the present account?",   type: "info",   showCancelButton: true,   closeOnConfirm: true,   showLoaderOnConfirm: true, }, function(){   		
 	$('body').plainOverlay('show',{
 			opacity:0.8,
@@ -210,6 +251,10 @@ src="https://www.facebook.com/tr?id=1066721630052558&ev=PageView&noscript=1"
 	window.location.reload();
 	return false;
 	});
+	}
+	else{
+	sidebar.toggleMenu();$('#signleft').click();
+	}
 	}
 	
 	function fbConnect(){
@@ -247,6 +292,7 @@ src="https://www.facebook.com/tr?id=1066721630052558&ev=PageView&noscript=1"
 	})
 	}
 	
+	
 	function login(){
 	FB.login(function(response) {
 	if (response.authResponse) {
@@ -255,9 +301,9 @@ src="https://www.facebook.com/tr?id=1066721630052558&ev=PageView&noscript=1"
 	usrfbimg = String(response.picture.data.url); usrname = String(response.name); usremail = String(response.email); usrfbid = String(response.id);
 	var usrnwmail = String(usremail).replace(/[^a-zA-Z0-9]/g, ' ');
 	if(usrnwmail=="undefined"){
-	swal({   title: "Email not received!",   text: "Could you please enter your E-mail?",   type: "input",   showCancelButton: false,   closeOnConfirm: false,   animation: "slide-from-top",   inputPlaceholder: "Your E-mail Address" }, function(inputValue){   if (inputValue === false) return false;      if (inputValue === "") {     swal.showInputError("You need to write an email address!");     return false   }      
+	swal({   title: "Email not received!",   text: "Could you please enter your Email?",   type: "input",   showCancelButton: false,   closeOnConfirm: false,   animation: "slide-from-top",   inputPlaceholder: "Your Email Address" }, function(inputValue){   if (inputValue === false) return false;  if (inputValue === "" ||  !validateEmail(inputValue)) {     swal.showInputError("You need to enter a valid email address!");     return false   }      
 	mailconfirm(inputValue);
-	swal({title: "E-mail verification Code", text: "Please enter the 4 digit Verification Code sent to your E-mail",   type: "input",   showCancelButton: false,   closeOnConfirm: false,   animation: "slide-from-top",   inputPlaceholder: "Verification Code" }, 
+	swal({title: "Email verification Code", text: "Please enter the 4 digit Verification Code sent to your Email",   type: "input",   showCancelButton: false,   closeOnConfirm: false,   animation: "slide-from-top",   inputPlaceholder: "Verification Code" }, 
 		function(emailVal){
 			if (emailVal === false) return false;
 			if (emailVal != otpmail) {     swal.showInputError("Please Enter the correct 4 digits");     return false   }
@@ -281,7 +327,6 @@ src="https://www.facebook.com/tr?id=1066721630052558&ev=PageView&noscript=1"
 </script>
 <ons-sliding-menu var="sidebar" swipeable="false" main-page="main.html" menu-page="menu.html" max-slide-distance="250px" type="reveal" side="left">
 </ons-sliding-menu>
-<div class="test">Enter into your BECK Friends account</div>
 <ons-template id="main.html">
  <ons-navigator title="Navigator" var="myNavigator">
   <ons-page style="background:#fff" >
@@ -296,7 +341,7 @@ src="https://www.facebook.com/tr?id=1066721630052558&ev=PageView&noscript=1"
   </div> 
   <div class="navigation-bar__right">  
 	<span class="toolbar-button--quiet navigation-bar__line-height" style="margin-top:-5px;font-size:14px;">
-    <button id="signleft" class="button" style="background:#FF5274;padding:0px 10px;line-height:24px;font-size:12px;color:#fff">Login</button>
+    <button id="signleft" class="button" style="background:#FF5274;padding:0px 10px;margin-left:20px;line-height:24px;font-size:12px;color:#fff">Login</button>
 	</span>
     <span class="toolbar-button--quiet navigation-bar__line-height" id="namehdr" STYLE="opcity:1;font-size:12px;" disabled>      
     </span>
@@ -331,8 +376,8 @@ src="https://www.facebook.com/tr?id=1066721630052558&ev=PageView&noscript=1"
           <ons-row style="width:100%">
 			<ons-col width="50px" style="padding-top:65px" onclick="showprev()"><i id="prevbtn" class="ion-ios-arrow-left" style="color:#000;font-size:40px;margin-left:10px"></i></ons-col>	  
             <ons-col width="calc(100% - 90px)" onclick="openaccept()">
-              <div class="name" style="color:#000;font-size:12px;letter-spacing:1px;line-height:20px;padding-top:10px">
-                YOU EARN : <b id="pfare" style="font-size:14px"></b><br> SIZE : <span id="psize" style="font-size:10px"></span><br> DELIVERY <span id="pdatetym" style="font-size:10px"></span>
+              <div class="name" style="color:#000;font-size:10px;letter-spacing:1px;line-height:20px;padding-top:10px">
+                YOU EARN : <b id="pfare" style="font-size:14px"></b><br> SIZE : <span id="psize" style="font-size:10px"></span><br> DELIVERY: <span id="pdatetym" style="font-size:10px"></span>
               </div>
               <div class="location" style="font-size:12px;color:#000;height:50px;white-space: nowrap;overflow: hidden;text-overflow:ellipsis;">
                 <i class="fa fa-map-marker" style="margin-right:15px;color:green"></i> <span id="ppickup"></span>
@@ -773,17 +818,85 @@ src="https://www.facebook.com/tr?id=1066721630052558&ev=PageView&noscript=1"
         <div id="profile_name" class="profile-name">&nbsp;</div>
       </div>
       <ons-list style="padding-top: 10px;padding-bottom:10px;text-align:center">
-        <ons-list-item style="border:1px solid#fff; padding-bottom:10px;" onclick="if(loggedin==1){sidebar.toggleMenu(); setTimeout(function(){ openaccepts() },500)}else{sidebar.toggleMenu();$('#signleft').click()}">
+        <ons-list-item style="border:1px solid#fff; padding-bottom:10px;" onclick="if(loggedin==1){sidebar.toggleMenu(); setTimeout(function(){ openaccepts() },200)}else{sidebar.toggleMenu();$('#signleft').click()}">
          Accepted Requests <span id="notif1" class="notification" style="font-size:8px;display:none">NEW</span>
         </ons-list-item>
-        <ons-list-item style="border:1px solid#fff; padding-top: 10px;padding-bottom:10px;" onclick="if(loggedin==1){sidebar.toggleMenu(); setTimeout(function(){ openposts() },500)}else{sidebar.toggleMenu();$('#signleft').click()}">
+        <ons-list-item style="border:1px solid#fff; padding-top: 10px;padding-bottom:10px;" onclick="if(loggedin==1){sidebar.toggleMenu(); setTimeout(function(){ openposts() },200)}else{sidebar.toggleMenu();$('#signleft').click()}">
          Posted Requests <span id="notif2" class="notification" style="font-size:8px;display:none">NEW</span>
         </ons-list-item>       
-		<ons-list-item style="border:1px solid#fff; padding-top: 10px;" onclick="editnum()">
-         Edit Contact No.
+		<ons-list-item style="border:1px solid#fff; padding-top: 10px;padding-bottom:10px;" onclick="if(loggedin==1){sidebar.toggleMenu();setTimeout(function(){ myNavigator.pushPage('profile.html', { animation : 'push' } ) },200)}else{sidebar.toggleMenu();$('#signleft').click()}">
+         My Profile
+        </ons-list-item>
+		<ons-list-item style="border:1px solid#fff; padding-top: 10px;padding-bottom:10px;" onclick="if(loggedin==1){sidebar.toggleMenu(); setTimeout(function(){ logout() },200)}else{sidebar.toggleMenu();$('#signleft').click()}">
+         Logout
         </ons-list-item>
       </ons-list>
       <br>
+    </ons-page>
+	</ons-template>
+	
+	<ons-template id="profile.html">
+	<div class="navigation-bar" style=" background:#252525">
+	   <div class="navigation-bar__left" style="color:#fff;font-size:8px">
+	   <ons-back-button style="color:#fff" onclick="google.maps.event.trigger(map, 'resize');"></ons-back-button> 
+	   </div>
+  <div class="navigation-bar__center" style="color:#fff">
+    MY PROFILE
+  </div>
+  <div class="navigation-bar__right"></div>
+	</div>
+     <ons-page style="padding:10px 20px">
+      <ons-row class="profile-wrapper2">
+        <ons-col width="60px" class="profile-image-wrapper2">
+          <img src="data:image/jpeg;base64,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" class="profile-image2">
+        </ons-col>
+
+        <ons-col>
+          <div class="profile-name2">Rahul basu</div>
+          <div class="profile-email2">50% completed</div>
+        </ons-col>
+
+      </ons-row>
+
+      <div class="settings-header2">Connect Social Accounts</div>
+      <ons-list modifier="inset" class="settings-list2">	
+        <ons-list-item modifier="tappable">
+          Facebook
+        </ons-list-item>
+		<ons-list-item modifier="tappable">
+          Google
+        </ons-list-item>
+		<ons-list-item modifier="tappable">
+          LinkedIn
+        </ons-list-item>
+      </ons-list>
+		<br>
+	  <ons-list modifier="inset" class="settings-list2">
+        <ons-list-item modifier="chevron">
+		<ons-icon icon="ion-plus-circled" style="opacity: 0.8"></ons-icon>
+          Add Routes
+        </ons-list-item>
+
+        <ons-list-item modifier="chevron">
+		<ons-icon icon="ion-card" style="opacity: 0.8"></ons-icon>
+          Verification
+        </ons-list-item>
+      </ons-list>
+	  <br>
+      <ons-list modifier="inset" class="settings-list2">
+        <ons-list-item modifier="tappable">
+		<ons-icon icon="ion-edit" style="opacity: 0.8"></ons-icon>
+          Contact Number
+        </ons-list-item>
+        <ons-list-item modifier="tappable" onclick="logout()">
+          <ons-icon icon="ion-log-out" style="opacity: 0.8"></ons-icon>
+          Logout
+        </ons-list-item>
+      </ons-list>
+
+      <br>
+
+
     </ons-page>
 	</ons-template>
 </body>
