@@ -230,10 +230,13 @@ $(document).ready(function($){
 		}else{
 			var decodedString = String(Base64.decode(linkref));
 			document.cookie = "beckusrmail="+decodedString+"; expires=Wed, 14 Feb 2029 12:00:00 UTC";
-			checkfirebase(decodedString); underverf=1;
+			setTimeout(function(){ var value2 = readCookie('beckusrmail');	checkfirebase(value2); },2000);
+			//window.location = "https://www.beckme.com/friends/";
+			//checkfirebase(decodedString); underverf=1;
 			//window.history.pushState({id: 'BECK'}, 'BECK Friends', 'https://www.beckfriends.com/friends/');	
 		}		
 	}
+	
 	var $form_modal = $('.cd-user-modal'),
 		$form_login = $form_modal.find('#cd-login'),
 		$form_signup = $form_modal.find('#cd-signup'),

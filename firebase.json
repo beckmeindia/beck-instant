@@ -1,44 +1,14 @@
 {
-  "firebase": "beckme",
-  "public": "public",
-  "ignore": [
-    "firebase.json",
-    "**/.*",
-    "**/node_modules/**"
-  ],
-  "headers":[ {
-    "source" : "**/*.@(jpg|jpeg|gif|png)",
-    "headers" : [ {
-      "key" : "Cache-Control",
-      "value" : "max-age=604800"
-  } ]
-  },{
-    "source" : "**/*.@(css)",
-    "headers" : [ {
-      "key" : "Cache-Control",
-      "value" : "max-age=604800"
-    } ]
+  "app": "beckme",
+  "database": {
+    "rules": "database.rules.json"
   },
-  {
-	"source" : "**/*.@(mp4)",
-    "headers" : [ {
-      "key" : "Cache-Control",
-      "value" : "max-age=604800"
-    } ]
-  },
-  {
-  "source" : "**/*.@(js)",
-    "headers" : [ {
-      "key" : "Cache-Control",
-      "value" : "max-age=604800"
-    } ]
-  },
-  {
-  	"source" : "**/*.@(ttf)",
-    "headers" : [ {
-      "key" : "Cache-Control",
-      "value" : "max-age=604800"
-    } ]
-
-  }]
+  "hosting": {
+    "public": "public",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ]
+  }
 }
