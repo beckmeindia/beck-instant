@@ -596,8 +596,10 @@ $(document).ready(function(){
 		}else{
 			var decodedString =  String(Base64.decode(linkref)); console.log(_.isString(decodedString));
 			document.cookie = "beckusrmail="+decodedString+"; expires=Wed, 14 Feb 2029 12:00:00 UTC";
-			setTimeout(function(){ var value2 = readCookie('beckusrmail');	checkfirebase(value2); },2000);
-			// window.location = "https://www.beckme.com/friends/desktop/";
+			setTimeout(function(){ var value2 = readCookie('beckusrmail');	if(value2){ checkfirebase(value2)}
+			else{window.location = "https://www.beckme.com/friends/desktop/"}
+			},2000);
+			// ;
 			//checkfirebase(decodedString); underverf=1;
 			//window.history.pushState({id: 'BECK'}, 'BECK Friends', 'https://www.beckfriends.com/friends/desktop/');	
 		}		
